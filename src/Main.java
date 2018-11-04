@@ -10,11 +10,11 @@ public class Main {
     public static void main(String[] args) {
 
         String file = "tvh_problem_3.txt";
-        String line = "";
+        String line;
         String[] split;
-        int start = 0;
-        int truckCap = 0;
-        int truckTime= 0;
+        int start;
+        int truckCap;
+        int truckTime;
         boolean location = false;
         int size = 0;
         int dimension = 0;
@@ -170,8 +170,6 @@ public class Main {
                 }
             }
             bufferedReader.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -191,15 +189,32 @@ public class Main {
         for (Request r : requestArrayList) {
             r.print();
         }
+        System.out.println("time");
         for (int i = 0; i < timeMatrix.length; i++) {
-            for (int j = 0; j < timeMatrix[0].length; j++) {
-                System.out.print(timeMatrix[i][j]+" ");
+            for (int j = 0; j < timeMatrix[i].length; j++) {
+                System.out.print(timeMatrix[i][j]);
+
+                if (timeMatrix[i][j] < 10) {
+                    System.out.print("   ");
+                } else if (timeMatrix[i][j] < 100) {
+                    System.out.print("  ");
+                } else if (timeMatrix[i][j] < 1000) {
+                    System.out.print(" ");
+                }
             }
             System.out.println("");
         }
+        System.out.println("distance");
         for (int i = 0; i < distanceMatrix.length; i++) {
-            for (int j = 0; j < distanceMatrix[0].length; j++) {
-                System.out.print(distanceMatrix[i][j]+" ");
+            for (int j = 0; j < distanceMatrix[i].length; j++) {
+                System.out.print(distanceMatrix[i][j]);
+                if (distanceMatrix[i][j] < 10) {
+                    System.out.print("   ");
+                } else if (distanceMatrix[i][j] < 100) {
+                    System.out.print("  ");
+                } else if (distanceMatrix[i][j] < 1000) {
+                    System.out.print(" ");
+                }
             }
             System.out.println("");
         }
