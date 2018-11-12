@@ -16,7 +16,7 @@ public class Main {
     //lijst van alle locaties (depot + klanten)
     public static List<Location> locationList = new ArrayList<>();
     //lijst van locaties van depots
-    public static List<Location> depots = new ArrayList<>();
+    public static List<Depot> depots = new ArrayList<>();
     public static List<Truck> trucksList = new ArrayList<>();
     public static List<MachineType> machineTypeList = new ArrayList<>();
     public static List<Machine> machineList = new ArrayList<>();
