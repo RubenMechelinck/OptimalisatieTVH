@@ -102,8 +102,9 @@ public class FileUtils {
                     //System.out.println(location);
                     locationList.add(new Location(Double.parseDouble(split[start + 1]), Double.parseDouble(split[start + 2]), split[start + 3], Integer.parseInt(split[start])));
                 } else if (depot) {
-                    Location dep = locationList.get(Integer.parseInt(split[start + 1]));
-                    dep.setDepot(true);
+                    Location loc = locationList.get(Integer.parseInt(split[start + 1]));
+                    loc.setDepot(true);
+                    Depot dep = new Depot(loc);
                     depots.add(dep);
                     size -= 1;
                     if (size < 1) {

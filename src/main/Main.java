@@ -30,10 +30,10 @@ public class Main {
         FileUtils.readFromFile(filename);
 
         //constructive heuristiek uitvoeren
-        Heuristieken.contructieveHeuristiek();
+        Heuristieken.constructieveHeuristiek();
 
         //perturbative heuristiek uitvoeren
-        //Heuristieken.perturbativeHeuristiek(); //ofzo iets
+        //Heuristieken.perturbatieveHeuristiek(); //ofzo iets
 
 
         //schrijf output

@@ -25,7 +25,7 @@ public class Heuristieken {
 
     /////////////////////////////// Heuristieken ///////////////////////////////
 
-    public static void contructieveHeuristiek(){
+    public static void constructieveHeuristiek(){
 
         //voor start: trucks naar dichtstbijzijnde depot laten rijden
         initTruckToClosestDepots();
@@ -43,14 +43,19 @@ public class Heuristieken {
 
     //////////////////////////////// Heuristiek onderdelen ///////////////////////
 
-    private static void initTruckToClosestDepots(){
+    private static void initTruckToClosestDepots(){                                                                     // Kan waarschijnlijk efficiënter geprogrammeerd worden
         for(Truck truck: trucksList){
             //check if truck al niet op depot staat
-            if(depots.getLocation().contains(truck.getStartlocatie())) {
-                //geen extra afstand gereden + current is al start
+            boolean inDepot = false;
+            for(Depot d: depots) {
+                if(d.getLocation().equals(truck.getStartlocatie())) {                                                   // Zal dit het juiste resultaat geven of moet de functie zelf geïmplementeerd worden?
+                    inDepot = true;
+                    break;
+                    //geen extra afstand gereden + current is al start
+                }
             }
             //if not zoek dichtsbijzijnde depot
-            else{
+            if(!inDepot){
                 int distance = Integer.MAX_VALUE;
                 Depot dep = null;
                 for (Depot depot : depots) {
@@ -87,8 +92,8 @@ public class Heuristieken {
             }
 
             //voeg request toe aan gevonden dichtste depot in map
-            Set<Request> requests = cluster.get(dep.getLocation());
-            if(requests == null)
+            Set<Request> requests = cluster.get(dep.getLocation());                                                     // Ik heb het gevoel dat er iets niet klopt aan dit stukje...
+            if(requests == null)                                                                                        // Wat moet dit stukje code precies doen?
                 requests = new HashSet<>();
             requests.add(request);
         }
