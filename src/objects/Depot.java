@@ -6,11 +6,13 @@ import java.util.List;
 public class Depot {
 
     private Location location;
-    private static List<Truck> trucksList;
+    private List<Truck> trucksList;
+    private List<Machine> machineList;
 
     public Depot(Location location) {
         this.location = location;
         this.trucksList = new ArrayList<>();
+        this.machineList = new ArrayList<>();
     }
 
     public Location getLocation() {
@@ -21,11 +23,19 @@ public class Depot {
         this.location = location;
     }
 
-    public static List<Truck> getTrucksList() {
+    public List<Truck> getTrucksList() {
         return trucksList;
     }
 
-    public static void setTrucksList(List<Truck> trucksList) {
-        Depot.trucksList = trucksList;
+    public void setTrucksList(List<Truck> trucksList) {
+        this.trucksList = trucksList;
+    }
+
+    public List<Machine> getMachineList() {
+        return machineList;
+    }
+
+    public void setMachineList(List<Machine> machineList) {
+        this.machineList = machineList;
     }
 }
