@@ -18,8 +18,8 @@ public class FileUtils {
         String line;
         String[] split;
         int start;
-        int truckCap;
-        int truckTime;
+        int truckCapacity = 0;
+        int truckWorkingTime = 0;
         boolean location = false;
         int size = 0;
         int dimension = 0;
@@ -47,12 +47,12 @@ public class FileUtils {
                 if (split[start].equals("INFO:")) {
                     System.out.println("discard");
                 } else if (split[start].equals("TRUCK_CAPACITY:")) {
-                    truckCap = Integer.parseInt(split[1]);
-                    System.out.println("truck capacity = " + truckCap);
+                    truckCapacity = Integer.parseInt(split[1]);
+                    System.out.println("truck capacity = " + truckCapacity);
                 } else if (split[start].equals("TRUCK_WORKING_TIME:")) {
-                    truckTime = Integer.parseInt(split[1]);
+                    truckWorkingTime = Integer.parseInt(split[1]);
 
-                    System.out.println("truck time = " + truckTime);
+                    System.out.println("truck time = " + truckWorkingTime);
                 } else if (split[start].equals("LOCATIONS:")) {
                     location = true;
                     size = Integer.parseInt(split[1]);
@@ -111,7 +111,7 @@ public class FileUtils {
                         depot = false;
                     }
                 } else if (truck) {
-                    trucksList.add(new Truck(locationList.get(Integer.parseInt(split[start + 1])), locationList.get(Integer.parseInt(split[start + 2]))));
+                    trucksList.add(new Truck(locationList.get(Integer.parseInt(split[start + 1])), locationList.get(Integer.parseInt(split[start + 2])), truckCapacity, truckWorkingTime));
                     size -= 1;
                     if (size < 1) {
                         truck = false;

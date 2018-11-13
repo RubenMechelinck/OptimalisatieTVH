@@ -6,6 +6,8 @@ import java.util.List;
 
 public class Truck {
 
+    private final int TRUCK_CAPACITY;
+    private final int TRUCK_WORKING_TIME;
     private Location startlocatie;
     private Location eindlocatie;
     private Location currentLocation;
@@ -14,7 +16,9 @@ public class Truck {
     private List<Machine> machineList;
 
 
-    public Truck(Location startlocatie, Location eindlocatie) {
+    public Truck(Location startlocatie, Location eindlocatie, int truckCapacity, int truckWorkingTime) {
+        this.TRUCK_CAPACITY = truckCapacity;
+        this.TRUCK_WORKING_TIME = truckWorkingTime;
         this.startlocatie = startlocatie;
         this.currentLocation = startlocatie;
         this.eindlocatie = eindlocatie;
