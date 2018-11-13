@@ -34,6 +34,7 @@ public class Heuristieken {
         Map<Location, Set<Request>> clustering = clusterRequestsToClosestDepotsWithTrucks();
 
         //wijs requests per depot toe aan trucks in dat depot
+        assignRequestsToTrucks(clustering);
     }
 
     public static void perturbatieveHeuristiek(){
@@ -92,16 +93,20 @@ public class Heuristieken {
             }
 
             //voeg request toe aan gevonden dichtste depot in map
-            Set<Request> requests = cluster.get(dep.getLocation());                                                     // Ik heb het gevoel dat er iets niet klopt aan dit stukje...
-            if(requests == null)                                                                                        // Wat moet dit stukje code precies doen?
+            Set<Request> requests = cluster.get(dep.getLocation());
+            if(requests == null) {
                 requests = new HashSet<>();
+                cluster.put(dep.getLocation(), requests);
+            }
             requests.add(request);
         }
 
         return cluster;
     }
 
-
-
-
+    private static void assignRequestsToTrucks(Map<Location, Set<Request>> cluster){
+        for(Depot depot: depots){
+            Set<Request> requestsDepot = cluster.get(depot.getLocation());
+        }
+    }
 }
