@@ -12,6 +12,7 @@ import static main.Main.requestList;
 import static main.Main.trucksList;
 import static main.Main.machineList;
 import static utils.Utils.getDistance;
+import static utils.Utils.getTime;
 
 /**
  * Created by ruben on 9/11/18.
@@ -79,6 +80,8 @@ public class Heuristieken {
                 //drop staat op false! (zowel true en false hebben hier allebei geen betekenis)
                 truck.addRequestToRoute(new Request(dep.getLocation(), null, false, true));
                 truck.setCurrentLocation(dep.getLocation());
+                truck.setTotaleAfstandTruck(getDistance(truck.getStartlocatie(), dep.getLocation()));
+                truck.setTotaleTijdGereden(getTime(truck.getStartlocatie(), dep.getLocation()));
             }
         }
     }
@@ -143,14 +146,21 @@ public class Heuristieken {
                 for(Request request: cluster.get(depot)){
                     if(!request.isDrop()){
                         for(Truck truck: depot.getTrucksList()){
+                            if(truck.getTotaleTijdGereden() == getTime(truck.getStartlocatie(), depot.getLocation())){
+                                int tmp = truck.getTotaleTijdGereden() + getTime(depot.getLocation(), truck.getEindlocatie());
+                                truck.setTotaleTijdGereden(tmp);
+                            }
                             int tijdRequest = truck.getTotaleTijdGereden();
-                            tijdRequest += 2 * getDistance(depot.getLocation(), request.getLocation())
+                            tijdRequest += 2 * getTime(depot.getLocation(), request.getLocation())
                                            + request.getMachine().getMachine_type().getServiceTime();
                             if(tijdRequest <= truck.getTRUCK_WORKING_TIME()){
                                 truck.setTotaleTijdGereden(tijdRequest);
+                                truck.setTotaleAfstandTruck(2 * getDistance(depot.getLocation(), request.getLocation()));
                                 truck.addRequestToRoute(request);
                                 truck.addRequestToRoute(new Request(depot.getLocation(), null, true, true));
                                 cluster.get(depot).remove(request);
+                                depot.getMachineList().add(request.getMachine());
+                                request.getMachine().setLocation(depot.getLocation());
                                 break;
                             }
                         }

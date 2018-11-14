@@ -3,6 +3,7 @@ package utils;
 import objects.Location;
 
 import static main.Main.distanceMatrix;
+import static main.Main.timeMatrix;
 
 /**
  * Created by ruben on 9/11/18.
@@ -13,5 +14,11 @@ public class Utils {
     public static int getDistance(Location a, Location b){
         //deze methode is de meest complexe methode in deze software!
         return distanceMatrix[a.getIndex()][b.getIndex()];
+    }
+
+    //get time from par:a to par:b
+    public static int getTime(Location a, Location b){
+        //deze methode is de tweede meest complexe methode in deze software!
+        return timeMatrix[a.getIndex()][b.getIndex()];
     }
 }
