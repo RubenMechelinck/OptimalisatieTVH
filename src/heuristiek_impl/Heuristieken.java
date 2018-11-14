@@ -32,7 +32,7 @@ public class Heuristieken {
         initTruckToClosestDepots();
 
         //voeg requests toe aan dichtstbijzijnde depot
-        Map<Location, Set<Request>> clustering = clusterRequestsToClosestDepotsWithTrucks();
+        Map<Depot, Set<Request>> clustering = clusterRequestsToClosestDepotsWithTrucks();
 
         //wijs requests per depot toe aan trucks in dat depot
         assignRequestsToTrucks(clustering);
@@ -84,8 +84,8 @@ public class Heuristieken {
     }
 
     //return map met key = elke depot, value is set van alle requests die aan die depot zijn toegekent
-    private static Map<Location, Set<Request>> clusterRequestsToClosestDepotsWithTrucks(){
-        HashMap<Location, Set<Request>> cluster = new HashMap<>();
+    private static Map<Depot, Set<Request>> clusterRequestsToClosestDepotsWithTrucks(){
+        HashMap<Depot, Set<Request>> cluster = new HashMap<>();
 
         //overloop requests en zoek dichtstbijzijnde depot
         /*for(Request request: requestList){
@@ -129,7 +129,7 @@ public class Heuristieken {
             Set<Request> requests = cluster.get(dep.getLocation());
             if(requests == null) {
                 requests = new HashSet<>();
-                cluster.put(dep.getLocation(), requests);
+                cluster.put(dep, requests);
             }
             requests.add(request);
         }
@@ -137,9 +137,48 @@ public class Heuristieken {
         return cluster;
     }
 
-    private static void assignRequestsToTrucks(Map<Location, Set<Request>> cluster){
-        for(Depot depot: depots){
-            Set<Request> requestsDepot = cluster.get(depot.getLocation());
+    private static void assignRequestsToTrucks(Map<Depot, Set<Request>> cluster){
+        while(!cluster.isEmpty()){
+            for(Depot depot: depots){
+                for(Request request: cluster.get(depot)){
+                    if(!request.isDrop()){
+                        for(Truck truck: depot.getTrucksList()){
+                            int tijdRequest = truck.getTotaleTijdGereden();
+                            tijdRequest += 2 * getDistance(depot.getLocation(), request.getLocation())
+                                           + request.getMachine().getMachine_type().getServiceTime();
+                            if(tijdRequest <= truck.getTRUCK_WORKING_TIME()){
+                                truck.setTotaleTijdGereden(tijdRequest);
+                                truck.addRequestToRoute(request);
+                                truck.addRequestToRoute(new Request(depot.getLocation(), null, true, true));
+                                cluster.get(depot).remove(request);
+                                break;
+                            }
+                        }
+                    }
+                    else{
+
+                    }
+                }
+            }
+            /*for(Location location: locationList){
+                if(!location.getDepot()){
+                    //Set<Request> requests = cluster.get(location);
+                    for(Request request: cluster.get(location)){
+
+                    }
+                }
+            }
+            for(Depot depot: depots){
+                Set<Request> requestsDepot = cluster.get(depot.getLocation());
+                for(Request request: requestsDepot){
+                    if(depot.getMachineList().contains(request.getMachine())){
+
+                    }
+                    else{
+
+                    }
+                }
+            }*/
         }
     }
 }
