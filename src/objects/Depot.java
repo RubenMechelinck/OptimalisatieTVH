@@ -5,14 +5,24 @@ import java.util.List;
 
 public class Depot {
 
+    private boolean truckBeschikbaar;
     private Location location;
     private List<Truck> trucksList;
     private List<Machine> machineList;
 
     public Depot(Location location) {
+        truckBeschikbaar = true;
         this.location = location;
         this.trucksList = new ArrayList<>();
         this.machineList = new ArrayList<>();
+    }
+
+    public boolean isTruckBeschikbaar() {
+        return truckBeschikbaar;
+    }
+
+    public void setTruckBeschikbaar(boolean truckBeschikbaar) {
+        this.truckBeschikbaar = truckBeschikbaar;
     }
 
     public Location getLocation() {
