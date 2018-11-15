@@ -1,5 +1,6 @@
 package heuristiek_impl;
 
+import Evaluatie.Evaluatie;
 import objects.*;
 
 import java.util.HashMap;
@@ -41,6 +42,12 @@ public class Heuristieken {
 
         //wijs requests per depot toe aan trucks in dat depot
         assignRequestsToTrucks(clustering);
+
+        //Zo kan je dan aan de weight en de afstand
+        Evaluatie result = new Evaluatie(trucksList);
+        result.getTotalDistance();
+        result.getWeight();
+
     }
 
     public static void perturbatieveHeuristiek() {
