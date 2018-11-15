@@ -8,13 +8,15 @@ public class Location {
     //index in afstands- en tijdsmatrix, is zelfde index als index van item
     // in locationList, toch hier zetten voor als this niet uit list wordt gehaald
     private int index;
+    private int locatieId;
 
-    public Location(double lat, double lon, String name, int index) {
+    public Location(double lat, double lon, String name, int index, int locatieId) {
         this.lat = lat;
         this.lon = lon;
         this.name = name;
         this.depot = false;
         this.index = index;
+        this.locatieId = locatieId;
     }
 
     public double getLat() {
@@ -59,5 +61,13 @@ public class Location {
 
     public void setIndex(int index) {
         this.index = index;
+    }
+
+    public int getLocatieId() {
+        return locatieId;
+    }
+
+    public void setLocatieId(int locatieId) {
+        this.locatieId = locatieId;
     }
 }

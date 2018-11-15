@@ -15,11 +15,14 @@ public class Truck {
     private int totaleTijdGereden;
     private double totaleAfstandTruck;
     private boolean tijdVoorRequest;
+    // de requests die deze truck afhandeld
     private List<Request> route;
+    // de machines die currently op de truck staan
     private List<Machine> machineList;
+    private int truckId;
 
 
-    public Truck(Location startlocatie, Location eindlocatie, int truckCapacity, int truckWorkingTime) {
+    public Truck(Location startlocatie, Location eindlocatie, int truckCapacity, int truckWorkingTime, int truckId) {
         this.TRUCK_CAPACITY = truckCapacity;
         this.TRUCK_WORKING_TIME = truckWorkingTime;
         this.truckWorkingTime = truckWorkingTime;
@@ -31,6 +34,7 @@ public class Truck {
         tijdVoorRequest = true;
         route = new LinkedList<>();
         machineList = new ArrayList<>();
+        this.truckId = truckId;
     }
 
     public int getTRUCK_CAPACITY() {
@@ -71,6 +75,10 @@ public class Truck {
 
     public void setTotaleTijdGereden(int totaleTijdGereden) {
         this.totaleTijdGereden = totaleTijdGereden;
+    }
+
+    public void addTotaleTijdGereden(int tijd) {
+        this.totaleTijdGereden += tijd;
     }
 
     public boolean isTijdVoorRequest() {
@@ -119,5 +127,13 @@ public class Truck {
 
     public void addRequestToRoute(Request request){
         route.add(request);
+    }
+
+    public int getTruckId() {
+        return truckId;
+    }
+
+    public void setTruckId(int truckId) {
+        this.truckId = truckId;
     }
 }

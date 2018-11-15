@@ -2,20 +2,22 @@ package objects;
 
 public class Machine {
 
-    private MachineType machine_type;
+    private MachineType machineType;
     private Location location;
+    private int machineId;
 
-    public Machine(MachineType machine_type, Location location) {
-        this.machine_type = machine_type;
+    public Machine(MachineType machine_type, Location location, int machineId) {
+        this.machineType = machine_type;
         this.location = location;
+        this.machineId = machineId;
     }
 
-    public MachineType getMachine_type() {
-        return machine_type;
+    public MachineType getMachineType() {
+        return machineType;
     }
 
-    public void setMachine_type(MachineType machine_type) {
-        this.machine_type = machine_type;
+    public void setMachineType(MachineType machineType) {
+        this.machineType = machineType;
     }
 
     public Location getLocation() {
@@ -27,6 +29,14 @@ public class Machine {
     }
 
     public void print(){
-        System.out.println("machine type: " + machine_type + " location " + location);
+        System.out.println("machine type: " + machineType + " location " + location);
+    }
+
+    public int getMachineId() {
+        return machineId;
+    }
+
+    public void setMachineId(int machineId) {
+        this.machineId = machineId;
     }
 }

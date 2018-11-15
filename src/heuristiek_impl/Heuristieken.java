@@ -43,11 +43,6 @@ public class Heuristieken {
         //wijs requests per depot toe aan trucks in dat depot
         assignRequestsToTrucks(clustering);
 
-        //Zo kan je dan aan de weight en de afstand
-        Evaluatie result = new Evaluatie(trucksList);
-        result.getTotalDistance();
-        result.getWeight();
-
     }
 
     public static void perturbatieveHeuristiek() {
@@ -57,6 +52,7 @@ public class Heuristieken {
 
     //////////////////////////////// Heuristiek onderdelen ///////////////////////
 
+    //dit kan bij inlezen ook gebeuren
     private static void initPlaceMachineInMachineListDepot() {
         for(Machine machine: machineList)
             if(machine.getLocation().getDepot())
@@ -67,7 +63,8 @@ public class Heuristieken {
 
     private static void initTruckToClosestDepots() {                                                                     // Kan waarschijnlijk efficiënter geprogrammeerd worden
         for(Truck truck: trucksList) {
-            //check if truck al niet op depot staat
+
+            //check if truck al op depot staat
             boolean inDepot = false;
             for(Depot d: depots) {
                 if(d.getLocation().equals(truck.getStartlocatie())) {                                                   // Zal dit het juiste resultaat geven of moet de functie zelf geïmplementeerd worden?
@@ -77,6 +74,7 @@ public class Heuristieken {
                     //geen extra afstand gereden + current is al start
                 }
             }
+
             //if not zoek dichtsbijzijnde depot
             if(!inDepot) {
                 int distance = Integer.MAX_VALUE;
@@ -93,10 +91,9 @@ public class Heuristieken {
                 truck.addRequestToRoute(new Request(dep.getLocation(), null, false, true));
                 truck.setCurrentLocation(dep.getLocation());
                 truck.setTotaleAfstandTruck(getDistance(truck.getStartlocatie(), dep.getLocation()));
-                int tmp = truck.getTotaleTijdGereden()
-                        + getTime(truck.getStartlocatie(), dep.getLocation())
-                        + getTime(dep.getLocation(), truck.getEindlocatie());
-                truck.setTotaleTijdGereden(tmp);
+                int tmp = getTime(truck.getStartlocatie(), dep.getLocation())
+                        + getTime(dep.getLocation(), truck.getEindlocatie()); //wat is dit?
+                truck.addTotaleTijdGereden(tmp);
                 dep.getTrucksList().add(truck);
             }
         }
@@ -121,28 +118,23 @@ public class Heuristieken {
             }*/
 
         for(Request request: requestList) {
-            boolean machineTypeIsInDepot = false;
-            boolean inDepot = true;
+            boolean machineTypeIsInDepot = true;
             int distance = Integer.MAX_VALUE;
             Depot dep = null;
             MachineType machineType = null;
             if(request.isDrop())
-                machineType = request.getMachine().getMachine_type();
+                machineType = request.getMachine().getMachineType();
             for (Depot depot : depots) {
-                if (!cluster.containsKey(depot))
+                if(!cluster.containsKey(depot))
                     cluster.put(depot, new HashSet<>());
-                if (machineType != null) {
-                    inDepot = false;
-                    if (!depot.getMachineList().isEmpty()) {
-                        for (Machine machineInDepot : depot.getMachineList()) {
-                            if (machineType.equals(machineInDepot.getMachine_type())) {                                  // Zal dit het juiste resultaat geven of moet de functie zelf geïmplementeerd worden?
-                                inDepot = true;
+                if(machineType != null) {
+                    machineTypeIsInDepot = false;
+                    if(!depot.getMachineList().isEmpty())
+                        for(Machine machineInDepot: depot.getMachineList())
+                            if(machineType.equals(machineInDepot.getMachineType()))                                                      // Zal dit het juiste resultaat geven of moet de functie zelf geïmplementeerd worden?
                                 machineTypeIsInDepot = true;
-                            }
-                        }
-                    }
                 }
-                if (!depot.getTrucksList().isEmpty() && inDepot) {
+                if (!depot.getTrucksList().isEmpty() && machineTypeIsInDepot) {
                     int tmp = getDistance(depot.getLocation(), request.getLocation());
                     if (tmp < distance) {
                         distance = tmp;
@@ -155,7 +147,7 @@ public class Heuristieken {
                 for (Depot depot : depots)
                     if(depot.getMachineList().size() < dep.getMachineList().size())
                         dep = depot;
-                //dep.getMachineList().add(request.getMachine());
+                dep.getMachineList().add(request.getMachine());
             }
             //voeg request toe aan gevonden dichtste depot in map
             if(cluster.get(dep) != null) {
@@ -183,11 +175,10 @@ public class Heuristieken {
                             break;
                         else {
                             for(Truck truck: depot.getTrucksList()) {
-                                int tijdRequest = truck.getTotaleTijdGereden();
-                                tijdRequest += 2 * getTime(depot.getLocation(), request.getLocation())
-                                        + request.getMachine().getMachine_type().getServiceTime();
+                                int tijdRequest = 2 * getTime(depot.getLocation(), request.getLocation())
+                                        + request.getMachine().getMachineType().getServiceTime();
                                 if(tijdRequest <= truck.getTruckWorkingTime()) {
-                                    truck.setTotaleTijdGereden(tijdRequest);
+                                    truck.addTotaleTijdGereden(tijdRequest);
                                     truck.setTotaleAfstandTruck(2 * getDistance(depot.getLocation(), request.getLocation()));
                                     truck.addRequestToRoute(request);
                                     truck.addRequestToRoute(new Request(depot.getLocation(), null, true, true));
@@ -246,7 +237,7 @@ public class Heuristieken {
                             }
                             int tijdRequest = truck.getTotaleTijdGereden();
                             tijdRequest += 2 * getTime(depot.getLocation(), request.getLocation())
-                                           + request.getMachine().getMachine_type().getServiceTime();
+                                           + request.getMachine().getMachineType().getServiceTime();
                             if(tijdRequest <= truck.getTruckWorkingTime()) {
                                 truck.setTotaleTijdGereden(tijdRequest);
                                 truck.setTotaleAfstandTruck(2 * getDistance(depot.getLocation(), request.getLocation()));
@@ -268,7 +259,7 @@ public class Heuristieken {
                                 }
                                 int tijdRequest = truck.getTotaleTijdGereden();
                                 tijdRequest += 2 * getTime(depot.getLocation(), request.getLocation())
-                                        + request.getMachine().getMachine_type().getServiceTime();
+                                        + request.getMachine().getMachineType().getServiceTime();
                                 if(tijdRequest <= truck.getTruckWorkingTime()) {
                                     truck.setTotaleTijdGereden(tijdRequest);
                                     truck.setTotaleAfstandTruck(2 * getDistance(depot.getLocation(), request.getLocation()));

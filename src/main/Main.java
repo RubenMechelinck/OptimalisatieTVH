@@ -1,5 +1,6 @@
 package main;
 
+import Evaluatie.Evaluatie;
 import utils.FileUtils;
 import heuristiek_impl.Heuristieken;
 import objects.*;
@@ -9,7 +10,8 @@ import java.util.List;
 
 public class Main {
 
-    private static final String filename = "tvh_problem_3.txt";
+    private static final String inputFilename = "tvh_problem_3.txt";
+    private static final String outputFilename = "tvh_problem_3_own_solution.txt";
 
     //voorlopig opslaan als classe later mss niet nodig?
 
@@ -23,21 +25,28 @@ public class Main {
     public static List<Request> requestList = new ArrayList<>();
     public static int[][] timeMatrix = new int[0][0];
     public static int[][] distanceMatrix = new int[0][0];
+    public static Evaluatie result;
 
     public static void main(String[] args) {
 
         //input file inlezen
-        FileUtils.readFromFile(filename);
+        FileUtils.readFromFile(inputFilename);
 
         //constructive heuristiek uitvoeren
         Heuristieken.constructieveHeuristiek();
+
+        //Zo kan je dan aan de weight en de afstand
+        result = new Evaluatie(trucksList);
+        System.out.println("total distance: " + result.getTotalDistance());
+        System.out.println("total weight: " + result.getWeight());
+        System.out.println("feasable: " + result.isFeasable());
 
         //perturbative heuristiek uitvoeren
         //Heuristieken.perturbatieveHeuristiek(); //ofzo iets
 
 
         //schrijf output
-
+        FileUtils.writeOutputFile(outputFilename, inputFilename);
 
 
 
