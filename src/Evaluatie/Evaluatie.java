@@ -77,13 +77,16 @@ public class Evaluatie {
     }
 
     public boolean doubleRequests(Request r,List<Truck> trucks){
-        boolean doubleRequest=false;
+        int requests=0;
         for(Truck t:trucks){
             if(t.getRoute().contains(r)){
-                doubleRequest=true;
+                requests++;
             }
         }
-        return doubleRequest;
+        if(requests>1){
+            return true;
+        }
+        return false;
     }
 
     public boolean noPickUp(Truck t, Request r){
