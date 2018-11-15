@@ -121,23 +121,28 @@ public class Heuristieken {
             }*/
 
         for(Request request: requestList) {
-            boolean machineTypeIsInDepot = true;
+            boolean machineTypeIsInDepot = false;
+            boolean inDepot = true;
             int distance = Integer.MAX_VALUE;
             Depot dep = null;
             MachineType machineType = null;
             if(request.isDrop())
                 machineType = request.getMachine().getMachine_type();
             for (Depot depot : depots) {
-                if(!cluster.containsKey(depot))
+                if (!cluster.containsKey(depot))
                     cluster.put(depot, new HashSet<>());
-                if(machineType != null) {
-                    machineTypeIsInDepot = false;
-                    if(!depot.getMachineList().isEmpty())
-                        for(Machine machineInDepot: depot.getMachineList())
-                            if(machineType.equals(machineInDepot.getMachine_type()))                                                      // Zal dit het juiste resultaat geven of moet de functie zelf geïmplementeerd worden?
+                if (machineType != null) {
+                    inDepot = false;
+                    if (!depot.getMachineList().isEmpty()) {
+                        for (Machine machineInDepot : depot.getMachineList()) {
+                            if (machineType.equals(machineInDepot.getMachine_type())) {                                  // Zal dit het juiste resultaat geven of moet de functie zelf geïmplementeerd worden?
+                                inDepot = true;
                                 machineTypeIsInDepot = true;
+                            }
+                        }
+                    }
                 }
-                if (!depot.getTrucksList().isEmpty() && machineTypeIsInDepot) {
+                if (!depot.getTrucksList().isEmpty() && inDepot) {
                     int tmp = getDistance(depot.getLocation(), request.getLocation());
                     if (tmp < distance) {
                         distance = tmp;
@@ -150,7 +155,7 @@ public class Heuristieken {
                 for (Depot depot : depots)
                     if(depot.getMachineList().size() < dep.getMachineList().size())
                         dep = depot;
-                dep.getMachineList().add(request.getMachine());
+                //dep.getMachineList().add(request.getMachine());
             }
             //voeg request toe aan gevonden dichtste depot in map
             if(cluster.get(dep) != null) {
