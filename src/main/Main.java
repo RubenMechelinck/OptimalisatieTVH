@@ -1,6 +1,6 @@
 package main;
 
-import Evaluatie.Evaluatie;
+import Evaluation.Evaluation;
 import utils.FileUtils;
 import heuristiek_impl.Heuristieken;
 import objects.*;
@@ -25,7 +25,7 @@ public class Main {
     public static List<Request> requestList = new ArrayList<>();
     public static int[][] timeMatrix = new int[0][0];
     public static int[][] distanceMatrix = new int[0][0];
-    public static Evaluatie result;
+    public static Evaluation result;
 
     public static void main(String[] args) {
 
@@ -36,7 +36,7 @@ public class Main {
         Heuristieken.constructieveHeuristiek();
 
         //Zo kan je dan aan de weight en de afstand
-        result = new Evaluatie(trucksList);
+        result = new Evaluation(trucksList);
         System.out.println("total distance: " + result.getTotalDistance());
         System.out.println("total weight: " + result.getWeight());
         System.out.println("feasable: " + result.isFeasable());

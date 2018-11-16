@@ -1,22 +1,25 @@
-package Evaluatie;
+package Evaluation;
 
 import objects.Request;
 import objects.Truck;
 import java.util.List;
 
-public class Evaluatie {
+/**
+ * Created by Joran on 13/11/18.
+ */
+public class Evaluation {
     private int totalDistance=0;
     private int weight=0;
     private boolean isFeasable = true;
 
-    private int BOETE_RIJ_LIMIET = 10000;
-    private int BOETE_CAPACITEIT = 10000;
-    private int BOETE_NO_DROP_COLLECT_KOPPEL = 10000;
-    private int BOETE_MULTIPLE_TRUCKS_PER_REQUEST = 10000;
-    private int BOETE_NO_DEPOT_ENDPOINT = 10000;
-    private int BOETE_ENDCAP_NOT_ZERO = 10000;
+    private int COST_DRIVE_LIMIT = 10000;
+    private int COST_CAPACITY = 10000;
+    private int COST_NO_DROP_COLLECT_COUPLE = 10000;
+    private int COST_MULTIPLE_TRUCKS_PER_REQUEST = 10000;
+    private int COST_NO_DEPOT_ENDPOINT = 10000;
+    private int COST_ENDCAP_NOT_ZERO = 10000;
 
-    public Evaluatie(List<Truck> trucks){
+    public Evaluation(List<Truck> trucks){
 
         for(Truck t: trucks){
 
@@ -25,7 +28,7 @@ public class Evaluatie {
 
             //Een boete van 10000 indien een truck over zijn rijlimiet gaat
             if(t.getTotaleTijdGereden()>t.getTRUCK_WORKING_TIME()){
-                weight+=BOETE_RIJ_LIMIET;
+                weight+=COST_DRIVE_LIMIT;
                 isFeasable = false;
             }
 
@@ -39,7 +42,7 @@ public class Evaluatie {
 
                     //Altijd kijken of de pickup hiervan ook aanwezig is!
                     if(noPickUp(t,r)){
-                        weight+=BOETE_NO_DROP_COLLECT_KOPPEL;
+                        weight+=COST_NO_DROP_COLLECT_COUPLE;
                         isFeasable = false;
                     }
                 }
@@ -48,34 +51,34 @@ public class Evaluatie {
 
                     //Altijd kijken of de drop van deze pickup ook aanwezig is!
                     if(noDrop(t,r)){
-                        weight+=BOETE_NO_DROP_COLLECT_KOPPEL;
+                        weight+=COST_NO_DROP_COLLECT_COUPLE;
                         isFeasable = false;
                     }
                 }
 
 
                 if(tempCapacity>t.getTRUCK_CAPACITY()){
-                    weight+=BOETE_CAPACITEIT;
+                    weight+=COST_CAPACITY;
                     isFeasable = false;
                 }
 
                 //Elke request wordt maar gedaan door 1 enkele truck, anders +10000
                 if(doubleRequests(r,trucks)){
-                    weight+=BOETE_MULTIPLE_TRUCKS_PER_REQUEST;
+                    weight+=COST_MULTIPLE_TRUCKS_PER_REQUEST;
                     isFeasable = false;
                 }
             }
 
             if(t.getRoute().size()>0) {
                 if (!t.getRoute().get(t.getRoute().size() - 1).getLocation().equals(t.getEindlocatie())) {
-                    weight += BOETE_NO_DEPOT_ENDPOINT;
+                    weight += COST_NO_DEPOT_ENDPOINT;
                     isFeasable = false;
                 }
             }
 
             //op einde is capaciteit ook weer 0
             if(tempCapacity!=0){
-                weight+=BOETE_ENDCAP_NOT_ZERO;
+                weight+=COST_ENDCAP_NOT_ZERO;
                 isFeasable = false;
             }
         }
