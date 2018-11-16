@@ -219,22 +219,46 @@ public class Heuristieken {
             } while (isMovement);
 
             for (Depot depot: depots) {
+                List<Request> tempRequestList = new LinkedList<>();
                 for (Request request: cluster.get(depot)) {
+                    boolean machineTypeAanwezig = false;
                     if (request.isDrop()) {
-                        boolean machineTypeAanwezig = false;
-                        for (Machine machine: depot.getMachineList()) {
-                            if (machine.getMachineType().equals(request.getMachine().getMachineType()))
+                        for (Machine machine : depot.getMachineList()) {
+                            if (machine.getMachineType().equals(request.getMachine().getMachineType()) && truckBeschikbaar) {
                                 machineTypeAanwezig = true;
-                        }
-                        if (!machineTypeAanwezig) {
-                            if (depots.indexOf(depot) == 0) {
-                                request.setLocation(depots.get(depots.size() - 1).getLocation());
-                                cluster.get(depots.size() - 1).add(request);
-                            } else {
-                                request.setLocation(depots.get(depots.indexOf(depot) - 1).getLocation());
-                                cluster.get(depots.indexOf(depot) - 1).add(request);
+                                break;
                             }
-                            System.out.println("Droprequest depot verplaatst");
+                        }
+                    }
+                    if (!request.isDrop() || !machineTypeAanwezig) {
+                        /*if (depots.indexOf(depot) == 0) {
+                            Set<Request> requestsFrom = cluster.get(depot);
+                            Set<Request> requestsTo = cluster.get(depots.get(depots.size() - 1));
+                            requestsTo.add(request);
+                            requestsFrom.remove(request);
+                        } else {
+                            Set<Request> requestsFrom = cluster.get(depot);
+                            Set<Request> requestsTo = cluster.get(depots.get(depots.indexOf(depot) - 1));
+                            requestsTo.add(request);
+                            requestsFrom.remove(request);
+                        }*/
+                        tempRequestList.add(request);
+                        System.out.println("Request depot verplaatst");
+                    }
+                }
+                if (!tempRequestList.isEmpty()) {
+                    for (Request request : tempRequestList) {
+
+                        if (depots.indexOf(depot) == 0) {
+                            Set<Request> requestsFrom = cluster.get(depot);
+                            Set<Request> requestsTo = cluster.get(depots.get(depots.size() - 1));
+                            requestsFrom.remove(request);
+                            requestsTo.add(request);
+                        } else {
+                            Set<Request> requestsFrom = cluster.get(depot);
+                            Set<Request> requestsTo = cluster.get(depots.get(depots.indexOf(depot) - 1));
+                            requestsFrom.remove(request);
+                            requestsTo.add(request);
                         }
                     }
                 }
@@ -242,8 +266,10 @@ public class Heuristieken {
             for (Depot depot: depots) {
                 boolean truckDepotBeschikbaar = false;
                 for (Truck truck: depot.getTrucksList()) {
-                    if (truck.isTijdVoorRequest())
+                    if (truck.isTijdVoorRequest()) {
                         truckDepotBeschikbaar = true;
+                        break;
+                    }
                 }
                 if (!truckDepotBeschikbaar)
                     depot.setTruckBeschikbaar(false);
