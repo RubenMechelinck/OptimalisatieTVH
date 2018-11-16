@@ -97,7 +97,7 @@ public class Evaluatie {
     public boolean noPickUp(Truck t, Request r){
         boolean noPickUp=true;
         for(Request req:t.getRoute()){
-            if(req.getLocation().equals(r.getLocation())){
+            if(req.getMachine().getMachineId()==r.getMachine().getMachineId()){
                 if(!req.isDrop()){
                     noPickUp=false;
                 }
@@ -109,7 +109,7 @@ public class Evaluatie {
     public boolean noDrop(Truck t, Request r){
         boolean noDrop=true;
         for(Request req:t.getRoute()){
-            if(req.getLocation().equals(r.getLocation())){
+            if(req.getMachine().getMachineId()==r.getMachine().getMachineId()){
                 if(req.isDrop()){
                     noDrop=false;
                 }
