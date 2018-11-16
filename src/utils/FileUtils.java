@@ -2,9 +2,7 @@ package utils;
 
 import objects.*;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 
 import static main.Main.*;
 
@@ -100,7 +98,7 @@ public class FileUtils {
                         location = false;
                     }
                     //System.out.println(location);
-                    locationList.add(new Location(Double.parseDouble(split[start + 1]), Double.parseDouble(split[start + 2]), split[start + 3], Integer.parseInt(split[start])));
+                    locationList.add(new Location(Double.parseDouble(split[start + 1]), Double.parseDouble(split[start + 2]), split[start + 3], Integer.parseInt(split[start]), Integer.parseInt(split[start])));
                 } else if (depot) {
                     Location loc = locationList.get(Integer.parseInt(split[start + 1]));
                     loc.setDepot(true);
@@ -111,7 +109,7 @@ public class FileUtils {
                         depot = false;
                     }
                 } else if (truck) {
-                    trucksList.add(new Truck(locationList.get(Integer.parseInt(split[start + 1])), locationList.get(Integer.parseInt(split[start + 2])), truckCapacity, truckWorkingTime));
+                    trucksList.add(new Truck(locationList.get(Integer.parseInt(split[start + 1])), locationList.get(Integer.parseInt(split[start + 2])), truckCapacity, truckWorkingTime, Integer.parseInt(split[start])));
                     size -= 1;
                     if (size < 1) {
                         truck = false;
@@ -123,7 +121,7 @@ public class FileUtils {
                         machine_type = false;
                     }
                 } else if (machine) {
-                    machineList.add(new Machine(machineTypeList.get(Integer.parseInt(split[start + 1])), locationList.get(Integer.parseInt(split[start + 2]))));
+                    machineList.add(new Machine(machineTypeList.get(Integer.parseInt(split[start + 1])), locationList.get(Integer.parseInt(split[start + 2])), Integer.parseInt(split[start])));
                     size -= 1;
                     if (size < 1) {
                         machine = false;
@@ -218,6 +216,49 @@ public class FileUtils {
             }
             System.out.println("");
         }*/
+    }
+
+    public static void writeOutputFile(String outputFilename, String inputFilename){
+        File file = new File(outputFilename);
+        try {
+            PrintWriter printWriter = new PrintWriter(file);
+            printWriter.println("PROBLEM: " + inputFilename);
+            printWriter.println("DISTANCE: " + result.getTotalDistance());
+            printWriter.println("TRUCKS: " + trucksList.size());
+
+            for(Truck truck: trucksList){
+                printWriter.print(truck.getTruckId() + " ");
+                printWriter.print(truck.getTotaleAfstandTruck() + " ");
+                printWriter.print(truck.getTotaleTijdGereden() + " ");
+
+                //if geen tussenlocaties => print eindlocatie
+                if(truck.getRoute().size() == 0)
+                    printWriter.print(truck.getEindlocatie().getLocatieId());
+
+                //if wel tussenstops print stops met machines
+                else {
+                    for (int i = 0; i<truck.getRoute().size(); ) {
+                        Request request = truck.getRoute().get(i);
+                        printWriter.print(request.getLocation().getLocatieId() + ":" + request.getMachine().getMachineId());
+
+                        //check of volgende request over zelfe locatie gaat, if so groepeer in output
+                        while(truck.getRoute().get(++i).getLocation() == request.getLocation()){
+                            printWriter.print(":" + truck.getRoute().get(i));
+                        }
+                    }
+                }
+                printWriter.println();
+            }
+
+            printWriter.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+
     }
 
 }
