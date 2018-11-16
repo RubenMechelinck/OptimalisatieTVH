@@ -1,12 +1,12 @@
 package heuristiek_impl;
 
-import Evaluatie.Evaluatie;
 import objects.*;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.List;
 import java.util.LinkedList;
 
 import static main.Main.depots;
@@ -55,20 +55,20 @@ public class Heuristieken {
 
     //dit kan bij inlezen ook gebeuren
     private static void initPlaceMachineInMachineListDepot() {
-        for(Machine machine: machineList)
-            if(machine.getLocation().getDepot())
-                for(Depot depot: depots)
-                    if(depot.getLocation().equals(machine.getLocation()))                                               // Zal dit het juiste resultaat geven of moet de functie zelf geïmplementeerd worden?
+        for (Machine machine: machineList)
+            if (machine.getLocation().getDepot())
+                for (Depot depot: depots)
+                    if (depot.getLocation().equals(machine.getLocation()))                                               // Zal dit het juiste resultaat geven of moet de functie zelf geïmplementeerd worden?
                         depot.getMachineList().add(machine);
     }
 
     private static void initTruckToClosestDepots() {                                                                     // Kan waarschijnlijk efficiënter geprogrammeerd worden
-        for(Truck truck: trucksList) {
+        for (Truck truck: trucksList) {
 
             //check if truck al op depot staat
             boolean inDepot = false;
-            for(Depot d: depots) {
-                if(d.getLocation().equals(truck.getStartlocatie())) {                                                   // Zal dit het juiste resultaat geven of moet de functie zelf geïmplementeerd worden?
+            for (Depot d: depots) {
+                if (d.getLocation().equals(truck.getStartlocatie())) {                                                   // Zal dit het juiste resultaat geven of moet de functie zelf geïmplementeerd worden?
                     d.getTrucksList().add(truck);
                     inDepot = true;
                     break;
@@ -77,7 +77,7 @@ public class Heuristieken {
             }
 
             //if not zoek dichtsbijzijnde depot
-            if(!inDepot) {
+            if (!inDepot) {
                 int distance = Integer.MAX_VALUE;
                 Depot dep = null;
                 for (Depot depot : depots) {
@@ -228,8 +228,10 @@ public class Heuristieken {
                         }
                         if (!machineTypeAanwezig) {
                             if (depots.indexOf(depot) == 0) {
+                                request.setLocation(depots.get(depots.size() - 1).getLocation());
                                 cluster.get(depots.size() - 1).add(request);
                             } else {
+                                request.setLocation(depots.get(depots.indexOf(depot) - 1).getLocation());
                                 cluster.get(depots.indexOf(depot) - 1).add(request);
                             }
                             System.out.println("Droprequest depot verplaatst");

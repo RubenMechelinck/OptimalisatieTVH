@@ -130,7 +130,7 @@ public class FileUtils {
                     MachineType machineType = machineTypeList.get(Integer.parseInt(split[start + 1]));
                     Machine tempMachine = null;
                     for (Machine mac: machineList) {
-                        if (machineType.equals(mac.getMachine_type()))
+                        if (machineType.equals(mac.getMachineType()))
                             tempMachine = mac;
                     }
                     requestList.add(new Request(locationList.get(Integer.parseInt(split[start + 2])), tempMachine, true, false));
