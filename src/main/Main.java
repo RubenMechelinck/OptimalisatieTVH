@@ -42,7 +42,7 @@ public class Main {
         System.out.println("feasable: " + result.isFeasable());
 
         //perturbative heuristiek uitvoeren
-        //Heuristieken.perturbatieveHeuristiek(); //ofzo iets
+        //Heuristieken.perturbatieveHeuristiek(); //ofzo iets*/
 
 
         //schrijf output

@@ -1,13 +1,9 @@
 package heuristiek_impl;
 
 import objects.*;
+import sun.nio.cs.ext.MacHebrew;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.List;
-import java.util.LinkedList;
+import java.util.*;
 
 import static main.Main.depots;
 import static main.Main.requestList;
@@ -58,17 +54,17 @@ public class Heuristieken {
         for (Machine machine: machineList)
             if (machine.getLocation().getDepot())
                 for (Depot depot: depots)
-                    if (depot.getLocation().equals(machine.getLocation()))                                               // Zal dit het juiste resultaat geven of moet de functie zelf geïmplementeerd worden?
+                    if (depot.getLocation().equals(machine.getLocation()))
                         depot.getMachineList().add(machine);
     }
 
-    private static void initTruckToClosestDepots() {                                                                     // Kan waarschijnlijk efficiënter geprogrammeerd worden
+    private static void initTruckToClosestDepots() {
         for (Truck truck: trucksList) {
 
             //check if truck al op depot staat
             boolean inDepot = false;
             for (Depot d: depots) {
-                if (d.getLocation().equals(truck.getStartlocatie())) {                                                   // Zal dit het juiste resultaat geven of moet de functie zelf geïmplementeerd worden?
+                if (d.getLocation().equals(truck.getStartlocatie())) {
                     d.getTrucksList().add(truck);
                     inDepot = true;
                     break;
@@ -105,19 +101,6 @@ public class Heuristieken {
         HashMap<Depot, Set<Request>> cluster = new HashMap<>();
 
         //overloop requests en zoek dichtstbijzijnde depot
-        /*for(Request request: requestList) {
-            int distance = Integer.MAX_VALUE;
-            Depot dep = null;
-            for (Depot depot : depots) {
-                if (!depot.getTrucksList().isEmpty()) {
-                    int tmp = getDistance(depot.getLocation(), request.getLocation());
-                    if (tmp < distance) {
-                        distance = tmp;
-                        dep = depot;
-                    }
-                }
-            }*/
-
         for (Request request: requestList) {
             boolean machineTypeIsInDepot = true;
             boolean inDepot = true;
@@ -135,7 +118,7 @@ public class Heuristieken {
                     inDepot = false;
                     if (!depot.getMachineList().isEmpty()) {
                         for (Machine machineInDepot : depot.getMachineList()) {
-                            if (machineType.equals(machineInDepot.getMachineType())) {                                  // Zal dit het juiste resultaat geven of moet de functie zelf geïmplementeerd worden?
+                            if (machineType.equals(machineInDepot.getMachineType())) {
                                 inDepot = true;
                                 machineTypeIsInDepot = true;
                                 break;
@@ -172,6 +155,7 @@ public class Heuristieken {
     }
 
     private static void assignRequestsToTrucks(Map<Depot, Set<Request>> cluster){
+        int requestCount = 0;
         boolean requestsAanwezig = true;
         while (requestsAanwezig) {
             boolean isMovement;
@@ -181,35 +165,46 @@ public class Heuristieken {
                 for (Depot depot: depots) {
                     List<Request> tempRequestList = new LinkedList<>();
                     for (Request request: cluster.get(depot)) {
-                        if (request.isDrop() && !depot.getMachineList().contains(request.getMachine()))
-                            break;
-                        else {
-                            for (Truck truck: depot.getTrucksList()) {
-                                int tijdRequest = truck.getTotaleTijdGereden();
-                                tijdRequest += 2 * getTime(depot.getLocation(), request.getLocation())
-                                        + request.getMachine().getMachineType().getServiceTime();
-                                if (tijdRequest <= truck.getTruckWorkingTime()) {
-                                    truck.setTotaleTijdGereden(tijdRequest);
-                                    truck.setTotaleAfstandTruck(2 * getDistance(depot.getLocation(), request.getLocation()));
-                                    truck.addRequestToRoute(request);
-                                    truck.addRequestToRoute(new Request(depot.getLocation(), null, true, true));
-                                    tempRequestList.add(request);
-                                    if (request.isDrop()) {
-                                        depot.getMachineList().remove(request.getMachine());
-                                        // Ook een lijst van Machines per locatie?
-                                    } else {
-                                        depot.getMachineList().add(request.getMachine());
-                                        //request.getMachine().setLocation(depot.getLocation());
-                                    }
-                                    isMovement = true;
-                                    truck.setTijdVoorRequest(true);
-                                    System.out.println("Request behandeld");
+                        if (request.isDrop()) {
+                            boolean machineInDepot = false;
+                            for (Machine machine: depot.getMachineList()) {
+                                if (machine.getMachineType().equals(request.getMachine().getMachineType())) {
+                                    machineInDepot = true;
                                     break;
-                                } else
-                                    truck.setTijdVoorRequest(false);
+                                }
                             }
+                            if (!machineInDepot) break;
                         }
-                        // <Eerste comment>
+                        for (Truck truck: depot.getTrucksList()) {
+                            int tijdRequest = truck.getTotaleTijdGereden();
+                            tijdRequest += 2 * getTime(depot.getLocation(), request.getLocation())
+                                    + request.getMachine().getMachineType().getServiceTime();
+                            if (tijdRequest <= truck.getTruckWorkingTime()) {
+                                truck.setTotaleTijdGereden(tijdRequest);
+                                truck.setTotaleAfstandTruck(2 * getDistance(depot.getLocation(), request.getLocation()));
+                                truck.addRequestToRoute(request);
+                                truck.addRequestToRoute(new Request(depot.getLocation(), null, true, true));
+                                tempRequestList.add(request);
+                                if (request.isDrop())
+                                    depot.getMachineList().remove(request.getMachine());
+                                /*if (request.isDrop()) {
+                                    for (Machine machine: depot.getMachineList()) {
+                                        if (machine.getMachineType().equals(request.getMachine().getMachineType())) {
+                                            depot.getMachineList().remove(machine);
+                                            break;
+                                        }
+                                    }
+                                }*/
+                                else
+                                    depot.getMachineList().add(request.getMachine());
+                                isMovement = true;
+                                truck.setTijdVoorRequest(true);
+                                requestCount++;
+                                System.out.println("Request " + requestCount + " behandeld");
+                                break;
+                            } else
+                                truck.setTijdVoorRequest(false);
+                        }
                     }
                     for (Request request: tempRequestList) {
                         Set<Request> requestsDepot = cluster.get(depot);
@@ -217,6 +212,14 @@ public class Heuristieken {
                     }
                 }
             } while (isMovement);
+
+            for (Depot depot: depots) {
+                if (!cluster.get(depot).isEmpty()) {
+                    requestsAanwezig = true;
+                    break;
+                } else
+                    requestsAanwezig = false;
+            }
 
             for (Depot depot: depots) {
                 List<Request> tempRequestList = new LinkedList<>();
@@ -230,36 +233,17 @@ public class Heuristieken {
                             }
                         }
                     }
-                    if (!request.isDrop() || !machineTypeAanwezig) {
-                        /*if (depots.indexOf(depot) == 0) {
-                            Set<Request> requestsFrom = cluster.get(depot);
-                            Set<Request> requestsTo = cluster.get(depots.get(depots.size() - 1));
-                            requestsTo.add(request);
-                            requestsFrom.remove(request);
-                        } else {
-                            Set<Request> requestsFrom = cluster.get(depot);
-                            Set<Request> requestsTo = cluster.get(depots.get(depots.indexOf(depot) - 1));
-                            requestsTo.add(request);
-                            requestsFrom.remove(request);
-                        }*/
+                    if (!request.isDrop() || !machineTypeAanwezig)
                         tempRequestList.add(request);
-                        System.out.println("Request depot verplaatst");
-                    }
                 }
                 if (!tempRequestList.isEmpty()) {
                     for (Request request : tempRequestList) {
-
-                        if (depots.indexOf(depot) == 0) {
-                            Set<Request> requestsFrom = cluster.get(depot);
-                            Set<Request> requestsTo = cluster.get(depots.get(depots.size() - 1));
-                            requestsFrom.remove(request);
-                            requestsTo.add(request);
-                        } else {
-                            Set<Request> requestsFrom = cluster.get(depot);
-                            Set<Request> requestsTo = cluster.get(depots.get(depots.indexOf(depot) - 1));
-                            requestsFrom.remove(request);
-                            requestsTo.add(request);
-                        }
+                        Random random = new Random();
+                        int randomInt = random.nextInt(depots.size());
+                        Set<Request> requestsFrom = cluster.get(depot);
+                        Set<Request> requestsTo = cluster.get(depots.get(randomInt));
+                        requestsFrom.remove(request);
+                        requestsTo.add(request);
                     }
                 }
             }
@@ -277,86 +261,10 @@ public class Heuristieken {
                     truckBeschikbaar = true;
             }
             if (!truckBeschikbaar) {
-                for (Truck truck: trucksList) {
+                for (Truck truck: trucksList)
                     truck.setTruckWorkingTime(truck.getTruckWorkingTime() + 50);
-                    System.out.println("Tijd uitgebreid");
-                }
             }
-            for (Depot depot: depots) {
-                if (!cluster.get(depot).isEmpty()) {
-                    requestsAanwezig = true;
-                    break;
-                } else
-                    requestsAanwezig = false;
-            }
-            // <Tweede comment>
         }
+        System.out.println("Truck Working Time: " + trucksList.get(0).getTRUCK_WORKING_TIME());
     }
 }
-
-                    // <Eerste comment>
-                    /*if (!request.isDrop()) {
-                        for (Truck truck: depot.getTrucksList()) {
-                            if (truck.getTotaleTijdGereden() == getTime(truck.getStartlocatie(), depot.getLocation())){
-                                int tmp = truck.getTotaleTijdGereden() + getTime(depot.getLocation(), truck.getEindlocatie());
-                                truck.setTotaleTijdGereden(tmp);
-                            }
-                            int tijdRequest = truck.getTotaleTijdGereden();
-                            tijdRequest += 2 * getTime(depot.getLocation(), request.getLocation())
-                                           + request.getMachine().getMachineType().getServiceTime();
-                            if (tijdRequest <= truck.getTruckWorkingTime()) {
-                                truck.setTotaleTijdGereden(tijdRequest);
-                                truck.setTotaleAfstandTruck(2 * getDistance(depot.getLocation(), request.getLocation()));
-                                truck.addRequestToRoute(request);
-                                truck.addRequestToRoute(new Request(depot.getLocation(), null, true, true));
-                                cluster.get(depot).remove(request);
-                                depot.getMachineList().add(request.getMachine());
-                                //request.getMachine().setLocation(depot.getLocation());
-                                break;
-                            }
-                        }
-                    }
-                    else {
-                        for (Truck truck: depot.getTrucksList()) {
-                            if (depot.getMachineList().contains(request.getMachine())) {
-                                if(truck.getTotaleTijdGereden() == getTime(truck.getStartlocatie(), depot.getLocation())) {
-                                    int tmp = truck.getTotaleTijdGereden() + getTime(depot.getLocation(), truck.getEindlocatie());
-                                    truck.setTotaleTijdGereden(tmp);
-                                }
-                                int tijdRequest = truck.getTotaleTijdGereden();
-                                tijdRequest += 2 * getTime(depot.getLocation(), request.getLocation())
-                                        + request.getMachine().getMachineType().getServiceTime();
-                                if (tijdRequest <= truck.getTruckWorkingTime()) {
-                                    truck.setTotaleTijdGereden(tijdRequest);
-                                    truck.setTotaleAfstandTruck(2 * getDistance(depot.getLocation(), request.getLocation()));
-                                    truck.addRequestToRoute(request);
-                                    truck.addRequestToRoute(new Request(depot.getLocation(), null, true, true));
-                                    cluster.get(depot).remove(request);
-                                    depot.getMachineList().remove(request.getMachine());
-                                    break;
-                                }
-                            }
-                        }
-                    }*/
-
-
-            // <Tweede comment>
-            /*for (Location location: locationList) {
-                if (!location.getDepot()) {
-                    //Set<Request> requests = cluster.get(location);
-                    for (Request request: cluster.get(location)) {
-
-                    }
-                }
-            }
-            for (Depot depot: depots) {
-                Set<Request> requestsDepot = cluster.get(depot.getLocation());
-                for (Request request: requestsDepot) {
-                    if (depot.getMachineList().contains(request.getMachine())) {
-
-                    }
-                    else {
-
-                    }
-                }
-            }*/
