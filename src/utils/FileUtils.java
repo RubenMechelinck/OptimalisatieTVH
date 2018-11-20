@@ -127,19 +127,13 @@ public class FileUtils {
                         machine = false;
                     }
                 } else if (drop) {
-                    MachineType machineType = machineTypeList.get(Integer.parseInt(split[start + 1]));
-                    Machine tempMachine = null;
-                    for (Machine mac: machineList) {
-                        if (machineType.equals(mac.getMachineType()))
-                            tempMachine = mac;
-                    }
-                    requestList.add(new Request(locationList.get(Integer.parseInt(split[start + 2])), tempMachine, true, false));
+                    requestList.add(new Request(locationList.get(Integer.parseInt(split[start + 2])), null, machineTypeList.get(Integer.parseInt(split[start + 1])) , true, false));
                     size -= 1;
                     if (size < 1) {
                         drop = false;
                     }
                 } else if (collect) {
-                    requestList.add(new Request(machineList.get(Integer.parseInt(split[start + 1])).getLocation(), machineList.get(Integer.parseInt(split[start + 1])), false, false));
+                    requestList.add(new Request(machineList.get(Integer.parseInt(split[start + 1])).getLocation(), machineList.get(Integer.parseInt(split[start + 1])), null, false, false));
                     size -= 1;
                     if (size < 1) {
                         collect = false;

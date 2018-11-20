@@ -10,8 +10,8 @@ import java.util.List;
 
 public class Main {
 
-    private static final String inputFilename = "tvh_problem_3.txt";
-    private static final String outputFilename = "tvh_problem_3_own_solution.txt";
+    private static final String inputFilename = "tvh_problem_4.txt";
+    private static final String outputFilename = "tvh_problem_4_own_solution.txt";
 
     //voorlopig opslaan als classe later mss niet nodig?
 
@@ -36,17 +36,17 @@ public class Main {
         Heuristieken.constructieveHeuristiek();
 
         //Zo kan je dan aan de weight en de afstand
-        result = new Evaluation(trucksList);
+        /*result = new Evaluation(trucksList);
         System.out.println("total distance: " + result.getTotalDistance());
         System.out.println("total weight: " + result.getWeight());
         System.out.println("feasable: " + result.isFeasable());
 
         //perturbative heuristiek uitvoeren
-        //Heuristieken.perturbatieveHeuristiek(); //ofzo iets*/
+        //Heuristieken.perturbatieveHeuristiek(); //ofzo iets
 
 
         //schrijf output
-        FileUtils.writeOutputFile(outputFilename, inputFilename);
+        FileUtils.writeOutputFile(outputFilename, inputFilename);*/
 
 
 

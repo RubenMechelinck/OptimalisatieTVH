@@ -4,12 +4,14 @@ public class Request {
 
     private Location location;
     private Machine machine;
+    private MachineType machineType;
     private boolean drop; //true = drop, false = collect
     private boolean depot;
 
-    public Request(Location location, Machine machine, boolean drop, boolean depot) {
+    public Request(Location location, Machine machine, MachineType machineType, boolean drop, boolean depot) {
         this.location = location;
         this.machine = machine;
+        this.machineType = machineType;
         this.drop = drop;
         this.depot = depot;
     }
@@ -28,6 +30,14 @@ public class Request {
 
     public void setMachine(Machine machine) {
         this.machine = machine;
+    }
+
+    public MachineType getMachineType() {
+        return machineType;
+    }
+
+    public void setMachineType(MachineType machineType) {
+        this.machineType = machineType;
     }
 
     public boolean isDrop() {
