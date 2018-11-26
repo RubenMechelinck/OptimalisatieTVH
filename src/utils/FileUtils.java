@@ -127,13 +127,15 @@ public class FileUtils {
                         machine = false;
                     }
                 } else if (drop) {
-                    requestList.add(new Request(locationList.get(Integer.parseInt(split[start + 2])), null, machineTypeList.get(Integer.parseInt(split[start + 1])) , true, false));
+
+                    requestList.add(new Request(locationList.get(Integer.parseInt(split[start + 2])), machineTypeList.get(Integer.parseInt(split[start + 1])), true, false));
+
                     size -= 1;
                     if (size < 1) {
                         drop = false;
                     }
                 } else if (collect) {
-                    requestList.add(new Request(machineList.get(Integer.parseInt(split[start + 1])).getLocation(), machineList.get(Integer.parseInt(split[start + 1])), null, false, false));
+                    requestList.add(new Request(machineList.get(Integer.parseInt(split[start + 1])).getLocation(), machineList.get(Integer.parseInt(split[start + 1])), false, false));
                     size -= 1;
                     if (size < 1) {
                         collect = false;
@@ -212,33 +214,86 @@ public class FileUtils {
         }*/
     }
 
-    public static void writeOutputFile(String outputFilename, String inputFilename){
+    public static void writeOutputFile(String outputFilename, String inputFilename) {
         File file = new File(outputFilename);
+        int j;
+        int workingTrucks = getWorkingTrucks();
+        boolean contin = true;
         try {
             PrintWriter printWriter = new PrintWriter(file);
             printWriter.println("PROBLEM: " + inputFilename);
             printWriter.println("DISTANCE: " + result.getTotalDistance());
-            printWriter.println("TRUCKS: " + trucksList.size());
+            printWriter.println("TRUCKS: " + workingTrucks);
 
-            for(Truck truck: trucksList){
+            for (Truck truck : trucksList) {
+                //System.out.println(truck.getTruckId());
                 printWriter.print(truck.getTruckId() + " ");
                 printWriter.print(truck.getTotaleAfstandTruck() + " ");
                 printWriter.print(truck.getTotaleTijdGereden() + " ");
 
                 //if geen tussenlocaties => print eindlocatie
-                if(truck.getRoute().size() == 0)
+                if (truck.getRoute().size() == 0) {
                     printWriter.print(truck.getEindlocatie().getLocatieId());
 
-                //if wel tussenstops print stops met machines
-                else {
-                    for (int i = 0; i<truck.getRoute().size(); ) {
+                    //if wel tussenstops print stops met machines
+                } else {
+                    for (int i = 0; i < truck.getRoute().size(); i++) {
+                        j = 1;
+                        //  System.out.println(truck.getRoute().size());
                         Request request = truck.getRoute().get(i);
-                        printWriter.print(request.getLocation().getLocatieId() + ":" + request.getMachine().getMachineId());
 
-                        //check of volgende request over zelfe locatie gaat, if so groepeer in output
-                        while(truck.getRoute().get(++i).getLocation() == request.getLocation()){
-                            printWriter.print(":" + truck.getRoute().get(i));
+                        if (i!= 0 && truck.getRoute().get(i - 1).getLocation() != request.getLocation()) {
+                            if (request.getMachine() != null) {
+                                printWriter.print(request.getLocation().getLocatieId() + ":" + request.getMachine().getMachineId());
+                            } else {
+                                printWriter.print(request.getLocation().getLocatieId());
+                            }
+
+
+                            //check of volgende request over zelfe locatie gaat, if so groepeer in output
+                            contin = true;
+                            while (i + j < truck.getRoute().size() && contin) {
+                                if (truck.getRoute().get(i + j).getLocation() == request.getLocation()) {
+                                    if (truck.getRoute().get(i + j).getMachine() != null) {
+                                        printWriter.print(":" + truck.getRoute().get(i + j).getMachine().getMachineId());
+
+                                    } else {
+                                        contin = false;
+                                    }
+                                } else {
+                                    contin = false;
+                                }
+                                j++;
+
+                            }
+                            printWriter.print(" ");
+                        } else if (i == 0) {
+                            if (request.getMachine() != null) {
+                                printWriter.print(request.getLocation().getLocatieId() + ":" + request.getMachine().getMachineId());
+                            } else {
+                                printWriter.print(request.getLocation().getLocatieId());
+                            }
+
+
+                            //check of volgende request over zelfe locatie gaat, if so groepeer in output
+                            contin = true;
+                            while (i + j < truck.getRoute().size() && contin) {
+                                if (truck.getRoute().get(i + j).getLocation() == request.getLocation()) {
+                                    if (truck.getRoute().get(i + j).getMachine() != null) {
+                                        printWriter.print(":" + truck.getRoute().get(i + j).getMachine().getMachineId());
+
+                                    } else {
+                                        contin = false;
+                                    }
+                                } else {
+                                    contin = false;
+                                }
+                                j++;
+
+                            }
+                            printWriter.print(" ");
                         }
+
                     }
                 }
                 printWriter.println();
@@ -247,12 +302,30 @@ public class FileUtils {
             printWriter.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        } catch (IndexOutOfBoundsException e2) {
+            e2.printStackTrace();
         }
 
 
+    }
 
+    public static int getWorkingTrucks() {
+        int counter = 0;
+        for (Truck truck : trucksList) {
+            if (truckWorks(truck)) {
+                counter++;
+            }
+        }
+        return counter;
+    }
 
-
+    public static boolean truckWorks(Truck truck) {
+        for (Request req : truck.getRoute()) {
+            if (req.getMachine() != null) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

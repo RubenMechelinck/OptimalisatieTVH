@@ -35,8 +35,9 @@ public class Main {
         //constructive heuristiek uitvoeren
         Heuristieken.constructieveHeuristiek();
 
+
         //Zo kan je dan aan de weight en de afstand
-        /*result = new Evaluation(trucksList);
+        result = new Evaluation(trucksList);
         System.out.println("total distance: " + result.getTotalDistance());
         System.out.println("total weight: " + result.getWeight());
         System.out.println("feasable: " + result.isFeasable());
@@ -46,7 +47,7 @@ public class Main {
 
 
         //schrijf output
-        FileUtils.writeOutputFile(outputFilename, inputFilename);*/
+        FileUtils.writeOutputFile(outputFilename, inputFilename);
 
 
 

@@ -1,8 +1,11 @@
 package objects;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+
+import utils.Utils;
+
+import static utils.Utils.getDistance;
+import static utils.Utils.getTime;
 
 public class Truck {
 
@@ -13,10 +16,11 @@ public class Truck {
     private Location eindlocatie;
     private Location currentLocation;
     private int totaleTijdGereden;
-    private double totaleAfstandTruck;
+    private int totaleAfstandTruck;
     private boolean tijdVoorRequest;
     // de requests die deze truck afhandeld
-    private List<Request> route;
+    private LinkedList<Request> route;
+    private Set<Request> routeSet;
     // de machines die currently op de truck staan
     private List<Machine> machineList;
     private int truckId;
@@ -33,8 +37,17 @@ public class Truck {
         totaleAfstandTruck = 0;
         tijdVoorRequest = true;
         route = new LinkedList<>();
+        routeSet = new HashSet<>();
         machineList = new ArrayList<>();
         this.truckId = truckId;
+    }
+
+    public Set<Request> getRouteSet() {
+        return routeSet;
+    }
+
+    public void setRouteSet(Set<Request> routeSet) {
+        this.routeSet = routeSet;
     }
 
     public int getTRUCK_CAPACITY() {
@@ -89,11 +102,11 @@ public class Truck {
         this.tijdVoorRequest = tijdVoorRequest;
     }
 
-    public double getTotaleAfstandTruck() {
+    public int getTotaleAfstandTruck() {
         return totaleAfstandTruck;
     }
 
-    public void setTotaleAfstandTruck(double totaleAfstandTruck) {
+    public void setTotaleAfstandTruck(int totaleAfstandTruck) {
         this.totaleAfstandTruck = totaleAfstandTruck;
     }
 
@@ -121,12 +134,72 @@ public class Truck {
         this.currentLocation = currentLocation;
     }
 
-    public void print(){
-        System.out.println("start: "+ startlocatie + " eind: "+eindlocatie );
+    public void print() {
+        System.out.println("start: " + startlocatie + " eind: " + eindlocatie);
     }
 
-    public void addRequestToRoute(Request request){
+    public int totaleAfstand() {
+        int distance = 0;
+        Request previousReq = null;
+        for (Request req : route) {
+            System.out.println("distance: " + distance);
+
+            if (previousReq != null) {
+                System.out.println("berekende afstand: " + getDistance(req.getLocation(), previousReq.getLocation()));
+                distance += getDistance(req.getLocation(), previousReq.getLocation());
+            }
+            previousReq = req;
+
+        }
+        totaleAfstandTruck = distance;
+        return distance;
+    }
+
+    public int totaleTijd() {
+        System.out.println("truck: "+truckId);
+        int tijd = 0;
+        Request previousReq = null;
+        for (Request req : route) {
+            System.out.println("tijd: " + tijd);
+            if (req.getMachine() != null) {
+                System.out.println("service tijd: " + req.getMachine().getMachineType().getServiceTime());
+                tijd += req.getMachine().getMachineType().getServiceTime();
+            }
+            if (previousReq != null) {
+                System.out.println("berekende tijd: " + getTime(req.getLocation(), previousReq.getLocation()));
+
+                tijd += getTime(req.getLocation(), previousReq.getLocation());
+            }
+            previousReq = req;
+
+        }
+        totaleTijdGereden = tijd;
+        return tijd;
+    }
+
+    public void addRequestToRoute(Request request) {
+        if (request.isDepot()) {
+            System.out.println("added depot request to truck " + truckId);
+        }
+        if (truckId == 4) {
+            System.out.println("added to truck 4");
+            System.out.println("size: "+route.size());
+            request.print();
+        }
+        if (request.isDrop()) {
+            if (request.getMachine() == null) {
+                System.out.println("hierzo");
+                request.print();
+                System.out.println("what de fack");
+            }
+        }
         route.add(request);
+        routeSet.add(request);
+    }
+
+
+    public void addTotaleAfstand(int distance) {
+        totaleAfstandTruck += distance;
     }
 
     public int getTruckId() {
@@ -135,5 +208,43 @@ public class Truck {
 
     public void setTruckId(int truckId) {
         this.truckId = truckId;
+    }
+
+    public int getCurrentUsedCapacity() {
+        int capacityInUse = 0;
+        for (Machine machine : machineList) {
+            capacityInUse += machine.getMachineType().getVolume();
+        }
+        return capacityInUse;
+    }
+
+    public boolean isMachineTypeAvailable(MachineType machineType) {
+        for (Machine machine : machineList) {
+            if (machine.getMachineType() == machineType) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void printRequestList() {
+        int i = 0;
+        for (Request req : route) {
+            req.print();
+        }
+    }
+
+    public Machine getMachineOfType(MachineType machineType) {
+
+        for (Machine machine : machineList) {
+            if (machine.getMachineType() == machineType) {
+                return machine;
+            }
+        }
+        return null;
+    }
+
+    public void removeMachine(Machine machine) {
+        machineList.remove(machine);
     }
 }
