@@ -15,7 +15,7 @@ import static utils.Utils.getTime;
 public class Heuristieken {
     // OPMERKINGEN
     //telkens als truck van locatie veranderd => currentLocation aanpassen + request aan route toevoegen!!!!
-
+    static List<Request> surplusRequests;
 
     /////////////////////////////// Heuristieken ///////////////////////////////
 
@@ -365,6 +365,14 @@ public class Heuristieken {
                 stillNeededMachineTypes.add(req.getMachineType());
             }
         }
+        if (!surplusRequests.isEmpty()) {
+            for (Request req : surplusRequests) {
+                if (req.isDrop()) {
+                    stillNeededMachineTypes.add(req.getMachineType());
+                }
+            }
+        }
+
 
         Iterator machineList = truck.getMachineList().listIterator();
         while (machineList.hasNext()) {
@@ -459,7 +467,7 @@ public class Heuristieken {
         List<Truck> trucksAtDepotList;
         List<Truck> vrijeTrucks = new ArrayList<>();
         Set<Request> requestSet;
-        List<Request> surplusRequests = new ArrayList<>();
+        surplusRequests = new ArrayList<>();
 
         Iterator it = clusters.entrySet().iterator();
         Machine machine;

@@ -227,76 +227,78 @@ public class FileUtils {
 
             for (Truck truck : trucksList) {
                 //System.out.println(truck.getTruckId());
-                printWriter.print(truck.getTruckId() + " ");
-                printWriter.print(truck.getTotaleAfstandTruck() + " ");
-                printWriter.print(truck.getTotaleTijdGereden() + " ");
+                if(truck.worked()) {
+                    printWriter.print(truck.getTruckId() + " ");
+                    printWriter.print(truck.getTotaleAfstandTruck() + " ");
+                    printWriter.print(truck.getTotaleTijdGereden() + " ");
 
-                //if geen tussenlocaties => print eindlocatie
-                if (truck.getRoute().size() == 0) {
-                    printWriter.print(truck.getEindlocatie().getLocatieId());
+                    //if geen tussenlocaties => print eindlocatie
+                    if (truck.getRoute().size() == 0) {
+                        //printWriter.print(truck.getEindlocatie().getLocatieId());
 
-                    //if wel tussenstops print stops met machines
-                } else {
-                    for (int i = 0; i < truck.getRoute().size(); i++) {
-                        j = 1;
-                        //  System.out.println(truck.getRoute().size());
-                        Request request = truck.getRoute().get(i);
+                        //if wel tussenstops print stops met machines
+                    } else {
+                        for (int i = 0; i < truck.getRoute().size(); i++) {
+                            j = 1;
+                            //  System.out.println(truck.getRoute().size());
+                            Request request = truck.getRoute().get(i);
 
-                        if (i!= 0 && truck.getRoute().get(i - 1).getLocation() != request.getLocation()) {
-                            if (request.getMachine() != null) {
-                                printWriter.print(request.getLocation().getLocatieId() + ":" + request.getMachine().getMachineId());
-                            } else {
-                                printWriter.print(request.getLocation().getLocatieId());
-                            }
+                            if (i != 0 && truck.getRoute().get(i - 1).getLocation() != request.getLocation()) {
+                                if (request.getMachine() != null) {
+                                    printWriter.print(request.getLocation().getLocatieId() + ":" + request.getMachine().getMachineId());
+                                } else {
+                                    printWriter.print(request.getLocation().getLocatieId());
+                                }
 
 
-                            //check of volgende request over zelfe locatie gaat, if so groepeer in output
-                            contin = true;
-                            while (i + j < truck.getRoute().size() && contin) {
-                                if (truck.getRoute().get(i + j).getLocation() == request.getLocation()) {
-                                    if (truck.getRoute().get(i + j).getMachine() != null) {
-                                        printWriter.print(":" + truck.getRoute().get(i + j).getMachine().getMachineId());
+                                //check of volgende request over zelfe locatie gaat, if so groepeer in output
+                                contin = true;
+                                while (i + j < truck.getRoute().size() && contin) {
+                                    if (truck.getRoute().get(i + j).getLocation() == request.getLocation()) {
+                                        if (truck.getRoute().get(i + j).getMachine() != null) {
+                                            printWriter.print(":" + truck.getRoute().get(i + j).getMachine().getMachineId());
 
+                                        } else {
+                                            contin = false;
+                                        }
                                     } else {
                                         contin = false;
                                     }
-                                } else {
-                                    contin = false;
+                                    j++;
+
                                 }
-                                j++;
-
-                            }
-                            printWriter.print(" ");
-                        } else if (i == 0) {
-                            if (request.getMachine() != null) {
-                                printWriter.print(request.getLocation().getLocatieId() + ":" + request.getMachine().getMachineId());
-                            } else {
-                                printWriter.print(request.getLocation().getLocatieId());
-                            }
+                                printWriter.print(" ");
+                            } else if (i == 0) {
+                                if (request.getMachine() != null) {
+                                    printWriter.print(request.getLocation().getLocatieId() + ":" + request.getMachine().getMachineId());
+                                } else {
+                                    printWriter.print(request.getLocation().getLocatieId());
+                                }
 
 
-                            //check of volgende request over zelfe locatie gaat, if so groepeer in output
-                            contin = true;
-                            while (i + j < truck.getRoute().size() && contin) {
-                                if (truck.getRoute().get(i + j).getLocation() == request.getLocation()) {
-                                    if (truck.getRoute().get(i + j).getMachine() != null) {
-                                        printWriter.print(":" + truck.getRoute().get(i + j).getMachine().getMachineId());
+                                //check of volgende request over zelfe locatie gaat, if so groepeer in output
+                                contin = true;
+                                while (i + j < truck.getRoute().size() && contin) {
+                                    if (truck.getRoute().get(i + j).getLocation() == request.getLocation()) {
+                                        if (truck.getRoute().get(i + j).getMachine() != null) {
+                                            printWriter.print(":" + truck.getRoute().get(i + j).getMachine().getMachineId());
 
+                                        } else {
+                                            contin = false;
+                                        }
                                     } else {
                                         contin = false;
                                     }
-                                } else {
-                                    contin = false;
-                                }
-                                j++;
+                                    j++;
 
+                                }
+                                printWriter.print(" ");
                             }
-                            printWriter.print(" ");
+
                         }
-
                     }
+                    printWriter.println();
                 }
-                printWriter.println();
             }
 
             printWriter.close();

@@ -149,7 +149,11 @@ public class Evaluation {
                     }
                 } else if (r.getMachine() == null) {
                     noDrop = false;
+                } else if (req.getMachine() == null) {
+
                 }
+            } else{
+                noDrop = false;
             }
         }
         return noDrop;

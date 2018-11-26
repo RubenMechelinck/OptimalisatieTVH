@@ -178,25 +178,18 @@ public class Truck {
     }
 
     public void addRequestToRoute(Request request) {
-        if (request.isDepot()) {
-            System.out.println("added depot request to truck " + truckId);
-        }
-        if (truckId == 4) {
-            System.out.println("added to truck 4");
-            System.out.println("size: "+route.size());
-            request.print();
-        }
-        if (request.isDrop()) {
-            if (request.getMachine() == null) {
-                System.out.println("hierzo");
-                request.print();
-                System.out.println("what de fack");
-            }
-        }
         route.add(request);
         routeSet.add(request);
     }
 
+    public boolean worked(){
+        for (Request req : route) {
+            if (req.getMachine()!=null) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public void addTotaleAfstand(int distance) {
         totaleAfstandTruck += distance;
