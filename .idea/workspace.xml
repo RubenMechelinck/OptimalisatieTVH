@@ -1,21 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e55d96ed-db0b-4d95-bc2e-baaa0a87fe81" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/src/objects/Solution.java" afterDir="false" />
+    <list default="true" id="e55d96ed-db0b-4d95-bc2e-baaa0a87fe81" name="Default" comment="Move tussen trucks (werkt nog niet volledig)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OptimalisatieTVH.iml" beforeDir="false" afterPath="$PROJECT_DIR$/OptimalisatieTVH.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Evaluation/Evaluation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Evaluation/Evaluation.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/heuristiek_impl/Heuristieken.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/heuristiek_impl/Heuristieken.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/objects/Location.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/objects/Location.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/objects/Machine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/objects/Machine.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/objects/MachineType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/objects/MachineType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/objects/Request.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/objects/Request.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/objects/Truck.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/objects/Truck.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/FileUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/FileUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tvh_problem_3_own_solution.txt" beforeDir="false" afterPath="$PROJECT_DIR$/tvh_problem_3_own_solution.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tvh_problem_4_own_solution.txt" beforeDir="false" afterPath="$PROJECT_DIR$/tvh_problem_4_own_solution.txt" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -65,13 +53,14 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="dummy" value="2" />
-          <entry key="java" value="11349" />
+          <entry key="java" value="11350" />
+          <entry key="txt" value="53" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="11349" />
-          <entry key="PLAIN_TEXT" value="2" />
+          <entry key="JAVA" value="11350" />
+          <entry key="PLAIN_TEXT" value="55" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -157,8 +146,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/heuristiek_impl/Heuristieken.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="445">
-              <caret line="52" column="4" selection-start-line="52" selection-start-column="4" selection-end-line="52" selection-end-column="4" />
+            <state relative-caret-position="290">
+              <caret line="18" column="10" selection-start-line="18" selection-start-column="10" selection-end-line="18" selection-end-column="10" />
               <folding>
                 <element signature="method#constructieveHeuristiek#0;class#Heuristieken#0" />
                 <element signature="method#moveRequestsBetweenTrucks#0;class#Heuristieken#0" />
@@ -190,7 +179,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1015">
+            <state relative-caret-position="938">
               <caret line="41" column="8" selection-start-line="41" selection-start-column="8" selection-end-line="41" selection-end-column="8" />
             </state>
           </provider>
@@ -386,7 +375,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1543563469868" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1543564118898" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -486,7 +475,7 @@
       <workItem from="1543426913749" duration="11124000" />
       <workItem from="1543509910125" duration="9526000" />
       <workItem from="1543522833411" duration="5613000" />
-      <workItem from="1543562483755" duration="918000" />
+      <workItem from="1543562483755" duration="1608000" />
     </task>
     <task id="LOCAL-00001" summary="test">
       <created>1541329208848</created>
@@ -523,11 +512,18 @@
       <option name="project" value="LOCAL" />
       <updated>1543233328512</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Move tussen trucks (werkt nog niet volledig)">
+      <created>1543563578794</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1543563578794</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="151367000" />
+    <option name="totallyTimeSpent" value="152057000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -542,7 +538,7 @@
     <frame x="0" y="0" width="1920" height="1024" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.28740582" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.28740582" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="UI Designer" order="3" />
@@ -551,7 +547,7 @@
       <window_info id="Capture Tool" order="6" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32768363" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.39532164" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.39532164" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39766082" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -590,7 +586,8 @@
     <MESSAGE value="eerste versie inlezen (kan optimaler)" />
     <MESSAGE value="Evaluatiefunctie toegevoegd" />
     <MESSAGE value="Constructieve heuristiek in orde!!!!" />
-    <option name="LAST_COMMIT_MESSAGE" value="Constructieve heuristiek in orde!!!!" />
+    <MESSAGE value="Move tussen trucks (werkt nog niet volledig)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Move tussen trucks (werkt nog niet volledig)" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -655,6 +652,10 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="177">
           <caret line="101" column="24" selection-start-line="101" selection-start-column="18" selection-end-line="101" selection-end-column="24" />
+          <folding>
+            <element signature="e#5902#5903#0" expanded="true" />
+            <element signature="e#5941#5942#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -676,6 +677,10 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="812">
           <caret line="42" column="23" selection-start-line="42" selection-start-column="23" selection-end-line="42" selection-end-column="23" />
+          <folding>
+            <element signature="e#890#891#0" expanded="true" />
+            <element signature="e#955#956#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -697,16 +702,26 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="406">
           <caret line="32" selection-start-line="32" selection-end-line="32" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/run.kzn">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="938">
+          <caret line="41" column="8" selection-start-line="41" selection-start-column="8" selection-end-line="41" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/heuristiek_impl/Heuristieken.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="445">
-          <caret line="52" column="4" selection-start-line="52" selection-start-column="4" selection-end-line="52" selection-end-column="4" />
+        <state relative-caret-position="290">
+          <caret line="18" column="10" selection-start-line="18" selection-start-column="10" selection-end-line="18" selection-end-column="10" />
           <folding>
             <element signature="method#constructieveHeuristiek#0;class#Heuristieken#0" />
             <element signature="method#moveRequestsBetweenTrucks#0;class#Heuristieken#0" />
@@ -731,13 +746,6 @@
             <element signature="method#assignCollectToTruck#0;class#Heuristieken#0" />
             <element signature="method#assignRequestsToTrucks#0;class#Heuristieken#0" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1015">
-          <caret line="41" column="8" selection-start-line="41" selection-start-column="8" selection-end-line="41" selection-end-column="8" />
         </state>
       </provider>
     </entry>
