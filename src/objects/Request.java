@@ -8,7 +8,7 @@ public class Request {
 
     private boolean drop; //true = drop, false = collect
     private boolean depot;
-    private Request pair;
+    private Request pair = null;
 
     public Request(Location location, Machine machine, boolean drop, boolean depot) {
         this.location = location;

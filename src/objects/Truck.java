@@ -9,8 +9,8 @@ import static utils.Utils.getTime;
 
 public class Truck {
 
-    private final int TRUCK_CAPACITY;
-    private final int TRUCK_WORKING_TIME;
+    private int TRUCK_CAPACITY;
+    private int TRUCK_WORKING_TIME;
     private int truckWorkingTime;
     private Location startlocatie;
     private Location eindlocatie;
@@ -137,7 +137,7 @@ public class Truck {
         totaleAfstandTruck += afstand;
     }
 
-    public List<Request> getRoute() {
+    public LinkedList<Request> getRoute() {
         return route;
     }
 
@@ -275,5 +275,22 @@ public class Truck {
 
     public void removeMachine(Machine machine) {
         machineList.remove(machine);
+    }
+
+    public boolean possibleRoute() {
+        for (Request req : route) {
+            totaleTijdGereden += getTime(currentLocation, req.getLocation());
+            totaleAfstandTruck += getDistance(currentLocation, req.getLocation());
+            if (req.isDrop()) {
+                if (!machineList.contains(req.getMachine())) {
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+
+    public void addToTruckWorkingTime(int timeToAdd) {
+        TRUCK_WORKING_TIME += timeToAdd;
     }
 }
