@@ -50,7 +50,8 @@ public class Evaluation {
                         //System.out.println("uhuun");
 
                     }
-                    tempCapacity -= r.getMachine().getMachineType().getVolume();
+                        tempCapacity -= r.getMachine().getMachineType().getVolume();
+
 
                     //Altijd kijken of de pickup hiervan ook aanwezig is!
                     if (noPickUp(t, r)) {

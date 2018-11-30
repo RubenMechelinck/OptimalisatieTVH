@@ -218,6 +218,15 @@ public class Truck {
         return false;
     }
 
+    public Request getRequestForMachine(Machine machine) {
+        for(Request req: route){
+            if (req.getMachine() == machine) {
+                return req;
+            }
+        }
+        return null;
+    }
+
     public void addTotaleAfstand(int distance) {
         totaleAfstandTruck += distance;
     }

@@ -21,6 +21,7 @@ public class Depot {
     }
 
     public void addMachine(Machine machine) {
+        //System.out.println("depot has machine: "+machineList.contains(machine));
         machineList.add(machine);
         if (truckToekeningMachineTypeMap.containsKey(machine.getMachineType())) {
             int aantal = truckToekeningMachineTypeMap.get(machine.getMachineType());
@@ -38,7 +39,10 @@ public class Depot {
         if (machine != null) {
             if (truckToekeningMachineTypeMap.get(machine.getMachineType()) != null) {
                 machineList.remove(machine);
+
+
                 int aantal = truckToekeningMachineTypeMap.get(machine.getMachineType());
+
                 aantal--;
                 truckToekeningMachineTypeMap.replace(machine.getMachineType(), aantal);
             }

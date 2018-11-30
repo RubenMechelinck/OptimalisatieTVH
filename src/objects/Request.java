@@ -8,6 +8,7 @@ public class Request {
 
     private boolean drop; //true = drop, false = collect
     private boolean depot;
+    private Request pair;
 
     public Request(Location location, Machine machine, boolean drop, boolean depot) {
         this.location = location;
@@ -34,6 +35,23 @@ public class Request {
         this.depot = depot;
     }
 
+    public int getVolume() {
+        if (drop) {
+            return machineType.getVolume();
+        } else {
+            return machine.getMachineType().getVolume();
+        }
+    }
+
+
+
+    public void setPair(Request pair){
+        this.pair = pair;
+    }
+
+    public Request getPair() {
+        return pair;
+    }
 
     public Location getLocation() {
         return location;
