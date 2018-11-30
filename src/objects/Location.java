@@ -70,4 +70,10 @@ public class Location {
     public void setLocatieId(int locatieId) {
         this.locatieId = locatieId;
     }
+
+    public Location clone(){
+        Location location = new Location(lat, lon, name, index, locatieId);
+        location.setDepot(depot);
+        return location;
+    }
 }

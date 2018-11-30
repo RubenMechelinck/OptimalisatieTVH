@@ -25,29 +25,24 @@ public class Main {
     public static List<Request> requestList = new ArrayList<>();
     public static int[][] timeMatrix = new int[0][0];
     public static int[][] distanceMatrix = new int[0][0];
-    public static Evaluation result;
+    public static Solution solution;
 
     public static void main(String[] args) {
 
         //input file inlezen
         FileUtils.readFromFile(inputFilename);
 
+        //object dat huidige en beste oplossing bijhoud
+        solution = new Solution();
+
         //constructive heuristiek uitvoeren
         Heuristieken.constructieveHeuristiek();
+        solution.evaluate();
 
-
-        //Zo kan je dan aan de weight en de afstand
-        result = new Evaluation(trucksList);
-        System.out.println("total distance: " + result.getTotalDistance());
-        System.out.println("total weight: " + result.getWeight());
-        System.out.println("feasable: " + result.isFeasable());
-
-        //perturbative heuristiek uitvoeren
-        //Heuristieken.perturbatieveHeuristiek(); //ofzo iets
-
+        Heuristieken.perturbatieveHeuristiek();
 
         //schrijf output
-        FileUtils.writeOutputFile(outputFilename, inputFilename);
+        FileUtils.writeOutputFile(outputFilename, inputFilename, solution);
 
 
 

@@ -2,20 +2,33 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e55d96ed-db0b-4d95-bc2e-baaa0a87fe81" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/src/objects/Solution.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OptimalisatieTVH.iml" beforeDir="false" afterPath="$PROJECT_DIR$/OptimalisatieTVH.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Evaluation/Evaluation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Evaluation/Evaluation.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/heuristiek_impl/Heuristieken.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/heuristiek_impl/Heuristieken.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/objects/Location.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/objects/Location.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/objects/Machine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/objects/Machine.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/objects/MachineType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/objects/MachineType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/objects/Request.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/objects/Request.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/objects/Truck.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/objects/Truck.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utils/FileUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/FileUtils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tvh_problem_3_own_solution.txt" beforeDir="false" afterPath="$PROJECT_DIR$/tvh_problem_3_own_solution.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tvh_problem_4_own_solution.txt" beforeDir="false" afterPath="$PROJECT_DIR$/tvh_problem_4_own_solution.txt" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
-    <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CoverageDataManager">
+    <SUITE FILE_PATH="coverage/OptimalisatieTVH$Main.ic" NAME="Main Coverage Results" MODIFIED="1543529425220" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+  </component>
+  <component name="CoverageViewManager">
+    <option name="myElementSize" value="317" />
   </component>
   <component name="FUSProjectUsageTrigger">
     <session id="840853698">
@@ -39,32 +52,39 @@
     <session id="-2044617088">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
+          <entry key="project.closed" value="5" />
+          <entry key="project.open.time.13" value="1" />
+          <entry key="project.open.time.21" value="1" />
+          <entry key="project.open.time.24" value="2" />
+          <entry key="project.open.time.25" value="1" />
           <entry key="project.open.time.5" value="1" />
-          <entry key="project.opened" value="1" />
+          <entry key="project.open.time.6" value="1" />
+          <entry key="project.opened" value="7" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="dummy" value="2" />
-          <entry key="java" value="2862" />
+          <entry key="java" value="11349" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="2862" />
+          <entry key="JAVA" value="11349" />
           <entry key="PLAIN_TEXT" value="2" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="java" value="24" />
+          <entry key="java" value="60" />
+          <entry key="kzn" value="1" />
           <entry key="txt" value="1" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="JAVA" value="24" />
-          <entry key="PLAIN_TEXT" value="1" />
+          <entry key="JAVA" value="60" />
+          <entry key="PLAIN_TEXT" value="2" />
         </counts>
       </usages-collector>
     </session>
@@ -134,103 +154,44 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Depot.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/objects/Depot.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1309">
-              <caret line="97" column="68" selection-start-line="97" selection-start-column="68" selection-end-line="97" selection-end-column="68" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="FileUtils.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/utils/FileUtils.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="260">
-              <caret line="300" column="17" selection-start-line="300" selection-start-column="17" selection-end-line="300" selection-end-column="17" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="tvh_problem_4_own_solution.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tvh_problem_4_own_solution.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
-              <caret line="7" column="25" selection-start-line="7" selection-start-column="25" selection-end-line="7" selection-end-column="25" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Main.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/Main.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="18" column="66" lean-forward="true" selection-start-line="18" selection-start-column="66" selection-end-line="18" selection-end-column="66" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Utils.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/utils/Utils.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="170">
-              <caret line="13" column="22" selection-start-line="13" selection-start-column="22" selection-end-line="13" selection-end-column="22" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Evaluation.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Evaluation/Evaluation.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="343">
-              <caret line="155" column="31" selection-start-line="155" selection-start-column="31" selection-end-line="155" selection-end-column="31" />
-              <folding>
-                <element signature="e#5657#5658#0" expanded="true" />
-                <element signature="e#5693#5694#0" expanded="true" />
-                <element signature="e#5723#5724#0" expanded="true" />
-                <element signature="e#5752#5753#0" expanded="true" />
-                <element signature="e#5787#5788#0" expanded="true" />
-                <element signature="e#5820#5821#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Heuristieken.java" pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/heuristiek_impl/Heuristieken.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5006">
-              <caret line="367" column="13" selection-start-line="367" selection-start-column="13" selection-end-line="367" selection-end-column="13" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="tvh_problem_3_own_solution.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tvh_problem_3_own_solution.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="451">
-              <caret line="37" lean-forward="true" selection-start-line="37" selection-end-line="37" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Request.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/objects/Request.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
-              <caret line="9" column="56" lean-forward="true" selection-start-line="9" selection-start-column="56" selection-end-line="9" selection-end-column="56" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Truck.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/objects/Truck.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-469">
-              <caret line="190" column="21" selection-start-line="190" selection-start-column="21" selection-end-line="190" selection-end-column="21" />
+            <state relative-caret-position="445">
+              <caret line="52" column="4" selection-start-line="52" selection-start-column="4" selection-end-line="52" selection-end-column="4" />
               <folding>
-                <element signature="imports" expanded="true" />
+                <element signature="method#constructieveHeuristiek#0;class#Heuristieken#0" />
+                <element signature="method#moveRequestsBetweenTrucks#0;class#Heuristieken#0" />
+                <element signature="method#vindKoppeltje#0;class#Heuristieken#0" />
+                <element signature="method#getDichtsteRequest#0;class#Heuristieken#0" />
+                <element signature="method#initPlaceMachineInMachineListDepot#0;class#Heuristieken#0" />
+                <element signature="method#initTruckToClosestDepots#0;class#Heuristieken#0" />
+                <element signature="method#clusterRequestsToClosestDepotsWithTrucks#0;class#Heuristieken#0" />
+                <element signature="method#possibleAddition#0;class#Heuristieken#0" />
+                <element signature="method#possibleAssignment#0;class#Heuristieken#0" />
+                <element signature="method#possibleAssignmentFromDifferentDepot#0;class#Heuristieken#0" />
+                <element signature="method#possibleAssignDropToTruck#0;class#Heuristieken#0" />
+                <element signature="method#getNearestDepot#0;class#Heuristieken#0" />
+                <element signature="method#getNearestDepotTime#0;class#Heuristieken#0" />
+                <element signature="method#getNearestDepotWithMachine#0;class#Heuristieken#0" />
+                <element signature="method#bestFittingTruck#0;class#Heuristieken#0" />
+                <element signature="method#emptyTrucks#0;class#Heuristieken#0" />
+                <element signature="method#emptyTruck#0;class#Heuristieken#0" />
+                <element signature="method#doDrop#0;class#Heuristieken#0" />
+                <element signature="method#assignDropToTruck#0;class#Heuristieken#0" />
+                <element signature="method#assignDropToTruckFromDifferentDepot#0;class#Heuristieken#0" />
+                <element signature="method#assignCollectToTruck#0;class#Heuristieken#0" />
+                <element signature="method#assignRequestsToTrucks#0;class#Heuristieken#0" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/Main.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1015">
+              <caret line="41" column="8" selection-start-line="41" selection-start-column="8" selection-end-line="41" selection-end-column="8" />
             </state>
           </provider>
         </entry>
@@ -246,8 +207,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>:3</find>
-      <find>:4</find>
       <find>added depot request to truck</find>
       <find>depot</find>
       <find>13</find>
@@ -275,6 +234,8 @@
       <find>what de fack</find>
       <find>prank</find>
       <find>addRequestToRoute</find>
+      <find>print</find>
+      <find>i++</find>
       <find>System</find>
     </findStrings>
   </component>
@@ -295,18 +256,20 @@
         <option value="$PROJECT_DIR$/src/heuristiek_impl/Heuristiek_impl.java" />
         <option value="$PROJECT_DIR$/src/file_utils/FileUtils.java" />
         <option value="$PROJECT_DIR$/src/utils/Utils.java" />
-        <option value="$PROJECT_DIR$/src/objects/Location.java" />
-        <option value="$PROJECT_DIR$/src/objects/Machine.java" />
         <option value="$PROJECT_DIR$/src/Evaluatie/Evaluatie.java" />
         <option value="$PROJECT_DIR$/src/objects/Depot.java" />
         <option value="$PROJECT_DIR$/tvh_problem_4_own_solution.txt" />
-        <option value="$PROJECT_DIR$/src/objects/Request.java" />
-        <option value="$PROJECT_DIR$/src/heuristiek_impl/Heuristieken.java" />
         <option value="$PROJECT_DIR$/tvh_problem_3_own_solution.txt" />
-        <option value="$PROJECT_DIR$/src/objects/Truck.java" />
         <option value="$PROJECT_DIR$/src/utils/FileUtils.java" />
         <option value="$PROJECT_DIR$/src/Evaluation/Evaluation.java" />
+        <option value="$PROJECT_DIR$/src/objects/Location.java" />
+        <option value="$PROJECT_DIR$/src/objects/Machine.java" />
+        <option value="$PROJECT_DIR$/src/objects/MachineType.java" />
+        <option value="$PROJECT_DIR$/src/objects/Truck.java" />
+        <option value="$PROJECT_DIR$/src/objects/Solution.java" />
+        <option value="$PROJECT_DIR$/src/objects/Request.java" />
         <option value="$PROJECT_DIR$/src/main/Main.java" />
+        <option value="$PROJECT_DIR$/src/heuristiek_impl/Heuristieken.java" />
       </list>
     </option>
   </component>
@@ -315,9 +278,6 @@
   <component name="JsGulpfileManager">
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
-  </component>
-  <component name="NodePackageJsonFileManager">
-    <packageJsonPaths />
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="431" />
@@ -333,7 +293,37 @@
             <id>Android</id>
           </State>
           <State>
+            <id>Class structureJava</id>
+          </State>
+          <State>
+            <id>Code maturityJava</id>
+          </State>
+          <State>
             <id>CorrectnessLintAndroid</id>
+          </State>
+          <State>
+            <id>Google Web Toolkit</id>
+          </State>
+          <State>
+            <id>JUnitJava</id>
+          </State>
+          <State>
+            <id>Java</id>
+          </State>
+          <State>
+            <id>Java 5Java language level migration aidsJava</id>
+          </State>
+          <State>
+            <id>Java 7Java language level migration aidsJava</id>
+          </State>
+          <State>
+            <id>Java 8Java language level migration aidsJava</id>
+          </State>
+          <State>
+            <id>Java language level migration aidsJava</id>
+          </State>
+          <State>
+            <id>JavadocJava</id>
           </State>
           <State>
             <id>LintAndroid</id>
@@ -342,7 +332,25 @@
             <id>MessagesCorrectnessLintAndroid</id>
           </State>
           <State>
+            <id>Numeric issuesJava</id>
+          </State>
+          <State>
+            <id>PerformanceJava</id>
+          </State>
+          <State>
             <id>Spelling</id>
+          </State>
+          <State>
+            <id>Spring</id>
+          </State>
+          <State>
+            <id>Spring AOPSpring</id>
+          </State>
+          <State>
+            <id>TestNGJava</id>
+          </State>
+          <State>
+            <id>Threading issuesJava</id>
           </State>
         </expanded-state>
         <selected-state>
@@ -359,6 +367,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -366,61 +375,26 @@
               <item name="OptimalisatieTVH" type="b2602c69:ProjectViewProjectNode" />
               <item name="OptimalisatieTVH" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="OptimalisatieTVH" type="b2602c69:ProjectViewProjectNode" />
-              <item name="OptimalisatieTVH" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="OptimalisatieTVH" type="b2602c69:ProjectViewProjectNode" />
-              <item name="OptimalisatieTVH" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="Evaluation" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="OptimalisatieTVH" type="b2602c69:ProjectViewProjectNode" />
-              <item name="OptimalisatieTVH" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="heuristiek_impl" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="OptimalisatieTVH" type="b2602c69:ProjectViewProjectNode" />
-              <item name="OptimalisatieTVH" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="OptimalisatieTVH" type="b2602c69:ProjectViewProjectNode" />
-              <item name="OptimalisatieTVH" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="objects" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="OptimalisatieTVH" type="b2602c69:ProjectViewProjectNode" />
-              <item name="OptimalisatieTVH" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="utils" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
+      <pane id="AndroidView" />
       <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1542311942435" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1543563469868" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.last.edited" value="Libraries" />
     <property name="project.structure.proportion" value="0.0" />
-    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.2" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="Errors" />
+    <property name="settings.editor.selected.configurable" value="project.propDebugger" />
   </component>
   <component name="RecentsManager">
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
@@ -431,119 +405,6 @@
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\jarne\Desktop\Jarne\School\4de ba\optimalisatietechnieken\OptimalisatieTVH" />
     </key>
-  </component>
-  <component name="RestoreUpdateTree" date="Moments ago" ActionInfo="_Update">
-    <UpdatedFiles>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Updated from server" />
-        <option name="myStatusName" value="Changed on server" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="CHANGED_ON_SERVER" />
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Updated" />
-          <option name="myStatusName" value="Changed" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="UPDATED" />
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/src/heuristiek_impl/Heuristieken.java</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/src/main/Main.java</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/src/objects/Request.java</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/src/utils/FileUtils.java</PATH>
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Created" />
-          <option name="myStatusName" value="Created" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="CREATED" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Deleted" />
-          <option name="myStatusName" value="Deleted" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="true" />
-          <option name="myId" value="REMOVED_FROM_REPOSITORY" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Restored" />
-          <option name="myStatusName" value="Will be restored" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="RESTORED" />
-        </FILE-GROUP>
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Modified" />
-        <option name="myStatusName" value="Modified" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MODIFIED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Skipped" />
-        <option name="myStatusName" value="Skipped" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="SKIPPED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with conflicts" />
-        <option name="myStatusName" value="Will be merged with conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_CONFLICTS" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with tree conflicts" />
-        <option name="myStatusName" value="Merged with tree conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_TREE_CONFLICT" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with property conflicts" />
-        <option name="myStatusName" value="Will be merged with property conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_PROPERTY_CONFLICT" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged" />
-        <option name="myStatusName" value="Will be merged" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Not in repository" />
-        <option name="myStatusName" value="Not in repository" />
-        <option name="mySupportsDeletion" value="true" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="UNKNOWN" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Locally added" />
-        <option name="myStatusName" value="Locally added" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="LOCALLY_ADDED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Locally removed" />
-        <option name="myStatusName" value="Locally removed" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="LOCALLY_REMOVED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Switched" />
-        <option name="myStatusName" value="Switched" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="SWITCHED" />
-      </FILE-GROUP>
-    </UpdatedFiles>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -563,40 +424,27 @@
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
       <option name="MAIN_CLASS_NAME" value="main.Main" />
       <module name="OptimalisatieTVH" />
-    </configuration>
-    <configuration default="true" type="Application" factoryName="Application">
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <method>
+      <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="TestNG" factoryName="TestNG">
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="SUITE_NAME" />
-      <option name="PACKAGE_NAME" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="METHOD_NAME" />
-      <option name="GROUP_NAME" />
-      <option name="TEST_OBJECT" value="CLASS" />
-      <option name="VM_PARAMETERS" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
-      <option name="OUTPUT_DIRECTORY" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
-      <option name="USE_DEFAULT_REPORTERS" value="false" />
-      <option name="PROPERTIES_FILE" />
-      <properties />
-      <listeners />
-      <method>
+    <configuration default="true" type="Application" factoryName="Application">
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
     <configuration default="true" type="JUnit" factoryName="JUnit">
       <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="TestNG" factoryName="TestNG">
+      <option name="VM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <properties />
+      <listeners />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -633,6 +481,12 @@
       <workItem from="1543065824004" duration="24296000" />
       <workItem from="1543141093302" duration="24404000" />
       <workItem from="1543231289701" duration="5376000" />
+      <workItem from="1543328917912" duration="5269000" />
+      <workItem from="1543411954927" duration="3398000" />
+      <workItem from="1543426913749" duration="11124000" />
+      <workItem from="1543509910125" duration="9526000" />
+      <workItem from="1543522833411" duration="5613000" />
+      <workItem from="1543562483755" duration="918000" />
     </task>
     <task id="LOCAL-00001" summary="test">
       <created>1541329208848</created>
@@ -673,42 +527,52 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="115519000" />
+    <option name="totallyTimeSpent" value="151367000" />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
+    <frame x="0" y="0" width="1920" height="1024" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info anchor="right" id="Palette" order="3" />
-      <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Messages" order="12" weight="0.32768363" />
-      <window_info anchor="right" id="Palette&#9;" order="5" />
-      <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
-      <window_info anchor="right" id="Maven Projects" order="6" />
-      <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="8" weight="0.069503546" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.39548022" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.32909605" />
-      <window_info id="Designer" order="2" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.26174498" />
-      <window_info anchor="right" id="Database" order="4" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.28740582" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info id="Designer" order="2" />
       <window_info id="UI Designer" order="3" />
       <window_info id="Favorites" order="4" side_tool="true" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.3983051" />
-      <window_info anchor="right" id="Capture Analysis" order="7" />
-      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info id="Image Layers" order="5" />
-      <window_info anchor="bottom" id="Inspection Results" order="13" weight="0.32900432" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info id="Capture Tool" order="6" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="right" id="Theme Preview" order="8" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info active="true" anchor="bottom" id="SVN Repositories" order="7" weight="0.32968536" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32768363" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.39532164" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.39766082" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.32982457" />
+      <window_info active="true" anchor="bottom" id="SVN Repositories" order="7" weight="0.32968536" />
+      <window_info anchor="bottom" id="Version Control" order="8" weight="0.06900585" />
+      <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Terminal" order="10" weight="0.32865497" />
+      <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
+      <window_info anchor="bottom" id="Messages" order="12" weight="0.32768363" />
+      <window_info anchor="bottom" id="Inspection Results" order="13" weight="0.32900432" />
+      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Palette" order="3" />
+      <window_info anchor="right" id="Database" order="4" />
+      <window_info anchor="right" id="Palette&#9;" order="5" />
+      <window_info anchor="right" id="Maven Projects" order="6" />
+      <window_info anchor="right" id="Capture Analysis" order="7" />
+      <window_info anchor="right" id="Theme Preview" order="8" />
+      <window_info anchor="right" id="Coverage" order="9" side_tool="true" weight="0.32992464" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -730,7 +594,20 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="18" />
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/heuristiek_impl/Heuristieken.java</url>
+          <line>212</line>
+          <properties />
+          <option name="timeStamp" value="17" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/utils/FileUtils.java</url>
+          <line>218</line>
+          <properties />
+          <option name="timeStamp" value="20" />
+        </line-breakpoint>
+      </breakpoints>
     </breakpoint-manager>
     <watches-manager>
       <configuration name="Application">
@@ -739,211 +616,128 @@
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/heuristiek_impl/Heuristieken.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="527">
-          <caret line="44" lean-forward="true" selection-start-line="44" selection-end-line="44" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tvh_problem_3.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="561">
-          <caret line="33" selection-start-line="33" selection-end-line="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Request.java" />
-    <entry file="file://$PROJECT_DIR$/src/Machine.java" />
-    <entry file="file://$PROJECT_DIR$/src/Machine_Type.java" />
-    <entry file="file://$PROJECT_DIR$/src/Truck.java" />
-    <entry file="file://$PROJECT_DIR$/src/Location.java" />
-    <entry file="file://$PROJECT_DIR$/src/Main.java" />
-    <entry file="file://$PROJECT_DIR$/tvh_problem_3.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="561">
-          <caret line="33" selection-start-line="33" selection-end-line="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Request.java" />
-    <entry file="file://$PROJECT_DIR$/src/Machine.java" />
-    <entry file="file://$PROJECT_DIR$/src/Machine_Type.java" />
-    <entry file="file://$PROJECT_DIR$/src/Truck.java" />
-    <entry file="file://$PROJECT_DIR$/src/Location.java" />
-    <entry file="file://$PROJECT_DIR$/src/Main.java" />
-    <entry file="file://$PROJECT_DIR$/tvh_problem_3.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="561">
-          <caret line="33" lean-forward="true" selection-start-line="33" selection-end-line="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Request.java" />
-    <entry file="file://$PROJECT_DIR$/src/Machine.java" />
-    <entry file="file://$PROJECT_DIR$/src/Machine_Type.java" />
-    <entry file="file://$PROJECT_DIR$/src/Truck.java" />
-    <entry file="file://$PROJECT_DIR$/src/Location.java" />
-    <entry file="file://$PROJECT_DIR$/src/Main.java" />
     <entry file="file://$PROJECT_DIR$/src/Location.java" />
     <entry file="file://$PROJECT_DIR$/src/Truck.java" />
     <entry file="file://$PROJECT_DIR$/src/Machine_Type.java" />
     <entry file="file://$PROJECT_DIR$/src/Machine.java" />
     <entry file="file://$PROJECT_DIR$/src/Request.java" />
     <entry file="file://$PROJECT_DIR$/src/Main.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="9" column="13" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/objects/Request.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tvh_problem_3.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1615">
-          <caret line="33" selection-start-line="33" selection-end-line="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/utils/FileUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="697">
-          <caret line="131" column="97" selection-start-line="131" selection-start-column="97" selection-end-line="131" selection-end-column="97" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore" />
-    <entry file="file://$PROJECT_DIR$/src/objects/MachineType.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="24" lean-forward="true" selection-start-line="6" selection-start-column="24" selection-end-line="6" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Evaluatie/Evaluatie.java" />
-    <entry file="file://$PROJECT_DIR$/src/objects/Location.java">
+    <entry file="file://$PROJECT_DIR$/tvh_problem_3.txt" />
+    <entry file="file://$PROJECT_DIR$/tvh_solution_3.txt" />
+    <entry file="file://$PROJECT_DIR$/tvh_problem_4.txt" />
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_181/src.zip!/java/util/ArrayList.java" />
+    <entry file="file://$PROJECT_DIR$/tvh_problem_4_own_solution.txt" />
+    <entry file="file://$PROJECT_DIR$/tvh_problem_3_own_solution.txt" />
+    <entry file="file://$PROJECT_DIR$/src/utils/Utils.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/objects/Machine.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4">
-          <caret line="5" column="30" selection-start-line="5" selection-start-column="30" selection-end-line="5" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tvh_problem_3.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="208" column="87" selection-start-line="208" selection-start-column="85" selection-end-line="208" selection-end-column="87" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tvh_solution_3.txt">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tvh_problem_4.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15249">
-          <caret line="897" column="3" selection-start-line="897" selection-start-column="1" selection-end-line="897" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_181/src.zip!/java/util/ArrayList.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="14654">
-          <caret line="908" selection-start-line="908" selection-end-line="908" />
+        <state relative-caret-position="203">
+          <caret line="10" column="13" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/objects/Depot.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1309">
-          <caret line="97" column="68" selection-start-line="97" selection-start-column="68" selection-end-line="97" selection-end-column="68" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/objects/Request.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="9" column="56" lean-forward="true" selection-start-line="9" selection-start-column="56" selection-end-line="9" selection-end-column="56" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tvh_problem_4_own_solution.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="7" column="25" selection-start-line="7" selection-start-column="25" selection-end-line="7" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/objects/Truck.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-469">
-          <caret line="190" column="21" selection-start-line="190" selection-start-column="21" selection-end-line="190" selection-end-column="21" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="-1729">
+          <caret line="11" column="42" selection-start-line="11" selection-start-column="42" selection-end-line="11" selection-end-column="42" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/utils/FileUtils.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="260">
-          <caret line="300" column="17" selection-start-line="300" selection-start-column="17" selection-end-line="300" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tvh_problem_3_own_solution.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="451">
-          <caret line="37" lean-forward="true" selection-start-line="37" selection-end-line="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/utils/Utils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="13" column="22" selection-start-line="13" selection-start-column="22" selection-end-line="13" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/heuristiek_impl/Heuristieken.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5006">
-          <caret line="367" column="13" selection-start-line="367" selection-start-column="13" selection-end-line="367" selection-end-column="13" />
+        <state relative-caret-position="251">
+          <caret line="223" selection-start-line="223" selection-end-line="223" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Evaluation/Evaluation.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="343">
-          <caret line="155" column="31" selection-start-line="155" selection-start-column="31" selection-end-line="155" selection-end-column="31" />
+        <state relative-caret-position="177">
+          <caret line="101" column="24" selection-start-line="101" selection-start-column="18" selection-end-line="101" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/objects/Truck.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="193">
+          <caret line="268" column="5" selection-start-line="268" selection-start-column="5" selection-end-line="268" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/objects/Location.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1392">
+          <caret line="74" selection-start-line="74" selection-end-line="74" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/objects/MachineType.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="812">
+          <caret line="42" column="23" selection-start-line="42" selection-start-column="23" selection-end-line="42" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/objects/Machine.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="280">
+          <caret line="43" column="51" lean-forward="true" selection-start-line="43" selection-start-column="51" selection-end-line="43" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/objects/Request.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="309">
+          <caret line="92" column="22" selection-start-line="92" selection-start-column="22" selection-end-line="92" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/objects/Solution.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="406">
+          <caret line="32" selection-start-line="32" selection-end-line="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/run.kzn">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/heuristiek_impl/Heuristieken.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="445">
+          <caret line="52" column="4" selection-start-line="52" selection-start-column="4" selection-end-line="52" selection-end-column="4" />
           <folding>
-            <element signature="e#5657#5658#0" expanded="true" />
-            <element signature="e#5693#5694#0" expanded="true" />
-            <element signature="e#5723#5724#0" expanded="true" />
-            <element signature="e#5752#5753#0" expanded="true" />
-            <element signature="e#5787#5788#0" expanded="true" />
-            <element signature="e#5820#5821#0" expanded="true" />
+            <element signature="method#constructieveHeuristiek#0;class#Heuristieken#0" />
+            <element signature="method#moveRequestsBetweenTrucks#0;class#Heuristieken#0" />
+            <element signature="method#vindKoppeltje#0;class#Heuristieken#0" />
+            <element signature="method#getDichtsteRequest#0;class#Heuristieken#0" />
+            <element signature="method#initPlaceMachineInMachineListDepot#0;class#Heuristieken#0" />
+            <element signature="method#initTruckToClosestDepots#0;class#Heuristieken#0" />
+            <element signature="method#clusterRequestsToClosestDepotsWithTrucks#0;class#Heuristieken#0" />
+            <element signature="method#possibleAddition#0;class#Heuristieken#0" />
+            <element signature="method#possibleAssignment#0;class#Heuristieken#0" />
+            <element signature="method#possibleAssignmentFromDifferentDepot#0;class#Heuristieken#0" />
+            <element signature="method#possibleAssignDropToTruck#0;class#Heuristieken#0" />
+            <element signature="method#getNearestDepot#0;class#Heuristieken#0" />
+            <element signature="method#getNearestDepotTime#0;class#Heuristieken#0" />
+            <element signature="method#getNearestDepotWithMachine#0;class#Heuristieken#0" />
+            <element signature="method#bestFittingTruck#0;class#Heuristieken#0" />
+            <element signature="method#emptyTrucks#0;class#Heuristieken#0" />
+            <element signature="method#emptyTruck#0;class#Heuristieken#0" />
+            <element signature="method#doDrop#0;class#Heuristieken#0" />
+            <element signature="method#assignDropToTruck#0;class#Heuristieken#0" />
+            <element signature="method#assignDropToTruckFromDifferentDepot#0;class#Heuristieken#0" />
+            <element signature="method#assignCollectToTruck#0;class#Heuristieken#0" />
+            <element signature="method#assignRequestsToTrucks#0;class#Heuristieken#0" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="18" column="66" lean-forward="true" selection-start-line="18" selection-start-column="66" selection-end-line="18" selection-end-column="66" />
+        <state relative-caret-position="1015">
+          <caret line="41" column="8" selection-start-line="41" selection-start-column="8" selection-end-line="41" selection-end-column="8" />
         </state>
       </provider>
     </entry>
@@ -976,6 +770,7 @@
       </state>
       <state key="GlobalLibrariesConfigurable.UI">
         <settings>
+          <last-edited>Bundled Protobuf Distribution</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
@@ -1004,6 +799,7 @@
             <option name="proportions">
               <list>
                 <option value="0.2" />
+                <option value="0.6" />
               </list>
             </option>
           </splitter-proportions>
@@ -1023,6 +819,7 @@
       </state>
       <state key="ProjectLibrariesConfigurable.UI">
         <settings>
+          <last-edited>tvh-1.0-student</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>

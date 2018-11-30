@@ -39,4 +39,8 @@ public class MachineType {
     public void print(){
         System.out.println("volume: " + volume + " servicetime: " + serviceTime + " name: " + name);
     }
+
+    public MachineType clone(){
+        return new MachineType(volume, serviceTime, name);
+    }
 }

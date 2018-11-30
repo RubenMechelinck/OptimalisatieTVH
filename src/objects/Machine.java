@@ -39,4 +39,9 @@ public class Machine {
     public void setMachineId(int machineId) {
         this.machineId = machineId;
     }
+
+    public Machine clone(){
+        Machine machine = new Machine(machineType.clone(), location.clone(), machineId);
+        return machine;
+    }
 }

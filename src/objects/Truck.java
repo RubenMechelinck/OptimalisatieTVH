@@ -42,6 +42,29 @@ public class Truck {
         this.truckId = truckId;
     }
 
+    public Truck(Truck truck){
+        this.truckId = truck.truckId;
+        this.TRUCK_CAPACITY = truck.TRUCK_CAPACITY;
+        this.TRUCK_WORKING_TIME = truck.TRUCK_WORKING_TIME;
+        this.truckWorkingTime = truck.truckWorkingTime;
+        this.startlocatie = truck.startlocatie.clone();
+        this.eindlocatie = truck.eindlocatie.clone();
+        this.currentLocation = truck.currentLocation.clone();
+        this.totaleTijdGereden = truck.totaleTijdGereden;
+        this.totaleAfstandTruck = truck.totaleAfstandTruck;
+        this.tijdVoorRequest = truck.tijdVoorRequest;
+        this.routeSet = new HashSet<>();
+        this.route = new LinkedList<>();
+        for(Request request: truck.route) {
+            Request q = request.clone();
+            route.add(q);
+            routeSet.add(q);
+        }
+        this.machineList = new ArrayList<>();
+        for(Machine machine: truck.machineList)
+            machineList.add(machine.clone());
+    }
+
     public Set<Request> getRouteSet() {
         return routeSet;
     }
@@ -110,6 +133,10 @@ public class Truck {
         this.totaleAfstandTruck = totaleAfstandTruck;
     }
 
+    public void addTotaleAfstandTruck(int afstand){
+        totaleAfstandTruck += afstand;
+    }
+
     public List<Request> getRoute() {
         return route;
     }
@@ -142,10 +169,10 @@ public class Truck {
         int distance = 0;
         Request previousReq = null;
         for (Request req : route) {
-            System.out.println("distance: " + distance);
+            //System.out.println("distance: " + distance);
 
             if (previousReq != null) {
-                System.out.println("berekende afstand: " + getDistance(req.getLocation(), previousReq.getLocation()));
+                //System.out.println("berekende afstand: " + getDistance(req.getLocation(), previousReq.getLocation()));
                 distance += getDistance(req.getLocation(), previousReq.getLocation());
             }
             previousReq = req;
@@ -156,17 +183,17 @@ public class Truck {
     }
 
     public int totaleTijd() {
-        System.out.println("truck: "+truckId);
+        //System.out.println("truck: "+truckId);
         int tijd = 0;
         Request previousReq = null;
         for (Request req : route) {
-            System.out.println("tijd: " + tijd);
+            //System.out.println("tijd: " + tijd);
             if (req.getMachine() != null) {
-                System.out.println("service tijd: " + req.getMachine().getMachineType().getServiceTime());
+                //System.out.println("service tijd: " + req.getMachine().getMachineType().getServiceTime());
                 tijd += req.getMachine().getMachineType().getServiceTime();
             }
             if (previousReq != null) {
-                System.out.println("berekende tijd: " + getTime(req.getLocation(), previousReq.getLocation()));
+                //System.out.println("berekende tijd: " + getTime(req.getLocation(), previousReq.getLocation()));
 
                 tijd += getTime(req.getLocation(), previousReq.getLocation());
             }
@@ -223,7 +250,7 @@ public class Truck {
     public void printRequestList() {
         int i = 0;
         for (Request req : route) {
-            req.print();
+            //req.print();
         }
     }
 

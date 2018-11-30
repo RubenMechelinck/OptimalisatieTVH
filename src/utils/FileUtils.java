@@ -3,6 +3,7 @@ package utils;
 import objects.*;
 
 import java.io.*;
+import java.util.List;
 
 import static main.Main.*;
 
@@ -214,15 +215,18 @@ public class FileUtils {
         }*/
     }
 
-    public static void writeOutputFile(String outputFilename, String inputFilename) {
+    public static void writeOutputFile(String outputFilename, String inputFilename, Solution solution) {
         File file = new File(outputFilename);
+        int totalDistance = solution.getBestCost();
+        List<Truck> trucksList = solution.getBestTrucksList();
+
         int j;
-        int workingTrucks = getWorkingTrucks();
+        int workingTrucks = getWorkingTrucks(trucksList);
         boolean contin = true;
         try {
             PrintWriter printWriter = new PrintWriter(file);
             printWriter.println("PROBLEM: " + inputFilename);
-            printWriter.println("DISTANCE: " + result.getTotalDistance());
+            printWriter.println("DISTANCE: " + totalDistance);
             printWriter.println("TRUCKS: " + workingTrucks);
 
             for (Truck truck : trucksList) {
@@ -311,7 +315,7 @@ public class FileUtils {
 
     }
 
-    public static int getWorkingTrucks() {
+    private static int getWorkingTrucks(List<Truck> trucksList) {
         int counter = 0;
         for (Truck truck : trucksList) {
             if (truckWorks(truck)) {
@@ -321,7 +325,7 @@ public class FileUtils {
         return counter;
     }
 
-    public static boolean truckWorks(Truck truck) {
+    private static boolean truckWorks(Truck truck) {
         for (Request req : truck.getRoute()) {
             if (req.getMachine() != null) {
                 return true;

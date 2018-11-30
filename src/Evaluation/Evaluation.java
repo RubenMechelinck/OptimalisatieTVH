@@ -12,6 +12,7 @@ public class Evaluation {
     private int totalDistance = 0;
     private int weight = 0;
     private boolean isFeasable = true;
+    private boolean isBetterSolution = false;
 
     private int COST_DRIVE_LIMIT = 10000;
     private int COST_CAPACITY = 10000;
@@ -29,7 +30,7 @@ public class Evaluation {
 
             //Een boete van 10000 indien een truck over zijn rijlimiet gaat
             if (t.totaleTijd() > t.getTRUCK_WORKING_TIME()) {
-                System.out.println("over tijdslimiet infeasible");
+                //System.out.println("over tijdslimiet infeasible");
                 weight += COST_DRIVE_LIMIT;
                 isFeasable = false;
             }
@@ -43,10 +44,10 @@ public class Evaluation {
                     //System.out.println("r is drop");
                     //Voor capaciteit te checken
                     if (r.getMachine() == null) {
-                        System.out.println("huhn");
+                        //System.out.println("huhn");
                     }
                     else if (r.getMachine().getMachineType() == null) {
-                        System.out.println("uhuun");
+                        //System.out.println("uhuun");
 
                     }
                     tempCapacity -= r.getMachine().getMachineType().getVolume();
@@ -54,7 +55,7 @@ public class Evaluation {
                     //Altijd kijken of de pickup hiervan ook aanwezig is!
                     if (noPickUp(t, r)) {
                         weight += COST_NO_DROP_COLLECT_COUPLE;
-                        System.out.println("pickup niet aanwezig infeasible");
+                        //System.out.println("pickup niet aanwezig infeasible");
                         isFeasable = false;
                     }
                 } else {
@@ -67,7 +68,7 @@ public class Evaluation {
                     //Altijd kijken of de drop van deze pickup ook aanwezig is!
                     if (noDrop(t, r)) {
                         weight += COST_NO_DROP_COLLECT_COUPLE;
-                        System.out.println("drop niet aanwezig infeasible");
+                        //System.out.println("drop niet aanwezig infeasible");
                         isFeasable = false;
                     }
                 }
@@ -75,14 +76,14 @@ public class Evaluation {
 
                 if (tempCapacity > t.getTRUCK_CAPACITY()) {
                     weight += COST_CAPACITY;
-                    System.out.println("capacity infeasible");
+                    //System.out.println("capacity infeasible");
                     isFeasable = false;
                 }
 
                 //Elke request wordt maar gedaan door 1 enkele truck, anders +10000
                 if (doubleRequests(r, trucks)) {
                     weight += COST_MULTIPLE_TRUCKS_PER_REQUEST;
-                    System.out.println("meerdere trucks aan zelfde request infeasible");
+                    //System.out.println("meerdere trucks aan zelfde request infeasible");
                     isFeasable = false;
                 }
             }
@@ -90,7 +91,7 @@ public class Evaluation {
             if (t.getRoute().size() > 0) {
                 if (!t.getRoute().get(t.getRoute().size() - 1).getLocation().equals(t.getEindlocatie())) {
                     weight += COST_NO_DEPOT_ENDPOINT;
-                    System.out.println("geen depot op einde infeasible");
+                    //System.out.println("geen depot op einde infeasible");
                     isFeasable = false;
                 }
             }
@@ -98,7 +99,7 @@ public class Evaluation {
             //op einde is capaciteit ook weer 0
             if (tempCapacity != 0) {
                 weight += COST_ENDCAP_NOT_ZERO;
-                System.out.println("eindcapaciteit niet nul infeasible");
+                //System.out.println("eindcapaciteit niet nul infeasible");
                 isFeasable = false;
             }
         }
@@ -169,5 +170,13 @@ public class Evaluation {
 
     public boolean isFeasable() {
         return isFeasable;
+    }
+
+    public boolean isBetterSolution() {
+        return isBetterSolution;
+    }
+
+    public void setBetterSolution(boolean betterSolution) {
+        isBetterSolution = betterSolution;
     }
 }

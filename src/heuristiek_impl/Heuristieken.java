@@ -1,5 +1,6 @@
 package heuristiek_impl;
 
+import Evaluation.Evaluation;
 import objects.*;
 
 import java.util.*;
@@ -15,7 +16,7 @@ import static utils.Utils.getTime;
 public class Heuristieken {
     // OPMERKINGEN
     //telkens als truck van locatie veranderd => currentLocation aanpassen + request aan route toevoegen!!!!
-    static List<Request> surplusRequests;
+    private static List<Request> surplusRequests;
 
     /////////////////////////////// Heuristieken ///////////////////////////////
 
@@ -36,11 +37,200 @@ public class Heuristieken {
     }
 
     public static void perturbatieveHeuristiek() {
+        //paar iteraties
+        for(int i = 0; i < 1000; i++)
+            localSearch();
+        //meta toepassen
+    }
 
+    //////////////////////////////// Perturbative Heuristiek onderdelen ///////////////////////
+
+    //local search in huidige ruimte
+    //kan request wisselen:
+    //  binnen truck
+    //  tussen trucks onderling
+    //  locatie van depot request wisselen
+    //  depot request zo dicht mogelijk bij elkaar zetten
+    private static void localSearch(){
+        moveRequestsBetweenTrucks();
+        //move van Joran
+        //nog andere moves
     }
 
 
-    //////////////////////////////// Heuristiek onderdelen ///////////////////////
+    // hill climbing (eerste verbetering)
+    //pak 2 random trucks
+    //pak uit truck1 een requestkoppel (drop en collect)
+    //zet drop op plaats waar truck2 het dichtst in buurt van droplocatie komt
+    //zoek verder naar voor waar truck2 in buurt van collectlocatie komt
+    //if collect past tussen => check if opl feasable + beter is
+    // if not => zoek verder naar voor in requestlist van truck2 voor goeie DROP plaats
+    //(de collect verder naar voor schuiven brengt wss niet veel op => drop naar voor => collect schuift ook naar voor)
+    //kan koppeltje niet in truck2 zetten => neem volgende random truck totdat
+    // koppeltje kan plaatsen
+    // kan koppel in geen enkel truck plaatsen => pak volgend koppeltje uit truck1 en doe zelfde
+    //vind nog altijd niets => pak andere truck1
+    //als dan ook nog niet lukt => niets wordt gedaan
+    private static void moveRequestsBetweenTrucks(){
+        //drop en collect request met hun index in truck1 requestlijst zodat als
+        //move niet lukt deze kan terug plaasten op de originele plek
+        Request collect;
+        Request drop;
+        int indexDrop;
+        int indexCollect;
+        Evaluation evaluation;
+
+        //shuffle zodat bij elke local search andere volgorde van truck picking is
+        Collections.shuffle(trucksList);
+        boolean placed = false; //is het koppeltje geplaatst
+        int i = 0;
+        while (i<trucksList.size()-1 && !placed){
+            //gaat collect&drop koppel verplaatsen van truck1 naar truck2
+            //TODO mogelijk om ook een request terug te plaatsen vanuit truck2 naar truck1
+            Truck truck1 = trucksList.get(i++);
+
+            while(!placed) {
+                //get random drop/collect en de bijhorende collect/drop
+                // + verwijder uit truck1 lijst!
+                int q = (int) (Math.random() * truck1.getRoute().size());
+                Request tmp = truck1.getRoute().remove(q);
+                //if speciale request om leeg naar depot te rijden => pak een andere random
+                if(tmp.getMachine() == null && tmp.getMachineType() == null)
+                    continue;
+
+                if(tmp.isDrop()) {
+                    drop = tmp;
+                    indexDrop = q;
+                    indexCollect = vindKoppeltje(tmp, truck1.getRoute(), true, q);
+                    collect = truck1.getRoute().remove(indexCollect);
+                }
+                else {
+                    collect = tmp;
+                    indexCollect = q;
+                    indexDrop = vindKoppeltje(tmp, truck1.getRoute(), false, q);
+                    drop = truck1.getRoute().remove(indexDrop);
+                }
+
+                while (!placed) {
+                    if(i >= trucksList.size())
+                        break;
+                    Truck truck2 = trucksList.get(i++);
+                    //get request dat dichtst in de buurt ligt van drop die moet tussen plaasten
+                    // en zet de drop voor de gevonden plaats
+                    List<Request> requestsListTruck2 = truck2.getRoute();
+                    Request finalDrop = drop;
+                    Queue<Request> bestePlaatsenVoorDrop = new PriorityQueue<>((request, t1) -> getDistance(request.getLocation(), finalDrop.getLocation()) - getDistance(t1.getLocation(), finalDrop.getLocation()));
+                    bestePlaatsenVoorDrop.addAll(requestsListTruck2);
+
+                    while (!bestePlaatsenVoorDrop.isEmpty()) {
+                        Request besteInBuurtVoorDrop = bestePlaatsenVoorDrop.poll();
+                        int index = requestsListTruck2.indexOf(besteInBuurtVoorDrop);
+                        requestsListTruck2.add(index, drop);
+
+                        //get beste plaats voor collect te zetten
+                        //(request dat dichtst in de buurt van collect locatie ligt)
+                        //get sublist van alles voor het ingevoegde drop request
+                        List<Request> sublist = requestsListTruck2.subList(0, index);
+                        Request besteInBuurtVoorCollect = getDichtsteRequest(sublist, collect);
+                        //als geen beste gevonden is (bv index = 0 => sublist is null) => beste locatie is vooraan
+                        if(besteInBuurtVoorCollect != null)
+                            index = sublist.indexOf(besteInBuurtVoorCollect);
+                        else
+                            index = 0;
+                        requestsListTruck2.add(index, collect);
+
+                        evaluation = solution.evaluate();
+
+                        //if oplossing is beter => deze localsearch itteratie is klaar (hill climbing)
+                        if (evaluation.isFeasable() && evaluation.isBetterSolution()) {
+                            placed = true;
+                            break;
+                        }
+                        else{
+                            truck2.getRoute().remove(drop);
+                            truck2.getRoute().remove(collect);
+                        }
+                    }
+                }
+
+                //voeg laagste uitgehaald eerst toe (ander kan IndexOutOfBoundsDingenException krijgen)
+                //tmp was eerst uitgehaalde, als drop eerst is uitgehaald => eerst collect terugzetten
+                if(drop == tmp) {
+                    truck1.getRoute().add(indexCollect, collect);
+                    truck1.getRoute().add(indexDrop, drop);
+                }
+                else{
+                    truck1.getRoute().add(indexDrop, drop);
+                    truck1.getRoute().add(indexCollect, collect);
+                }
+            }
+        }
+    }
+
+    //zoek de request die bij par:bron past, return index in par:list
+    //par:isDrop zegt of bron een drop is
+    //if bron is drop => return collect ervoor van dat machine type
+    //if bron is collect => return drop erna van dat machine type
+    private static int vindKoppeltje(Request bron, List<Request> list, boolean isDrop, int index){
+        MachineType machineType = bron.getMachineType();
+        if(machineType == null)
+            machineType = bron.getMachine().getMachineType();
+
+        //if bron is drop => zoek collect voor de drop
+        //if bron is collect => zoek drop erna
+        if(isDrop){
+            for(int i = 0; i < index; i++){
+                Request t = list.get(i);
+                if(t.getMachine() == null && t.getMachineType() == null)
+                    continue;
+
+                if(!t.isDrop()  && (t.getMachineType() != null || t.getMachine().getMachineType() != null)){
+                    MachineType type = t.getMachineType();
+                    if(type == null)
+                        type = t.getMachine().getMachineType();
+                    if(machineType == type){
+                        return i;
+                    }
+                }
+            }
+        }
+        else{
+            for(int i = index+1; i < list.size(); i++){
+                Request t = list.get(i);
+                if(t.getMachine() == null && t.getMachineType() == null)
+                    continue;
+
+                if(t.isDrop() && (t.getMachineType() != null || t.getMachine().getMachineType() != null)){
+                    MachineType type = t.getMachineType();
+                    if(type == null)
+                        type = t.getMachine().getMachineType();
+                    if(machineType == type){
+                        return i;
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+
+    //return de request uit par:requests die het dichtst licht bij de par:request
+    private static Request getDichtsteRequest(List<Request> requests, Request request){
+        int bestDistance = Integer.MAX_VALUE;
+        Request dichtst = null;
+
+        for(Request r: requests){
+            int t = getDistance(r.getLocation(), request.getLocation());
+            if(t < bestDistance){
+                dichtst = r;
+                bestDistance = t;
+            }
+        }
+
+        return dichtst;
+    }
+
+
+    //////////////////////////////// Constructieve Heuristiek onderdelen ///////////////////////
 
     //dit kan bij inlezen ook gebeuren
     private static void initPlaceMachineInMachineListDepot() {
@@ -63,7 +253,6 @@ public class Heuristieken {
         for (Truck truck : trucksList) {
             dep = null;
             //check if truck al op depot staat
-
             //if not zoek dichtsbijzijnde depot
             if (!truck.getStartlocatie().getDepot()) {
                 distance = Integer.MAX_VALUE;
@@ -78,7 +267,7 @@ public class Heuristieken {
                 //drop staat op false! (zowel true en false hebben hier allebei geen betekenis)
                 truck.addRequestToRoute(new Request(dep.getLocation(), false, true));
                 truck.setCurrentLocation(dep.getLocation());
-                truck.setTotaleAfstandTruck(getDistance(truck.getStartlocatie(), dep.getLocation()));
+                truck.addTotaleAfstandTruck(getDistance(truck.getStartlocatie(), dep.getLocation()));
                 tmp = getTime(truck.getStartlocatie(), dep.getLocation()); //tijd voor truck om naar depot te gaan+// ;
                 truck.addTotaleTijdGereden(tmp);
             } else {
@@ -130,6 +319,7 @@ public class Heuristieken {
                 }
                 requestListIterator.remove();
             }
+            //TODO: wat als geen depots meer vind om in te dumpen? (staat in TODO om op te vallen ;) )
         }
         for (Depot depot : depots) {
             if (!clusters.containsKey(depot)) {
@@ -156,7 +346,7 @@ public class Heuristieken {
     }
 
     //controleer of constraints niet verbroken worden indien truck rechtstreeks naar request rijd.
-    public static boolean possibleAssignment(Truck truck, Request request) {
+    private static boolean possibleAssignment(Truck truck, Request request) {
         int serviceTijd;
         int extraVolume;
         int totaleTijd;
@@ -167,7 +357,6 @@ public class Heuristieken {
         int tijdNaarDepot = getNearestDepotTime(request.getLocation());
         Depot dep = getNearestDepot(request.getLocation());
         int tijdNaarHuis = getTime(dep.getLocation(), truck.getEindlocatie());
-
 
         if (request.isDrop()) {
             if (request.getMachineType() != null) {
@@ -265,7 +454,7 @@ public class Heuristieken {
     }
 
     //ophalen dichtste depot
-    public static Depot getNearestDepot(Location location) {
+    private static Depot getNearestDepot(Location location) {
         int time = Integer.MAX_VALUE;
         int tmp;
         Depot dep = null;
@@ -280,7 +469,7 @@ public class Heuristieken {
     }
 
     //ophalen tijd naar het dichste depot
-    public static int getNearestDepotTime(Location location) {
+    private static int getNearestDepotTime(Location location) {
         int time = Integer.MAX_VALUE;
         int tmp;
         for (Depot depot : depots) {
@@ -293,7 +482,7 @@ public class Heuristieken {
     }
 
     //ophalen dichtste depot met machine geschikt voor dit request
-    public static Depot getNearestDepotWithMachine(Request request) {
+    private static Depot getNearestDepotWithMachine(Request request) {
         int time = Integer.MAX_VALUE;
         int tmp;
         Depot dep = null;
@@ -310,7 +499,7 @@ public class Heuristieken {
     }
 
     //ophalen best gepaste truck voor de situatie (wordt gebruikt nadat iedere truck al een request gekregen heeft)
-    public static Truck bestFittingTruck(Request request) {
+    private static Truck bestFittingTruck(Request request) {
         Truck bestTruck = null;
         int time = Integer.MAX_VALUE;
         int tmp;
@@ -418,7 +607,7 @@ public class Heuristieken {
             depot.removeMachine(machine);
             drop.setMachine(machine);
             truck.addRequestToRoute(new Request(truck.getCurrentLocation(), drop.getMachine(), false, true));
-            emptyTruck(truck);
+            emptyTruck(truck); //legen want truck is in depot
         }
         truck.addTotaleTijdGereden(2 * drop.getMachineType().getServiceTime());
 
@@ -438,7 +627,7 @@ public class Heuristieken {
         truck.addTotaleAfstand(getDistance(truck.getCurrentLocation(), depot.getLocation()));
         truck.addTotaleTijdGereden(2 * drop.getMachineType().getServiceTime());
         truck.setCurrentLocation(depot.getLocation());
-        emptyTruck(truck);
+        emptyTruck(truck); //truck legen want truck is in depot
 
         truck.addTotaleTijdGereden(getTime(truck.getCurrentLocation(), drop.getLocation()));
         truck.addTotaleAfstand(getDistance(truck.getCurrentLocation(), drop.getLocation()));
@@ -457,8 +646,6 @@ public class Heuristieken {
         truck.setCurrentLocation(collect.getLocation());
         truck.addRequestToRoute(collect);
     }
-
-
 
     private static void assignRequestsToTrucks(Map<Depot, Set<Request>> clusters) {
 
@@ -631,8 +818,6 @@ public class Heuristieken {
                 if (doDrop(finishedtruck, truckMachine)) {
                     machineListIterator.remove();
                 }
-
-
             }
             if (finishedtruck.getCurrentLocation() != finishedtruck.getEindlocatie()) {
                 if (possibleAssignment(finishedtruck, new Request(finishedtruck.getEindlocatie(), false, true))) {

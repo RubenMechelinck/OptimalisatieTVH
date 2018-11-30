@@ -6,7 +6,6 @@ public class Request {
     private MachineType machineType;
     private Machine machine;
 
-
     private boolean drop; //true = drop, false = collect
     private boolean depot;
 
@@ -84,4 +83,13 @@ public class Request {
         }
     }
 
+    public Request clone(){
+        Request request = new Request(location.clone(), drop, depot);
+        if(machine != null)
+            request.setMachine(machine.clone());
+        if(machineType != null)
+            request.setMachineType(machineType.clone());
+
+        return request;
+    }
 }
