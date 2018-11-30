@@ -38,7 +38,7 @@ public class Heuristieken {
 
     public static void perturbatieveHeuristiek() {
         //paar iteraties
-        for(int i = 0; i < 2; i++)
+        for(int i = 0; i < 1000; i++)
             localSearch();
         //meta toepassen
     }
@@ -579,7 +579,11 @@ public class Heuristieken {
     private static boolean doDrop(Truck truck, Machine machine) {
         Depot depot = getNearestDepot(truck.getCurrentLocation());
         if (possibleAssignment(truck, new Request(depot.getLocation(), machine, true, true))) {
-            truck.addRequestToRoute(new Request(depot.getLocation(), machine, true, true));
+            Request collect = truck.getRequestForMachine(machine);
+            Request drop = new Request(depot.getLocation(), machine, true, true);
+            drop.setPair(collect);
+            collect.setPair(drop);
+            truck.addRequestToRoute(drop);
             truck.addTotaleTijdGereden(getTime(depot.getLocation(), truck.getCurrentLocation()));
             truck.addTotaleAfstand(getDistance(depot.getLocation(), truck.getCurrentLocation()));
             truck.setCurrentLocation(depot.getLocation());
@@ -606,7 +610,10 @@ public class Heuristieken {
             machine = depot.getMachine(drop.getMachineType());
             depot.removeMachine(machine);
             drop.setMachine(machine);
-            truck.addRequestToRoute(new Request(truck.getCurrentLocation(), drop.getMachine(), false, true));
+            Request collect = new Request(truck.getCurrentLocation(), drop.getMachine(), false, true);
+            truck.addRequestToRoute(collect);
+            drop.setPair(collect);
+            collect.setPair(drop);
             emptyTruck(truck); //legen want truck is in depot
         }
         truck.addTotaleTijdGereden(2 * drop.getMachineType().getServiceTime());
@@ -621,8 +628,10 @@ public class Heuristieken {
     private static void assignDropToTruckFromDifferentDepot(Truck truck, Request drop, Depot depot) {
         depot.removeMachine(drop.getMachine());
 
-        truck.addRequestToRoute(new Request(depot.getLocation(), drop.getMachine(), false, true));
-
+        Request collect = new Request(depot.getLocation(), drop.getMachine(), false, true);
+        truck.addRequestToRoute(collect);
+        collect.setPair(drop);
+        drop.setPair(collect);
         truck.addTotaleTijdGereden(getTime(truck.getCurrentLocation(), depot.getLocation()));
         truck.addTotaleAfstand(getDistance(truck.getCurrentLocation(), depot.getLocation()));
         truck.addTotaleTijdGereden(2 * drop.getMachineType().getServiceTime());
