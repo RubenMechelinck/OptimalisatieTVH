@@ -601,6 +601,9 @@ public class Heuristieken {
         Machine machine;
         if (truck.isMachineTypeAvailable(drop.getMachineType())) {
             drop.setMachine(truck.getMachineOfType(drop.getMachineType()));
+            Request collect = truck.getRequestForMachine(drop.getMachine());
+            drop.setPair(collect);
+            collect.setPair(drop);
             truck.removeMachine(truck.getMachineOfType(drop.getMachineType()));
 
         } else {
