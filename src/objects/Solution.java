@@ -14,23 +14,34 @@ public class Solution {
     private int bestCost = Integer.MAX_VALUE;
     private List<Truck> bestTrucksList;
 
-    public Evaluation evaluate() {
+    private Evaluation lastEvaluation;
 
-        //Zo kan je dan aan de weight en de afstand
-        Evaluation result = new Evaluation(trucksList);
-        //System.out.println("total distance: " + result.getTotalDistance());
-        //System.out.println("total weight: " + result.getWeight());
-        //System.out.println("feasable: " + result.isFeasable());
+    //altijd eerst een volledige evaluatie doen voordat delta doet!!!
+    public Evaluation evaluate(Truck... trucks) {
 
-        if(result.getTotalDistance() < bestCost){
-            result.setBetterSolution(true);
-            bestCost = result.getTotalDistance();
-            bestTrucksList = new ArrayList<>();
-            for(Truck truck: trucksList)
-                bestTrucksList.add(new Truck(truck));
+        if(trucks.length != 0){
+            lastEvaluation.deltaEvaluate(trucks);
+        }
+        else {
+            //Zo kan je dan aan de weight en de afstand
+            lastEvaluation= new Evaluation();
+            //System.out.println("total distance: " + result.getTotalDistance());
+            //System.out.println("total weight: " + result.getWeight());
+            //System.out.println("feasable: " + result.isFeasable());
         }
 
-        return result;
+        if (lastEvaluation.isFeasable() && lastEvaluation.getTotalDistance() < bestCost) {
+            lastEvaluation.setBetterSolution(true);
+            bestCost = lastEvaluation.getTotalDistance();
+            bestTrucksList = new ArrayList<>();
+            for (Truck truck : trucksList)
+                bestTrucksList.add(new Truck(truck));
+            return lastEvaluation;
+        }
+        else{
+            lastEvaluation.revert();
+            return null;
+        }
     }
 
     public List<Truck> getBestTrucksList() {

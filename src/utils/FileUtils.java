@@ -317,6 +317,7 @@ public class FileUtils {
 
     private static int getWorkingTrucks(List<Truck> trucksList) {
         int counter = 0;
+        //if dit is null oplossing was niet feasable!!
         for (Truck truck : trucksList) {
             if (truckWorks(truck)) {
                 counter++;
