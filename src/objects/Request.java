@@ -10,6 +10,15 @@ public class Request {
     private boolean depot;
     private Request pair = null;
 
+    public Request(Request req) {
+        this.location = req.getLocation();
+        this.machineType = req.getMachineType();
+        this.machine = req.getMachine();
+        this.drop = req.isDrop();
+        this.depot = req.isDepot();
+        this.pair = req.getPair();
+    }
+
     public Request(Location location, Machine machine, boolean drop, boolean depot) {
         this.location = location;
         this.machineType = null;
@@ -96,8 +105,10 @@ public class Request {
     public void print() {
         if (machine != null) {
             System.out.println("location: " + location.getLocatieId() + " machine: " + machine.getMachineId() + " drop: " + drop + " depot: " + depot);
-        } else {
+        } else if(location!= null){
             System.out.println("location: "+location.getLocatieId() +" geen machine drop "+ drop+ " depot "+depot);
+        } else {
+            System.out.println("dummycollect");
         }
     }
 
@@ -110,4 +121,6 @@ public class Request {
 
         return request;
     }
+
+
 }

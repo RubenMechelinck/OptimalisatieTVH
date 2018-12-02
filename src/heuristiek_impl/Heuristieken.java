@@ -5,6 +5,7 @@ import objects.*;
 
 import java.util.*;
 
+import static java.lang.Thread.sleep;
 import static main.Main.*;
 import static utils.Utils.getDistance;
 import static utils.Utils.getTime;
@@ -37,11 +38,8 @@ public class Heuristieken {
 
     public static void perturbatieveHeuristiek() {
         //paar iteraties
-        //voorlopig veranderd niet veel meer na 30/40 itertaties
-        for(int i = 0; i < 200; i++) {
-            System.out.println("itr " + i);
+        for (int i = 0; i < 1000; i++)
             localSearch();
-        }
         //meta toepassen
     }
 
@@ -53,16 +51,10 @@ public class Heuristieken {
     //  tussen trucks onderling
     //  locatie van depot request wisselen
     //  depot request zo dicht mogelijk bij elkaar zetten
-    private static void localSearch(){
-        moveRequestsBetweenTrucks();
+    private static void localSearch() {
+        //moveRequestsBetweenTrucks();
         //move van Joran
-        zetDropCollectVerderUitelkaar();
-    }
-
-
-    private static void zetDropCollectVerderUitelkaar(){
-
-
+        //nog andere moves
     }
 
 
@@ -87,82 +79,52 @@ public class Heuristieken {
         int indexDrop;
         int indexCollect;
         Evaluation evaluation;
-        Truck truck1;
-        Truck truck2;
 
         //shuffle zodat bij elke local search andere volgorde van truck picking is
         Collections.shuffle(trucksList);
         boolean placed = false; //is het koppeltje geplaatst
         int i = 0;
-
+        while (i < trucksList.size() - 1 && !placed) {
             //gaat collect&drop koppel verplaatsen van truck1 naar truck2
-            truck1 = trucksList.get(i);
-            //System.out.println("truck1: " + i);
-            i++;
+            //TODO mogelijk om ook een request terug te plaatsen vanuit truck2 naar truck1
+            Truck truck1 = trucksList.get(i++);
 
-            int it = 0;
-            //probeer 30 requests uit truck1 te verplaatsen
-            while(it < 30 && it < truck1.getRoute().size()) {
-                placed = false;
-                //System.out.println(it);
+            while (!placed) {
                 //get random drop/collect en de bijhorende collect/drop
                 // + verwijder uit truck1 lijst!
                 int q = (int) (Math.random() * truck1.getRoute().size());
-                Request tmp = truck1.removeRequest(q);
-                it++;
-                //if speciale request om leeg naar depot te rijden => zet terug in list
-                // en pak een andere random
-                if(tmp.getMachine() == null && tmp.getMachineType() == null){
-                    truck1.addRequestToRoute(tmp, q);
+                Request tmp = truck1.getRoute().remove(q);
+                //if speciale request om leeg naar depot te rijden => pak een andere random
+                if (tmp.getMachine() == null && tmp.getMachineType() == null)
                     continue;
-                }
 
-                if(tmp.isDrop()) {
+                if (tmp.isDrop()) {
                     drop = tmp;
                     indexDrop = q;
-                    collect = tmp.getPair();
-                    indexCollect = truck1.removeRequest(collect);
-                }
-                else {
+                    indexCollect = vindKoppeltje(tmp, truck1.getRoute(), true, q);
+                    collect = truck1.getRoute().remove(indexCollect);
+                } else {
                     collect = tmp;
                     indexCollect = q;
-                    drop = tmp.getPair();
-                    indexDrop = truck1.removeRequest(drop);
+                    indexDrop = vindKoppeltje(tmp, truck1.getRoute(), false, q);
+                    drop = truck1.getRoute().remove(indexDrop);
                 }
 
-                int j = 0;
-                while (!placed && j < trucksList.size()) {
-                    if(j == i-1) {
-                        j++;
-                        continue;
-                    }
-                    truck2 = trucksList.get(j);
-                    //System.out.println("truck2: " + j);
-                    j++;
-
+                while (!placed) {
+                    if (i >= trucksList.size())
+                        break;
+                    Truck truck2 = trucksList.get(i++);
                     //get request dat dichtst in de buurt ligt van drop die moet tussen plaasten
                     // en zet de drop voor de gevonden plaats
                     List<Request> requestsListTruck2 = truck2.getRoute();
                     Request finalDrop = drop;
                     Queue<Request> bestePlaatsenVoorDrop = new PriorityQueue<>((request, t1) -> getDistance(request.getLocation(), finalDrop.getLocation()) - getDistance(t1.getLocation(), finalDrop.getLocation()));
-
-                    //ipv addAll slechts een paar toevoegen, als voor een paar geen betere move kan uitvoeren => truck is wss ver weg aan het rijden
-                    // set zal wss geen 20 groot zijn (duplicaten)
                     bestePlaatsenVoorDrop.addAll(requestsListTruck2);
-                    /*Set<Integer> numbers = new HashSet<>();
-                    for(int ii = 0; ii<1000; ii++){
-                        int r = (int)(Math. random() * requestsListTruck2.size());
-                        numbers.add(r);
-                        if(!numbers.contains(r))
-                            bestePlaatsenVoorDrop.add(requestsListTruck2.get(r));
-                    }*/
+
                     while (!bestePlaatsenVoorDrop.isEmpty()) {
                         Request besteInBuurtVoorDrop = bestePlaatsenVoorDrop.poll();
                         int index = requestsListTruck2.indexOf(besteInBuurtVoorDrop);
-                        //check of index 0 is => start locate is beste => moet drop NA start zetten!!
-                        if(index == 0)
-                            index = 1;
-                        truck2.addRequestToRoute(drop, index);
+                        requestsListTruck2.add(index, drop);
 
                         //get beste plaats voor collect te zetten
                         //(request dat dichtst in de buurt van collect locatie ligt)
@@ -170,84 +132,75 @@ public class Heuristieken {
                         List<Request> sublist = requestsListTruck2.subList(0, index);
                         Request besteInBuurtVoorCollect = getDichtsteRequest(sublist, collect);
                         //als geen beste gevonden is (bv index = 0 => sublist is null) => beste locatie is vooraan
-                        //if(besteInBuurtVoorCollect != null) {
+                        if (besteInBuurtVoorCollect != null)
                             index = sublist.indexOf(besteInBuurtVoorCollect);
-                            //collect na de beste locatie zetten, zodat niet voor startlocatie zou komen
-                            index++;
-                        //}
-                        //else
-                        //    index = 0;
-                        truck2.addRequestToRoute(collect, index);
+                        else
+                            index = 0;
+                        requestsListTruck2.add(index, collect);
 
-                        evaluation = solution.evaluate(truck1, truck2);
+                        evaluation = solution.evaluate();
 
                         //if oplossing is beter => deze localsearch itteratie is klaar (hill climbing)
-                        if (evaluation != null) {
-                            System.out.println(evaluation.getTotalDistance());
+                        if (evaluation.isFeasable() && evaluation.isBetterSolution()) {
                             placed = true;
                             break;
-                        }
-                        else{
-                            truck2.removeRequest(drop);
-                            truck2.removeRequest(collect);
+                        } else {
+                            truck2.getRoute().remove(drop);
+                            truck2.getRoute().remove(collect);
                         }
                     }
                 }
 
-                //enkel request terug plaatsen in truck1 als nergens anders kon zetten
-                if(!placed) {
-                    //voeg laagste uitgehaald eerst toe (ander kan IndexOutOfBoundsDingenException krijgen)
-                    //tmp was eerst uitgehaalde, als drop eerst is uitgehaald => eerst collect terugzetten
-                    if (drop == tmp) {
-                        truck1.addRequestToRoute(collect, indexCollect);
-                        truck1.addRequestToRoute(drop, indexDrop);
-                    } else {
-                        truck1.addRequestToRoute(drop, indexDrop);
-                        truck1.addRequestToRoute(collect, indexCollect);
-                    }
+                //voeg laagste uitgehaald eerst toe (ander kan IndexOutOfBoundsDingenException krijgen)
+                //tmp was eerst uitgehaalde, als drop eerst is uitgehaald => eerst collect terugzetten
+                if (drop == tmp) {
+                    truck1.getRoute().add(indexCollect, collect);
+                    truck1.getRoute().add(indexDrop, drop);
+                } else {
+                    truck1.getRoute().add(indexDrop, drop);
+                    truck1.getRoute().add(indexCollect, collect);
                 }
             }
-
+        }
     }
 
     //zoek de request die bij par:bron past, return index in par:list
     //par:isDrop zegt of bron een drop is
     //if bron is drop => return collect ervoor van dat machine type
     //if bron is collect => return drop erna van dat machine type
-    private static int vindKoppeltje(Request bron, List<Request> list, boolean isDrop, int index){
+    private static int vindKoppeltje(Request bron, List<Request> list, boolean isDrop, int index) {
         MachineType machineType = bron.getMachineType();
-        if(machineType == null)
+        if (machineType == null)
             machineType = bron.getMachine().getMachineType();
 
         //if bron is drop => zoek collect voor de drop
         //if bron is collect => zoek drop erna
-        if(isDrop){
-            for(int i = 0; i < index; i++){
+        if (isDrop) {
+            for (int i = 0; i < index; i++) {
                 Request t = list.get(i);
-                if(t.getMachine() == null && t.getMachineType() == null)
+                if (t.getMachine() == null && t.getMachineType() == null)
                     continue;
 
-                if(!t.isDrop()  && (t.getMachineType() != null || t.getMachine().getMachineType() != null)){
+                if (!t.isDrop() && (t.getMachineType() != null || t.getMachine().getMachineType() != null)) {
                     MachineType type = t.getMachineType();
-                    if(type == null)
+                    if (type == null)
                         type = t.getMachine().getMachineType();
-                    if(machineType == type){
+                    if (machineType == type) {
                         return i;
                     }
                 }
             }
-        }
-        else{
-            for(int i = index+1; i < list.size(); i++){
+        } else {
+            for (int i = index + 1; i < list.size(); i++) {
                 Request t = list.get(i);
-                if(t.getMachine() == null && t.getMachineType() == null)
+                if (t.getMachine() == null && t.getMachineType() == null)
                     continue;
 
-                if(t.isDrop() && (t.getMachineType() != null || t.getMachine().getMachineType() != null)){
+                if (t.isDrop() && (t.getMachineType() != null || t.getMachine().getMachineType() != null)) {
                     MachineType type = t.getMachineType();
-                    if(type == null)
+                    if (type == null)
                         type = t.getMachine().getMachineType();
-                    if(machineType == type){
+                    if (machineType == type) {
                         return i;
                     }
                 }
@@ -257,13 +210,13 @@ public class Heuristieken {
     }
 
     //return de request uit par:requests die het dichtst licht bij de par:request
-    private static Request getDichtsteRequest(List<Request> requests, Request request){
+    private static Request getDichtsteRequest(List<Request> requests, Request request) {
         int bestDistance = Integer.MAX_VALUE;
         Request dichtst = null;
 
-        for(Request r: requests){
+        for (Request r : requests) {
             int t = getDistance(r.getLocation(), request.getLocation());
-            if(t < bestDistance){
+            if (t < bestDistance) {
                 dichtst = r;
                 bestDistance = t;
             }
@@ -310,7 +263,7 @@ public class Heuristieken {
                 //drop staat op false! (zowel true en false hebben hier allebei geen betekenis)
                 truck.addRequestToRoute(new Request(dep.getLocation(), false, true));
                 truck.setCurrentLocation(dep.getLocation());
-                truck.addTotaleAfstand(getDistance(truck.getStartlocatie(), dep.getLocation()));
+                truck.addTotaleAfstandTruck(getDistance(truck.getStartlocatie(), dep.getLocation()));
                 tmp = getTime(truck.getStartlocatie(), dep.getLocation()); //tijd voor truck om naar depot te gaan+// ;
                 truck.addTotaleTijdGereden(tmp);
             } else {
@@ -431,7 +384,7 @@ public class Heuristieken {
     }
 
     //ophalen dichtste depot
-    private static Depot getNearestDepot(Location location) {
+    public static Depot getNearestDepot(Location location) {
         int time = Integer.MAX_VALUE;
         int tmp;
         Depot dep = null;
@@ -474,29 +427,275 @@ public class Heuristieken {
         }
         return dep;
     }
+
     //bij 1 truck overloop alle mogelijke plaatsen waar request toegevoegd kan worden geef situatie met kleinste geredentijd terug
-    private static Truck getBestPlaceForRequest(Truck truck,Request request) {
-        Truck tempTruck = new Truck(truck);
+    private static Truck getBestPlaceForRequest(Truck truck, Request request) {
+        Truck bestTruck = null;
+        Truck tempTruck = null;
+
+        if (request.isDrop()) {
+            Request dummyCollect = new Request(null, request.getMachineType(), false, true);
+            request.setPair(dummyCollect);
+            dummyCollect.setPair(request);
+
+            System.out.println("bekeken paar");
+            dummyCollect.getPair().print();
+            request.getPair().print();
+
+            System.out.println("starten tempTruck");
+            //meegeven wat de drop is hierbij mergen we de depotcollect en een gevonden collect van zelfde type (ook wanneer een machinetype enkel opgehaald kan worden zal deze functie gebruikt moeten worden
+            tempTruck = bestPlaceForRequest(truck, dummyCollect, request);
+            //indien er geen merge kon gebeuren zal er een request bij gekomen zijn
+            //indien de merge succesvol was zal de lijst even lang zijn als ervoor
+
+            //tempTruck.printRequestList();
+            //dummyCollect.print();
+            //request.print();
+
+            //indien de merge niet succesvol was en er gewoon een collect bijgekomen is moeten we deze niet meer uitvoeren
+            //anders wel om de controle uit te voeren of we geen betere oplossing krijgen door opsplitsing
+            //is tempTruck null dan weten we dat er geen mogelijke manier is om de drop en collect te plaatsen
+            if (tempTruck != null) {
+                System.out.println("temptruck niet null");
+                if (tempTruck.getRoute().size() < truck.getRoute().size()) {
+                    bestTruck = bestPlaceForRequest(truck, dummyCollect, null);
+                    //wanneer de besTruck die we terugkrijgen uit voorgaande null is weten we dat er geen mogelijke manier is om de drop en collect te plaatsen
+                    if (bestTruck != null) {
+                        bestTruck = bestPlaceForRequest(bestTruck, request, null);
+                        if (tempTruck.getTotaleTijdGereden() < bestTruck.getTotaleTijdGereden()) {
+                            System.out.println("tempTruck was beter");
+                            bestTruck = tempTruck;
+                        }
+                    }
+                } else {
+                    System.out.println("ja deze");
+                    bestTruck = bestPlaceForRequest(tempTruck, request, null);
+                }
+                if ( bestTruck == null) {
+                    bestTruck = tempTruck;
+                }
+            }
+
+        } else {
+            Request dummyDrop = new Request(null, request.getMachine().getMachineType(), true, true);
+            request.setPair(dummyDrop);
+            dummyDrop.setPair(request);
+
+            ArrayList<Request> mergeRequests = new ArrayList<>();
+            for (Request req : truck.getRoute()) {
+                if (!req.isDrop()) {
+                    if (req.getMachine() != null) {
+                        if (req.getMachine().getMachineType() == request.getMachine().getMachineType()) {
+                            if (req.isDepot()) {
+                                mergeRequests.add(req);
+                            }
+                        }
+                    }
+                }
+            }
+            int i = 0;
+            for (Request merg : mergeRequests) {
+                bestTruck = new Truck(truck);
+                bestTruck.getRoute().remove(merg);
+                request.setPair(merg.getPair());
+                merg.getPair().setPair(request);
+
+                if (i == 0) {
+                    tempTruck = bestPlaceForRequest(bestTruck, request, null);
+                } else {
+                    bestTruck = bestPlaceForRequest(bestTruck, request, null);
+                    if (bestTruck.getTotaleTijdGereden() < tempTruck.getTotaleTijdGereden()) {
+                        tempTruck = bestTruck;
+                    }
+                }
+                i++;
+
+            }
+
+            bestTruck = bestPlaceForRequest(truck, request, null);
+            //wat als bestTruck null is?
+            if (bestTruck != null) {
+                bestTruck = bestPlaceForRequest(bestTruck, dummyDrop, null);
+            }
+
+
+            if (tempTruck != null && bestTruck != null) {
+                if (tempTruck.getTotaleTijdGereden() < bestTruck.getTotaleTijdGereden()) {
+                    bestTruck = tempTruck;
+                }
+            }
+
+
+        }
+
+
+        return bestTruck;
+    }
+
+    private static Truck bestPlaceForRequest(Truck truck, Request request, Request drop) {
+        Truck tempTruck;
         Truck bestTruck = null;
         LinkedList<Request> tempRoute;
+        LinkedList<Request> originalRoute = truck.getRoute();
+        boolean abort;
+        boolean mergeCollects;
+        int index;
         int time = Integer.MAX_VALUE;
+        Depot depot;
+        Machine machine;
 
         //overlopen request, we proberen de nieuwe request vlak na de vorige request te plaatsen en kijken of dit mogelijk is en verbetering oplevert
+        for (Request req : originalRoute) {
+            abort = false;
+            mergeCollects = false;
+            index = originalRoute.indexOf(req);
+            //kopieren originele route zodat we gemakkelijk terug kunnen vallen op de vorige truck
+            tempRoute = truck.getCopyOfRoute();
+            //nieuwe truck aanmaken om te returnen
+            tempTruck = new Truck(truck.getStartlocatie(), truck.getEindlocatie(), truck.getTRUCK_CAPACITY(), truck.getTRUCK_WORKING_TIME(), truck.getTruckId());
+            // checken op gelijkaardige soorten requests (allebei drop/collect -> zelfde type? -> vervangbaar?)
+            if (request.isDrop()) {
+                if (request.getLocation() == null) {
+                    request.setLocation(getNearestDepot(req.getLocation()).getLocation());
+                }
+                //request.getPair().print();
+                request.setMachine(request.getPair().getMachine());
 
-        for (Request req : truck.getRoute()) {
-            tempRoute = truck.getRoute();
-            tempTruck = new Truck(truck.getStartlocatie(), tempTruck.getEindlocatie(), truck.getTRUCK_CAPACITY(), truck.getTRUCK_WORKING_TIME(), truck.getTruckId());
-            tempRoute.add(tempRoute.indexOf(req)+1,request);
-            tempTruck.setRoute(tempRoute);
-            if (tempTruck.possibleRoute()) {
-                if (tempTruck.getTotaleTijdGereden() < time) {
-                    bestTruck = tempTruck;
-                    time = tempTruck.getTotaleTijdGereden();
+                tempRoute.add(index + 1, new Request(request));
+
+            } else {
+                if (request.getLocation() == null) {
+                    request.setLocation(req.getLocation());
+                    depot = getNearestDepotWithMachine(request);
+                    if (depot != null) {
+                        request.setLocation(depot.getLocation());
+                        machine = depot.getMachine(request.getMachineType());
+                        request.setMachine(machine);
+                        tempTruck.getMachineList().add(machine);
+                    } else {
+                        mergeCollects = true;
+                        abort = true;
+                        if (!req.isDrop()) {
+                            if (req.getMachine() != null) {
+                                if (req.getMachine().getMachineType() == request.getMachineType()) {
+                                    tempRoute = addOrPair(req, request, tempRoute, index);
+                                    if (tempRoute.size() < originalRoute.size()) {
+                                        abort = false;
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                }
+                if (!abort) {
+                    if (!mergeCollects) {
+                        if (!req.isDrop()) {
+                            if (req.getMachine() != null) {
+                                if (req.getMachine().getMachineType() == request.getMachine().getMachineType()) {
+                                    if (drop != null) {
+                                        tempRoute = addOrPair(req, request, tempRoute, index);
+                                    } else {
+                                        tempRoute.add(index + 1, new Request(request));
+                                    }
+                                } else {
+                                    tempRoute.add(index + 1, new Request(request));
+                                }
+                            } else {
+                                tempRoute.add(index + 1, new Request(request));
+                            }
+                        } else {
+                            tempRoute.add(index + 1, new Request(request));
+                        }
+                    }
+                }
+
+            }
+            if (!abort) {
+                if (drop != null) {
+                    drop.setMachine(drop.getPair().getMachine());
+                }
+                tempTruck.setRoute(tempRoute);
+
+                if (tempRoute.size() < originalRoute.size()) {
+                    tempTruck = bestPlaceForRequest(tempTruck, drop, null);
+                }
+
+                if (tempTruck.possibleRoute()) {
+
+                    if (tempTruck.getTotaleTijdGereden() < time) {
+                        System.out.println("got to here");
+                        bestTruck = tempTruck;
+                        time = tempTruck.getTotaleTijdGereden();
+                    }
+                } else {
+                    System.out.println("possible zegt false");
                 }
             }
         }
         return bestTruck;
     }
+
+    private static LinkedList<Request> addOrPair(Request req, Request request, LinkedList tempRoute, int index) {
+        Request pair;
+        Request newRequest;
+        if (!req.isDepot() && request.isDepot()) {
+
+            pair = req.getPair();
+            if (pair.isDepot()) {
+                request.getPair().print();
+                System.out.println("printed drop");
+                request.getPair().setPair(req);
+                tempRoute.remove(req.getPair());
+                req.setPair(request);
+            } else {
+                newRequest = new Request(request);
+                request.getPair().setPair(newRequest);
+                tempRoute.add(index + 1,newRequest );
+
+            }
+        } else {
+            newRequest = new Request(request);
+            request.getPair().setPair(newRequest);
+            tempRoute.add(index + 1, newRequest);
+        }
+        return tempRoute;
+    }
+
+    private static int getTotalTime(Truck truck) {
+        int totalTime = 0;
+        for (Truck truck2 : trucksList) {
+            if (truck2.getTruckId() != truck.getTruckId()) {
+                totalTime += truck2.getTotaleTijdGereden();
+            } else {
+                totalTime += truck.getTotaleTijdGereden();
+            }
+        }
+        return totalTime;
+    }
+
+
+    private static Truck bestFittingTruckVersion2(Request request) {
+        int totalTime = Integer.MAX_VALUE;
+        Truck tempTruck;
+        Truck bestTruck = null;
+        int tempTotalTime;
+        System.out.println("next request*************************************");
+        for (Truck truck : trucksList) {
+            System.out.println("next truck");
+            tempTruck = getBestPlaceForRequest(truck, request);
+            if (tempTruck != null) {
+                tempTotalTime = getTotalTime(tempTruck);
+                if (tempTotalTime < totalTime) {
+                    bestTruck = tempTruck;
+                    totalTime = tempTotalTime;
+                }
+            }
+
+        }
+        return bestTruck;
+    }
+
 
     //ophalen best gepaste truck voor de situatie (wordt gebruikt nadat iedere truck al een request gekregen heeft)
     private static Truck bestFittingTruck(Request request) {
@@ -584,7 +783,9 @@ public class Heuristieken {
             Request drop = new Request(depot.getLocation(), machine, true, true);
             drop.setPair(collect);
             collect.setPair(drop);
+
             truck.addRequestToRoute(drop);
+
             truck.addTotaleTijdGereden(getTime(depot.getLocation(), truck.getCurrentLocation()));
             truck.addTotaleAfstand(getDistance(depot.getLocation(), truck.getCurrentLocation()));
             truck.setCurrentLocation(depot.getLocation());
@@ -773,26 +974,10 @@ public class Heuristieken {
             }
             requestListIterator.remove();
         }
-*/
-        //requests toekennen aan trucks
-        ArrayList<Request> addList = new ArrayList<>();
-        boolean requestsLeft = true;
-        Iterator requestListIterator = requestList.listIterator();
-        Truck truck;
-        int addlistSize = -1;
-        while (requestsLeft) {
-            if (!addList.isEmpty()) {
-                addlistSize = addList.size();
-                requestList.addAll(addList);
-                emptyTrucks();
-                addList = new ArrayList<>();
-                requestListIterator = requestList.listIterator();
-            }
-            while (requestListIterator.hasNext()) {
-                request = (Request) requestListIterator.next();
-                truck = bestFittingTruck(request);
 
-                if (truck != null) {
+        ///////////////////////////////////////////////////////////////////////////
+
+         if (truck != null) {
                     if (request.isDrop()) {
                         if (possibleAssignDropToTruck(truck, request)) {
                             assignDropToTruck(truck, request, null);
@@ -818,8 +1003,42 @@ public class Heuristieken {
                     addList.add(request);
                 }
                 requestListIterator.remove();
-            }
 
+      ////////////////////////////////////////////////////////////////////////////
+*/
+        //requests toekennen aan trucks
+        ArrayList<Request> addList = new ArrayList<>();
+        boolean requestsLeft = true;
+        Iterator requestListIterator = requestList.listIterator();
+        Truck truck;
+        int addlistSize = -1;
+        while (requestsLeft) {
+
+            if (!addList.isEmpty()) {
+                addlistSize = addList.size();
+                requestList.addAll(addList);
+                addList = new ArrayList<>();
+                requestListIterator = requestList.listIterator();
+            }
+            while (requestListIterator.hasNext()) {
+                request = (Request) requestListIterator.next();
+                request.print();
+                truck = bestFittingTruckVersion2(request);
+                if (truck == null) {
+                    System.out.println("truck is null");
+                    System.out.println("added to adlist");
+                    addList.add(request);
+                } else {
+                    truck.cleanTruck();
+                    System.out.println("setting truck");
+                    trucksList.set(truck.getTruckId(), truck);
+                    trucksList.get(truck.getTruckId()).printRequestList();
+                    System.out.println("route printed");
+
+                }
+                requestListIterator.remove();
+            }
+            System.out.println("finished one round");
             if (addList.isEmpty() && requestList.isEmpty()) {
                 requestsLeft = false;
             }
@@ -827,6 +1046,12 @@ public class Heuristieken {
                 for (Truck trucker : trucksList) {
                     trucker.addToTruckWorkingTime(50);
                 }
+            }
+            System.out.println("addlist: " + addList.size());
+            try {
+                sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
 
