@@ -1,17 +1,16 @@
 package objects;
 
+import java.rmi.Remote;
 import java.util.*;
-
-import utils.Utils;
 
 import static utils.Utils.getDistance;
 import static utils.Utils.getTime;
 
 public class Truck {
 
-    private int TRUCK_CAPACITY;
-    private int TRUCK_WORKING_TIME;
+    private int truckCapacity;
     private int truckWorkingTime;
+    private int REAL_TRUCK_WORKING_TIME;
     private Location startlocatie;
     private Location eindlocatie;
     private Location currentLocation;
@@ -26,9 +25,8 @@ public class Truck {
     private int truckId;
 
 
-    public Truck(Location startlocatie, Location eindlocatie, int truckCapacity, int truckWorkingTime, int truckId) {
-        this.TRUCK_CAPACITY = truckCapacity;
-        this.TRUCK_WORKING_TIME = truckWorkingTime;
+    public Truck(Location startlocatie, Location eindlocatie, int truckCapacity, int truckWorkingTime, int realTruckWorkingTime, int truckId) {
+        this.truckCapacity = truckCapacity;
         this.truckWorkingTime = truckWorkingTime;
         this.startlocatie = startlocatie;
         this.currentLocation = startlocatie;
@@ -40,12 +38,12 @@ public class Truck {
         routeSet = new HashSet<>();
         machineList = new ArrayList<>();
         this.truckId = truckId;
+        REAL_TRUCK_WORKING_TIME = realTruckWorkingTime;
     }
 
-    public Truck(Truck truck) {
+    public Truck(Truck truck){
         this.truckId = truck.truckId;
-        this.TRUCK_CAPACITY = truck.TRUCK_CAPACITY;
-        this.TRUCK_WORKING_TIME = truck.TRUCK_WORKING_TIME;
+        this.truckCapacity = truck.truckCapacity;
         this.truckWorkingTime = truck.truckWorkingTime;
         this.startlocatie = truck.startlocatie.clone();
         this.eindlocatie = truck.eindlocatie.clone();
@@ -55,17 +53,35 @@ public class Truck {
         this.tijdVoorRequest = truck.tijdVoorRequest;
         this.routeSet = new HashSet<>();
         this.route = new LinkedList<>();
-        for (Request request : truck.route) {
+        this.REAL_TRUCK_WORKING_TIME = truck.REAL_TRUCK_WORKING_TIME;
+
+        Map<Request, Request> cloneMap = new HashMap<>();
+        for(Request request: truck.route) {
             Request q = request.clone();
             route.add(q);
             routeSet.add(q);
+
+            //cloneMap.put(request, q);
         }
+
+        /*for(Request drop: cloneMap.keySet()){
+            if(drop.isDrop()) {
+                Request newDrop = cloneMap.get(drop);
+                Request pair = drop.getPair();
+                if(pair != null){
+                    Request newPair = cloneMap.get(pair);
+                    newPair.setPair(newDrop);
+                    newDrop.setPair(newPair);
+                }
+            }
+        }*/
+
         this.machineList = new ArrayList<>();
-        for (Machine machine : truck.machineList)
+        for(Machine machine: truck.machineList)
             machineList.add(machine.clone());
     }
 
-    public boolean worked() {
+    public boolean worked(){
         for (Request req : route) {
             if (req.getMachine() != null) {
                 return true;
@@ -75,43 +91,48 @@ public class Truck {
     }
 
     public Request getRequestForMachine(Machine machine) {
-        for (Request req : route) {
+        for(Request req: route){
             if (req.getMachine() == machine) {
                 return req;
             }
         }
         return null;
+
     }
 
     public void addTotaleAfstand(int distance) {
         totaleAfstandTruck += distance;
     }
 
-    public void removeTotaleAfstand(int distance) {
+    public void removeTotaleAfstand(int distance){
         totaleAfstandTruck -= distance;
     }
 
-    public void removeTotaleTijdGereden(int time) {
+    public void removeTotaleTijdGereden(int time){
         totaleTijdGereden -= time;
     }
 
     public void addTotaleTijdGereden(int tijd) {
-
-
         this.totaleTijdGereden += tijd;
-
     }
 
     //request achteraan toevoegen => moet gwn tijd en afstand bijtellen
     //niet voor startlocatie toe te voegen!!
     public void addRequestToRoute(Request request) {
-        if (route.size() != 0) {
+        if(route.size() != 0) {
             addTotaleTijdGereden(getTime(request.getLocation(), route.getLast().getLocation()));
             addTotaleAfstand(getDistance(request.getLocation(), route.getLast().getLocation()));
         }
         currentLocation = request.getLocation();
         route.add(request);
         routeSet.add(request);
+
+        if(request.getMachineType() != null){
+            addTotaleTijdGereden(request.getMachineType().getServiceTime());
+        }
+        else if(request.getMachine() != null){
+            addTotaleTijdGereden(request.getMachine().getMachineType().getServiceTime());
+        }
     }
 
 
@@ -125,19 +146,19 @@ public class Truck {
         Location previous = null;
         Location next = null;
 
-        if (index != 0) {
+        if(index != 0) {
             previous = route.get(index - 1).getLocation();
             timeToAdd += getTime(request.getLocation(), previous);
             distanceToAdd = getDistance(request.getLocation(), previous);
 
         }
-        if (index < route.size()) {
+        if(index < route.size()) {
             next = route.get(index).getLocation();
             timeToAdd += getTime(request.getLocation(), next);
             distanceToAdd += getDistance(request.getLocation(), next);
         }
 
-        if (previous != null && next != null) {
+        if(previous != null && next != null){
             timeToRemove = getTime(previous, next);
             distanceToRemove = getDistance(previous, next);
             removeTotaleAfstand(distanceToRemove);
@@ -149,10 +170,17 @@ public class Truck {
 
         route.add(index, request);
         routeSet.add(request);
+
+        if(request.getMachineType() != null){
+            addTotaleTijdGereden(request.getMachineType().getServiceTime());
+        }
+        else if(request.getMachine() != null){
+            addTotaleTijdGereden(request.getMachine().getMachineType().getServiceTime());
+        }
     }
 
     //verwijder request en bijhorende tijden en afstanden
-    public int removeRequest(Request request) {
+    public int removeRequest(Request request){
         int distanceToAdd = 0;
         int timeToAdd = 0;
         int timeToRemove = 0;
@@ -162,14 +190,14 @@ public class Truck {
         Location current = request.getLocation();
         int index = route.indexOf(request);
 
-        if (index != 0) {
+        if(index != 0) {
             previous = route.get(index - 1).getLocation();
             timeToRemove += getTime(current, previous);
             distanceToRemove = getDistance(current, previous);
 
         }
-        if (index < route.size() - 1) {
-            next = route.get(index + 1).getLocation();
+        if(index < route.size()-1) {
+            next = route.get(index+1).getLocation();
             timeToRemove += getTime(current, next);
             distanceToRemove += getDistance(current, next);
         }
@@ -177,7 +205,7 @@ public class Truck {
         removeTotaleAfstand(distanceToRemove);
         removeTotaleTijdGereden(timeToRemove);
 
-        if (previous != null && next != null) {
+        if(previous != null && next != null) {
             timeToAdd = getTime(previous, next);
             distanceToAdd = getDistance(previous, next);
             addTotaleAfstand(distanceToAdd);
@@ -187,27 +215,35 @@ public class Truck {
         route.remove(request);
         routeSet.remove(request);
 
+        if(request.getMachineType() != null){
+            removeTotaleTijdGereden(request.getMachineType().getServiceTime());
+        }
+        else if(request.getMachine() != null){
+            removeTotaleTijdGereden(request.getMachine().getMachineType().getServiceTime());
+        }
+
         return index;
     }
 
     //verzijder request op index par:i en bijhorende tijden en afstanden
-    public Request removeRequest(int index) {
+    public Request removeRequest(int index){
         int distanceToAdd = 0;
         int timeToAdd = 0;
         int timeToRemove = 0;
         int distanceToRemove = 0;
         Location previous = null;
         Location next = null;
-        Location current = route.get(index).getLocation();
+        Request request = route.get(index);
+        Location current = request.getLocation();
 
-        if (index != 0) {
+        if(index != 0) {
             previous = route.get(index - 1).getLocation();
             timeToRemove += getTime(current, previous);
             distanceToRemove = getDistance(current, previous);
 
         }
-        if (index < route.size() - 1) {
-            next = route.get(index + 1).getLocation();
+        if(index < route.size()-1) {
+            next = route.get(index+1).getLocation();
             timeToRemove += getTime(current, next);
             distanceToRemove += getDistance(current, next);
         }
@@ -215,11 +251,18 @@ public class Truck {
         removeTotaleAfstand(distanceToRemove);
         removeTotaleTijdGereden(timeToRemove);
 
-        if (previous != null && next != null) {
+        if(previous != null && next != null) {
             timeToAdd = getTime(previous, next);
             distanceToAdd = getDistance(previous, next);
             addTotaleAfstand(distanceToAdd);
             addTotaleTijdGereden(timeToAdd);
+        }
+
+        if(request.getMachineType() != null){
+            removeTotaleTijdGereden(request.getMachineType().getServiceTime());
+        }
+        else if(request.getMachine() != null){
+            removeTotaleTijdGereden(request.getMachine().getMachineType().getServiceTime());
         }
 
         routeSet.remove(index);
@@ -273,20 +316,12 @@ public class Truck {
         this.routeSet = routeSet;
     }
 
-    public int getTRUCK_CAPACITY() {
-        return TRUCK_CAPACITY;
-    }
-
-    public int getTRUCK_WORKING_TIME() {
-        return TRUCK_WORKING_TIME;
+    public int getTruckCapacity() {
+        return truckCapacity;
     }
 
     public int getTruckWorkingTime() {
         return truckWorkingTime;
-    }
-
-    public void setTruckWorkingTime(int truckWorkingTime) {
-        this.truckWorkingTime = truckWorkingTime;
     }
 
     public Location getStartlocatie() {
@@ -419,6 +454,14 @@ public class Truck {
     }
 
     public void addToTruckWorkingTime(int timeToAdd) {
-        TRUCK_WORKING_TIME += timeToAdd;
+        truckWorkingTime += timeToAdd;
+    }
+
+    public int getREAL_TRUCK_WORKING_TIME() {
+        return REAL_TRUCK_WORKING_TIME;
+    }
+
+    public void setREAL_TRUCK_WORKING_TIME(int REAL_TRUCK_WORKING_TIME) {
+        this.REAL_TRUCK_WORKING_TIME = REAL_TRUCK_WORKING_TIME;
     }
 }

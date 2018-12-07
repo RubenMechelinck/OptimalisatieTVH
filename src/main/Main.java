@@ -10,8 +10,8 @@ import java.util.List;
 
 public class Main {
 
-    private static final String inputFilename = "tvh_problem_8.txt";
-    private static final String outputFilename = "tvh_problem_8_own_solution.txt";
+    private static final String inputFilename = "tvh_problem_4.txt";
+    private static final String outputFilename = "tvh_problem_4_own_solution.txt";
 
     //voorlopig opslaan als classe later mss niet nodig?
 
@@ -39,7 +39,17 @@ public class Main {
         Heuristieken.constructieveHeuristiek();
         solution.evaluate();
 
-        //Heuristieken.perturbatieveHeuristiek();
+        for(Truck truck: trucksList){
+            int count = 0;
+            for(Request request: truck.getRoute()){
+                if(request.getPair() == null){
+                    count++;
+                }
+            }
+            System.out.println(count);
+        }
+
+        Heuristieken.perturbatieveHeuristiek();
 
         //schrijf output
         FileUtils.writeOutputFile(outputFilename, inputFilename, solution);

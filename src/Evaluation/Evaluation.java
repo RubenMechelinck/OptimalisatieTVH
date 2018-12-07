@@ -15,14 +15,16 @@ import static main.Main.trucksList;
 public class Evaluation {
     private int totalDistance = 0;
     private int weight = 0;
+    private int infeasableOverload = 0;
     private boolean isFeasable = true;
-    private boolean isBetterSolution = false;
+    private boolean reallyFeasable = true;
     private Map<Truck, Integer> distanceMapping = new HashMap<>();
+    private Map<Truck, Integer> overloadTimeMapping = new HashMap<>();
 
-    private Map<Truck, Integer> revertMap;
-    private int revertTotalDistance;
-    private boolean revertFeasable;
-    private boolean revertBetter;
+    private Map<Truck, Integer> revertDistanceMap = new HashMap<>();
+    private Map<Truck, Integer> revertOverloadTimeMap = new HashMap<>();
+    private boolean revertFeasable = true;
+    private boolean revertReallyFeasable = true;
 
 
     private int COST_DRIVE_LIMIT = 10000;
@@ -33,51 +35,120 @@ public class Evaluation {
     private int COST_ENDCAP_NOT_ZERO = 10000;
 
     public Evaluation() {
-        revertMap = new HashMap<>();
-        revertTotalDistance = totalDistance;
-        revertBetter = isBetterSolution;
-        revertFeasable = isFeasable;
 
-        for (Truck t : trucksList)
-            evaluate(t);
+        for (Truck t : trucksList) {
+            boolean[] result = evaluate(t);
+
+            isFeasable = result[0];
+
+            //als isFeasable false is => reallyFeasable is sws ook false => break
+            if(!isFeasable) {
+                reallyFeasable = false;
+                break;
+            }
+
+            //vanaf dat reallyFeasable false is => blijft false
+            if(reallyFeasable)
+                reallyFeasable = result[1];
+        }
     }
 
+    //if een nieuwe trucks zijn isFeasable false => sws revert
+    //else if alle isFeasable true en vorige isfeasable is ook true => nieuwe isfeasable is true
+    //if een reallyfeasable is false => nieuwe reallyFeasable is ook false
+    //if alle reallyfeasable is true en vorige reallyfeasable is ook true => nieuwe reallyfeasable is ook true
+    //if alle reallyFeasable is true en vorige reallyfeasable is false => check alles voor juiste nieuwe reallyfeasable
     public void deltaEvaluate(Truck... trucks) {
-        isFeasable = true;
-        isBetterSolution = false;
-        revertTotalDistance = totalDistance;
+        boolean oudeReallyFeasable = reallyFeasable;
+        revertFeasable = isFeasable;
+        revertReallyFeasable = reallyFeasable;
 
-        for (Truck truck : trucks) {
-            revertMap.put(truck, distanceMapping.get(truck));
+        revertDistanceMap = new HashMap<>();
+        revertOverloadTimeMap = new HashMap<>();
+
+        boolean alleReallyFeasable = true;
+
+        boolean bal = true;
+        for (Truck truck: trucks) {
+            revertDistanceMap.put(truck, distanceMapping.get(truck));
             totalDistance -= distanceMapping.get(truck);
-            evaluate(truck);
+
+            Integer t = overloadTimeMapping.get(truck);
+            if(t != null) {
+                revertOverloadTimeMap.put(truck, overloadTimeMapping.get(truck));
+                infeasableOverload -= t;
+            }
+
+            boolean[] result = evaluate(truck);
+
+            if(result[0] && result[1] && !bal)
+                System.out.println();
+
+            bal = false;
+
+            //if een truck isFeasable is false => sws niet meer te rijden => break
+            if(!result[0]){
+                isFeasable = false;
+                reallyFeasable = false;
+                break;
+            }
+
+            if(!result[1]){
+                reallyFeasable = false;
+            }
+
+            if(alleReallyFeasable)
+                alleReallyFeasable = result[1];
         }
+
+        if(!oudeReallyFeasable && alleReallyFeasable){
+            for (Truck t : trucksList) {
+                boolean[] result = evaluate(t);
+                isFeasable = result[0];
+                reallyFeasable = result[1];
+            }
+        }
+
+
     }
 
     public void revert(){
-        totalDistance = revertTotalDistance;
+        //totalDistance = revertTotalDistance;
         isFeasable = revertFeasable;
-        isBetterSolution = revertBetter;
+        reallyFeasable = revertReallyFeasable;
+        //infeasableOverload = revertInfeasableOverload;
 
-        for(Truck t: revertMap.keySet()){
-            distanceMapping.put(t, revertMap.get(t));
+        for(Truck t: revertDistanceMap.keySet()){
+            totalDistance -= distanceMapping.get(t);
+            totalDistance += revertDistanceMap.get(t);
+            distanceMapping.put(t, revertDistanceMap.get(t));
         }
-        revertMap = new HashMap<>();
 
+        for(Truck t: revertOverloadTimeMap.keySet()){
+            infeasableOverload -= overloadTimeMapping.get(t);
+            infeasableOverload += revertOverloadTimeMap.get(t);
+            overloadTimeMapping.put(t, revertOverloadTimeMap.get(t));
+        }
     }
 
-    private void evaluate(Truck t){
+    private boolean[] evaluate(Truck t){
+        boolean isFeasable = true;
+        boolean reallyFeasable = true;
+
         //Calculate the total distance
         int afstand = t.getTotaleAfstandTruck();
         totalDistance += afstand;
         distanceMapping.put(t, afstand);
 
-        //Een boete van 10000 indien een truck over zijn rijlimiet gaat
-        if (t.getTotaleTijdGereden() > t.getTRUCK_WORKING_TIME()) {
-            System.out.println(t.getTruckId());
-            System.out.println("over tijdslimiet infeasible");
-            weight += COST_DRIVE_LIMIT;
+        if (t.getTotaleTijdGereden() > t.getTruckWorkingTime()) {
             isFeasable = false;
+        }
+
+        //Een boete van 10000 indien een truck over zijn rijlimiet gaat
+        if (t.getTotaleTijdGereden() > t.getREAL_TRUCK_WORKING_TIME()) {
+            infeasableOverload += (t.getTotaleTijdGereden() - t.getREAL_TRUCK_WORKING_TIME());
+            weight += COST_DRIVE_LIMIT;
+            reallyFeasable = false;
         }
 
         //Kijken of truck over zijn capaciteit gaat, zoja -> Straf van 10.000 per keer
@@ -86,16 +157,13 @@ public class Evaluation {
         for (Request r : t.getRoute()) {
             //  r.print();
             if (r.isDrop()) {
-                //System.out.println("r is drop");
-                //Voor capaciteit te checken
-
                 tempCapacity -= r.getMachine().getMachineType().getVolume();
-
 
                 //Altijd kijken of de pickup hiervan ook aanwezig is!
                 if (noPickUp(t, r)) {
                     weight += COST_NO_DROP_COLLECT_COUPLE;
-                    System.out.println("pickup niet aanwezig infeasible");
+                    //System.out.println("pickup niet aanwezig infeasible");
+                    reallyFeasable = false;
                     isFeasable = false;
                 }
             } else {
@@ -108,24 +176,24 @@ public class Evaluation {
                 //Altijd kijken of de drop van deze pickup ook aanwezig is!
                 if (noDrop(t, r)) {
                     weight += COST_NO_DROP_COLLECT_COUPLE;
-
-                    System.out.println("drop niet aanwezig infeasible");
+                    //System.out.println("drop niet aanwezig infeasible");
+                    reallyFeasable = false;
                     isFeasable = false;
                 }
             }
 
-
-            if (tempCapacity > t.getTRUCK_CAPACITY()) {
+            if (tempCapacity > t.getTruckCapacity()) {
                 weight += COST_CAPACITY;
-                System.out.println("capacity infeasible");
+                //System.out.println("capacity infeasible");
+                reallyFeasable = false;
                 isFeasable = false;
             }
 
             //Elke request wordt maar gedaan door 1 enkele truck, anders +10000
             if (doubleRequests(r, trucksList)) {
                 weight += COST_MULTIPLE_TRUCKS_PER_REQUEST;
-
-                System.out.println("meerdere trucks aan zelfde request infeasible");
+                //System.out.println("meerdere trucks aan zelfde request infeasible");
+                reallyFeasable = false;
                 isFeasable = false;
             }
         }
@@ -133,9 +201,8 @@ public class Evaluation {
         if (t.getRoute().size() > 0) {
             if (!t.getRoute().get(t.getRoute().size() - 1).getLocation().equals(t.getEindlocatie())) {
                 weight += COST_NO_DEPOT_ENDPOINT;
-                System.out.println(t.getTruckId());
-                t.printRequestList();
-                System.out.println("geen depot op einde infeasible");
+                //System.out.println("geen depot op einde infeasible");
+                reallyFeasable = false;
                 isFeasable = false;
             }
         }
@@ -143,14 +210,16 @@ public class Evaluation {
         //op einde is capaciteit ook weer 0
         if (tempCapacity != 0) {
             weight += COST_ENDCAP_NOT_ZERO;
-
-            System.out.println("eindcapaciteit niet nul infeasible");
+            //System.out.println("eindcapaciteit niet nul infeasible");
+            reallyFeasable = false;
             isFeasable = false;
         }
+
+        return new boolean[]{isFeasable, reallyFeasable};
     }
 
 
-    public boolean doubleRequests(Request r, List<Truck> trucks) {
+    private boolean doubleRequests(Request r, List<Truck> trucks) {
         int requests = 0;
         for (Truck t : trucks) {
             if (t.getRoute().contains(r)) {
@@ -163,7 +232,7 @@ public class Evaluation {
         return false;
     }
 
-    public boolean noPickUp(Truck t, Request r) {
+    private boolean noPickUp(Truck t, Request r) {
         boolean noPickUp = true;
         for (Request req : t.getRoute()) {
             if (r != req) {
@@ -181,7 +250,7 @@ public class Evaluation {
         return noPickUp;
     }
 
-    public boolean noDrop(Truck t, Request r) {
+    private boolean noDrop(Truck t, Request r) {
         boolean noDrop = true;
         for (Request req : t.getRoute()) {
             if (r != req) {
@@ -217,11 +286,21 @@ public class Evaluation {
         return isFeasable;
     }
 
-    public boolean isBetterSolution() {
-        return isBetterSolution;
+    public boolean isReallyFeasable() {
+        return reallyFeasable;
     }
 
-    public void setBetterSolution(boolean betterSolution) {
-        isBetterSolution = betterSolution;
+    public void setReallyFeasable(boolean reallyFeasable) {
+        this.reallyFeasable = reallyFeasable;
     }
+
+    public int getInfeasableOverload() {
+        return infeasableOverload;
+    }
+
+    public void setInfeasableOverload(int infeasableOverload) {
+        this.infeasableOverload = infeasableOverload;
+    }
+
+
 }

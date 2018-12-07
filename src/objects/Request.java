@@ -5,6 +5,7 @@ public class Request {
     private Location location;
     private MachineType machineType;
     private Machine machine;
+    private int id;
 
     private boolean drop; //true = drop, false = collect
     private boolean depot;
@@ -91,6 +92,14 @@ public class Request {
 
     public void setDepot(boolean depot) {
         this.depot = depot;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void print() {

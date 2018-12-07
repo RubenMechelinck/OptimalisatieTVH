@@ -111,7 +111,7 @@ public class FileUtils {
                         depot = false;
                     }
                 } else if (truck) {
-                    trucker = new Truck(locationList.get(Integer.parseInt(split[start + 1])), locationList.get(Integer.parseInt(split[start + 2])), truckCapacity, truckWorkingTime, Integer.parseInt(split[start]));
+                    trucker = new Truck(locationList.get(Integer.parseInt(split[start + 1])), locationList.get(Integer.parseInt(split[start + 2])), truckCapacity, truckWorkingTime, truckWorkingTime, Integer.parseInt(split[start]));
                     trucker.getRoute().add(new Request(trucker.getStartlocatie(), false, false));
                     trucksList.add(trucker);
                     size -= 1;
@@ -216,7 +216,6 @@ public class FileUtils {
             }
             System.out.println("");
         }*/
-
     }
 
     public static void writeOutputFile(String outputFilename, String inputFilename, Solution solution) {
