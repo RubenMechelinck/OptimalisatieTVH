@@ -1,17 +1,16 @@
 package main;
 
-import Evaluation.Evaluation;
-import utils.FileUtils;
 import heuristiek_impl.Heuristieken;
 import objects.*;
+import utils.FileUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
 
-    private static final String inputFilename = "tvh_problem_5.txt";
-    private static final String outputFilename = "tvh_problem_5_own_solution.txt";
+    private static final String inputFilename = "tvh_problem_8.txt";
+    private static final String outputFilename = "tvh_problem_8_own_solution.txt";
 
     //voorlopig opslaan als classe later mss niet nodig?
 
@@ -38,6 +37,9 @@ public class Main {
         //constructive heuristiek uitvoeren
         Heuristieken.constructieveHeuristiek();
         solution.evaluate();
+
+        for(Truck t: trucksList)
+            t.setSize();
 
         for(Truck truck: trucksList){
             int count = 0;

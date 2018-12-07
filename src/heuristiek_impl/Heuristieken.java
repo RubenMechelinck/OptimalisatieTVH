@@ -38,8 +38,7 @@ public class Heuristieken {
 
     public static void perturbatieveHeuristiek() {
         //paar iteraties
-        //voorlopig veranderd niet veel meer na 30/40 itertaties
-        for(int i = 0; i < 50; i++) {
+        for(int i = 0; i < 800; i++) {
             System.out.println("itr " + i);
             localSearch();
         }
@@ -55,7 +54,7 @@ public class Heuristieken {
     //  locatie van depot request wisselen
     //  depot request zo dicht mogelijk bij elkaar zetten
     private static void localSearch(){
-        //moveRequestsBetweenTrucks();
+        moveRequestsBetweenTrucks();
         //move van Joran
     }
 
@@ -105,7 +104,8 @@ public class Heuristieken {
             //System.out.println("\t\t" + it);
             //get random drop/collect en de bijhorende collect/drop
             // + verwijder uit truck1 lijst!
-            int q = (int) (Math.random() * truck1.getRoute().size());
+            //-1 want laatste mag niet pakken!!
+            int q = (int) (Math.random() * truck1.getRoute().size()-1);
             Request tmp = truck1.removeRequest(q, false);
             it++;
             //if speciale request om leeg naar depot te rijden => zet terug in list
@@ -119,12 +119,20 @@ public class Heuristieken {
                 drop = tmp;
                 indexDrop = q;
                 collect = tmp.getPair();
+                if(collect == truck1.getRoute().getLast()){
+                    truck1.addRequestToRoute(drop, indexDrop, false);
+                    continue;
+                }
                 indexCollect = truck1.removeRequest(collect, false);
             }
             else {
                 collect = tmp;
                 indexCollect = q;
                 drop = tmp.getPair();
+                if(drop == truck1.getRoute().getLast()){
+                    truck1.addRequestToRoute(collect, indexCollect, false);
+                    continue;
+                }
                 indexDrop = truck1.removeRequest(drop, false);
             }
 
@@ -159,9 +167,10 @@ public class Heuristieken {
                     //System.out.println("\t\t\t\tnieuwe beste plaats genomen");
                     Request besteInBuurtVoorDrop = bestePlaatsenVoorDrop.poll();
                     int index = requestsListTruck2.indexOf(besteInBuurtVoorDrop);
-                    //check of index 0 is => start locate is beste => moet drop NA start zetten!!
+                    //check of index 0 is => start locatie is beste => moet drop NA start zetten!!
                     if(index == 0)
                         index = 1;
+
                     truck2.addRequestToRoute(drop, index, false);
 
                     //get beste plaats voor collect te zetten
@@ -169,14 +178,11 @@ public class Heuristieken {
                     //get sublist van alles voor het ingevoegde drop request
                     List<Request> sublist = requestsListTruck2.subList(0, index);
                     Request besteInBuurtVoorCollect = getDichtsteRequest(sublist, collect);
-                    //als geen beste gevonden is (bv index = 0 => sublist is null) => beste locatie is vooraan
-                    //if(besteInBuurtVoorCollect != null) {
-                        index = sublist.indexOf(besteInBuurtVoorCollect);
-                        //collect na de beste locatie zetten, zodat niet voor startlocatie zou komen
-                        index++;
-                    //}
-                    //else
-                    //    index = 0;
+
+                    index = sublist.indexOf(besteInBuurtVoorCollect);
+                    //collect na de beste locatie zetten, zodat niet voor startlocatie zou komen
+                    index++;
+
                     truck2.addRequestToRoute(collect, index, false);
 
                     evaluation = solution.evaluate(truck1, truck2);
@@ -285,7 +291,7 @@ public class Heuristieken {
         for (Machine machine : machineList) {
             if (machine.getLocation().getDepot()) {
                 for (Depot depot : depots) {
-                    if (depot.getLocation().equals(machine.getLocation())) {
+                    if (depot.getLocation() == machine.getLocation()) {
                         depot.addMachine(machine);
                     }
                 }

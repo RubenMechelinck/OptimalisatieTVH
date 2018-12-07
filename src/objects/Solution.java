@@ -24,8 +24,8 @@ public class Solution {
     public Evaluation evaluate(Truck... trucks) {
 
         if(trucks.length != 0){
-            //lastEvaluation.deltaEvaluate(trucks);
-            lastEvaluation= new Evaluation();
+            lastEvaluation.deltaEvaluate(trucks);
+            //lastEvaluation= new Evaluation();
         }
         else {
             //Zo kan je dan aan de weight en de afstand
@@ -36,7 +36,7 @@ public class Solution {
         }
 
         //if feasable en betere afstand => in best steken
-        if (lastEvaluation.isReallyFeasable() && lastEvaluation.getTotalDistance() < bestCost) {
+        if (lastEvaluation.isReallyFeasable() && lastEvaluation.isFeasable() && lastEvaluation.getTotalDistance() < bestCost) {
             //eenmaal een feasable oplossing gevonden => altijd verder zoeken op feasable pad
             switchToFeasable = true;
             bestCost = lastEvaluation.getTotalDistance();
@@ -54,7 +54,7 @@ public class Solution {
         //if niet feasable en niet minder unfeasable afstand => reject
         else{
             //System.out.println(lastEvaluation.getTotalDistance());
-            //lastEvaluation.revert();
+            lastEvaluation.revert();
             return null;
         }
     }

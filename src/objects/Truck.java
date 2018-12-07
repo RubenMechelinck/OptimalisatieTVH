@@ -24,6 +24,15 @@ public class Truck {
     private List<Machine> machineList;
     private int truckId;
 
+    private int size;
+    public void setSize(){
+        size = route.size();
+    }
+
+    public boolean checkSize(){
+        return (size - route.size())%2 == 0;
+    }
+
 
     public Truck(Location startlocatie, Location eindlocatie, int truckCapacity, int truckWorkingTime, int realTruckWorkingTime, int truckId) {
         this.truckCapacity = truckCapacity;
