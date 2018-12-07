@@ -118,7 +118,7 @@ public class Truck {
 
     //request achteraan toevoegen => moet gwn tijd en afstand bijtellen
     //niet voor startlocatie toe te voegen!!
-    public void addRequestToRoute(Request request) {
+    public void addRequestToRoute(Request request, boolean contructive) {
         if(route.size() != 0) {
             addTotaleTijdGereden(getTime(request.getLocation(), route.getLast().getLocation()));
             addTotaleAfstand(getDistance(request.getLocation(), route.getLast().getLocation()));
@@ -127,18 +127,19 @@ public class Truck {
         route.add(request);
         routeSet.add(request);
 
-        if(request.getMachineType() != null){
-            addTotaleTijdGereden(request.getMachineType().getServiceTime());
-        }
-        else if(request.getMachine() != null){
-            addTotaleTijdGereden(request.getMachine().getMachineType().getServiceTime());
+        if(!contructive) {
+            if (request.getMachineType() != null) {
+                addTotaleTijdGereden(request.getMachineType().getServiceTime());
+            } else if (request.getMachine() != null) {
+                addTotaleTijdGereden(request.getMachine().getMachineType().getServiceTime());
+            }
         }
     }
 
 
     //request wordt op index par:i gezet
     //request toevoegen op specifieke plaats => meer werk om tijd en afstand aan te passen
-    public void addRequestToRoute(Request request, int index) {
+    public void addRequestToRoute(Request request, int index, boolean contructive) {
         int distanceToAdd = 0;
         int timeToAdd = 0;
         int timeToRemove = 0;
@@ -171,16 +172,17 @@ public class Truck {
         route.add(index, request);
         routeSet.add(request);
 
-        if(request.getMachineType() != null){
-            addTotaleTijdGereden(request.getMachineType().getServiceTime());
-        }
-        else if(request.getMachine() != null){
-            addTotaleTijdGereden(request.getMachine().getMachineType().getServiceTime());
+        if(!contructive) {
+            if (request.getMachineType() != null) {
+                addTotaleTijdGereden(request.getMachineType().getServiceTime());
+            } else if (request.getMachine() != null) {
+                addTotaleTijdGereden(request.getMachine().getMachineType().getServiceTime());
+            }
         }
     }
 
     //verwijder request en bijhorende tijden en afstanden
-    public int removeRequest(Request request){
+    public int removeRequest(Request request, boolean contructive){
         int distanceToAdd = 0;
         int timeToAdd = 0;
         int timeToRemove = 0;
@@ -215,18 +217,19 @@ public class Truck {
         route.remove(request);
         routeSet.remove(request);
 
-        if(request.getMachineType() != null){
-            removeTotaleTijdGereden(request.getMachineType().getServiceTime());
-        }
-        else if(request.getMachine() != null){
-            removeTotaleTijdGereden(request.getMachine().getMachineType().getServiceTime());
+        if(!contructive) {
+            if (request.getMachineType() != null) {
+                removeTotaleTijdGereden(request.getMachineType().getServiceTime());
+            } else if (request.getMachine() != null) {
+                removeTotaleTijdGereden(request.getMachine().getMachineType().getServiceTime());
+            }
         }
 
         return index;
     }
 
     //verzijder request op index par:i en bijhorende tijden en afstanden
-    public Request removeRequest(int index){
+    public Request removeRequest(int index, boolean contructive){
         int distanceToAdd = 0;
         int timeToAdd = 0;
         int timeToRemove = 0;
@@ -258,11 +261,12 @@ public class Truck {
             addTotaleTijdGereden(timeToAdd);
         }
 
-        if(request.getMachineType() != null){
-            removeTotaleTijdGereden(request.getMachineType().getServiceTime());
-        }
-        else if(request.getMachine() != null){
-            removeTotaleTijdGereden(request.getMachine().getMachineType().getServiceTime());
+        if(!contructive) {
+            if (request.getMachineType() != null) {
+                removeTotaleTijdGereden(request.getMachineType().getServiceTime());
+            } else if (request.getMachine() != null) {
+                removeTotaleTijdGereden(request.getMachine().getMachineType().getServiceTime());
+            }
         }
 
         routeSet.remove(index);

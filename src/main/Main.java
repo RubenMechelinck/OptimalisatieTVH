@@ -10,8 +10,8 @@ import java.util.List;
 
 public class Main {
 
-    private static final String inputFilename = "tvh_problem_4.txt";
-    private static final String outputFilename = "tvh_problem_4_own_solution.txt";
+    private static final String inputFilename = "tvh_problem_5.txt";
+    private static final String outputFilename = "tvh_problem_5_own_solution.txt";
 
     //voorlopig opslaan als classe later mss niet nodig?
 

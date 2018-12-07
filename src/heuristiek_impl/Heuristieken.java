@@ -39,7 +39,7 @@ public class Heuristieken {
     public static void perturbatieveHeuristiek() {
         //paar iteraties
         //voorlopig veranderd niet veel meer na 30/40 itertaties
-        for(int i = 0; i < 10; i++) {
+        for(int i = 0; i < 50; i++) {
             System.out.println("itr " + i);
             localSearch();
         }
@@ -106,12 +106,12 @@ public class Heuristieken {
             //get random drop/collect en de bijhorende collect/drop
             // + verwijder uit truck1 lijst!
             int q = (int) (Math.random() * truck1.getRoute().size());
-            Request tmp = truck1.removeRequest(q);
+            Request tmp = truck1.removeRequest(q, false);
             it++;
             //if speciale request om leeg naar depot te rijden => zet terug in list
             // en pak een andere random
             if(tmp.getMachine() == null && tmp.getMachineType() == null){
-                truck1.addRequestToRoute(tmp, q);
+                truck1.addRequestToRoute(tmp, q, false);
                 continue;
             }
 
@@ -119,13 +119,13 @@ public class Heuristieken {
                 drop = tmp;
                 indexDrop = q;
                 collect = tmp.getPair();
-                indexCollect = truck1.removeRequest(collect);
+                indexCollect = truck1.removeRequest(collect, false);
             }
             else {
                 collect = tmp;
                 indexCollect = q;
                 drop = tmp.getPair();
-                indexDrop = truck1.removeRequest(drop);
+                indexDrop = truck1.removeRequest(drop, false);
             }
 
             int j = 0;
@@ -162,7 +162,7 @@ public class Heuristieken {
                     //check of index 0 is => start locate is beste => moet drop NA start zetten!!
                     if(index == 0)
                         index = 1;
-                    truck2.addRequestToRoute(drop, index);
+                    truck2.addRequestToRoute(drop, index, false);
 
                     //get beste plaats voor collect te zetten
                     //(request dat dichtst in de buurt van collect locatie ligt)
@@ -177,7 +177,7 @@ public class Heuristieken {
                     //}
                     //else
                     //    index = 0;
-                    truck2.addRequestToRoute(collect, index);
+                    truck2.addRequestToRoute(collect, index, false);
 
                     evaluation = solution.evaluate(truck1, truck2);
 
@@ -187,14 +187,14 @@ public class Heuristieken {
                             System.out.println(evaluation.getTotalDistance());
                         //if not feasable maar wel minder overload => goeie stap => verder doen in volgende itr
                         else
-                            System.out.println("unfeasable overload " + evaluation.getInfeasableOverload());
+                            System.out.println("infeasable overload " + evaluation.getInfeasableOverload());
 
                         placed = true;
                         break;
                     }
                     else{
-                        truck2.removeRequest(drop);
-                        truck2.removeRequest(collect);
+                        truck2.removeRequest(drop, false);
+                        truck2.removeRequest(collect, false);
                         placed = false;
                     }
                 }
@@ -205,11 +205,11 @@ public class Heuristieken {
                 //voeg laagste uitgehaald eerst toe (ander kan IndexOutOfBoundsDingenException krijgen)
                 //tmp was eerst uitgehaalde, als drop eerst is uitgehaald => eerst collect terugzetten
                 if (drop == tmp) {
-                    truck1.addRequestToRoute(collect, indexCollect);
-                    truck1.addRequestToRoute(drop, indexDrop);
+                    truck1.addRequestToRoute(collect, indexCollect, false);
+                    truck1.addRequestToRoute(drop, indexDrop, false);
                 } else {
-                    truck1.addRequestToRoute(drop, indexDrop);
-                    truck1.addRequestToRoute(collect, indexCollect);
+                    truck1.addRequestToRoute(drop, indexDrop, false);
+                    truck1.addRequestToRoute(collect, indexCollect, false);
                 }
             }
         }
@@ -532,7 +532,7 @@ public class Heuristieken {
             Request drop = new Request(depot.getLocation(), machine, true, true);
             drop.setPair(collect);
             collect.setPair(drop);
-            truck.addRequestToRoute(drop);
+            truck.addRequestToRoute(drop, true);
             /*
             truck.addTotaleTijdGereden(getTime(depot.getLocation(), truck.getCurrentLocation()));
             truck.addTotaleAfstand(getDistance(depot.getLocation(), truck.getCurrentLocation()));*/
@@ -564,8 +564,8 @@ public class Heuristieken {
             depot.removeMachine(machine);
             drop.setMachine(machine);
             Request collect = new Request(truck.getCurrentLocation(), drop.getMachine(), false, true);
-            //truck.addTotaleTijdGereden(2 * drop.getMachineType().getServiceTime());
-            truck.addRequestToRoute(collect);
+            truck.addTotaleTijdGereden(2 * drop.getMachineType().getServiceTime());
+            truck.addRequestToRoute(collect, true);
             drop.setPair(collect);
             collect.setPair(drop);
             emptyTruck(truck); //legen want truck is in depot
@@ -575,7 +575,7 @@ public class Heuristieken {
         truck.addTotaleTijdGereden(getTime(truck.getCurrentLocation(), drop.getLocation()));
         truck.addTotaleAfstand(getDistance(truck.getCurrentLocation(), drop.getLocation()));*/
         //truck.setCurrentLocation(depot.getLocation());
-        truck.addRequestToRoute(drop);
+        truck.addRequestToRoute(drop, true);
     }
 
     //toekennen drop aan truck indien deze eerst moet paseren langs een ander depot
@@ -583,14 +583,14 @@ public class Heuristieken {
         depot.removeMachine(drop.getMachine());
 
         Request collect = new Request(depot.getLocation(), drop.getMachine(), false, true);
-        truck.addRequestToRoute(collect);
+        truck.addRequestToRoute(collect, true);
         collect.setPair(drop);
         drop.setPair(collect);
         /*
         truck.addTotaleTijdGereden(getTime(truck.getCurrentLocation(), depot.getLocation()));
         truck.addTotaleAfstand(getDistance(truck.getCurrentLocation(), depot.getLocation()));
         */
-        //truck.addTotaleTijdGereden(2 * drop.getMachineType().getServiceTime());
+        truck.addTotaleTijdGereden(2 * drop.getMachineType().getServiceTime());
         //truck.setCurrentLocation(depot.getLocation());
         emptyTruck(truck); //truck legen want truck is in depot
 
@@ -599,7 +599,7 @@ public class Heuristieken {
         truck.addTotaleAfstand(getDistance(truck.getCurrentLocation(), drop.getLocation()));
         */
         //truck.setCurrentLocation(drop.getLocation());
-        truck.addRequestToRoute(drop);
+        truck.addRequestToRoute(drop, true);
     }
 
 
@@ -607,12 +607,12 @@ public class Heuristieken {
     private static void assignCollectToTruck(Truck truck, Request collect) {
 
         truck.getMachineList().add(collect.getMachine());
-        //truck.addTotaleTijdGereden(2 * collect.getMachine().getMachineType().getServiceTime());
+        truck.addTotaleTijdGereden(2 * collect.getMachine().getMachineType().getServiceTime());
         /*
         truck.addTotaleTijdGereden(getTime(truck.getCurrentLocation(), collect.getLocation()));
         truck.addTotaleAfstand(getDistance(truck.getCurrentLocation(), collect.getLocation()));*/
         //truck.setCurrentLocation(collect.getLocation());
-        truck.addRequestToRoute(collect);
+        truck.addRequestToRoute(collect, true);
     }
 
     private static void assignRequestsToTrucks(Map<Depot, Set<Request>> clusters) {
@@ -622,7 +622,6 @@ public class Heuristieken {
 
         surplusRequests = new ArrayList<>();
 
-        Iterator it = clusters.entrySet().iterator();
         Machine machine;
 
         //requests toekennen aan trucks
@@ -695,7 +694,7 @@ public class Heuristieken {
                 }
             }
             if (finishedtruck.getCurrentLocation() != finishedtruck.getEindlocatie()) {
-                finishedtruck.addRequestToRoute(new Request(finishedtruck.getEindlocatie(), false, true));
+                finishedtruck.addRequestToRoute(new Request(finishedtruck.getEindlocatie(), false, true), true);
 
 
             }
