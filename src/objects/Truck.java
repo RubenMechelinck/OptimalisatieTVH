@@ -24,16 +24,6 @@ public class Truck {
     private List<Machine> machineList;
     private int truckId;
 
-    private int size;
-    public void setSize(){
-        size = route.size();
-    }
-
-    public boolean checkSize(){
-        return (size - route.size())%2 == 0;
-    }
-
-
     public Truck(Location startlocatie, Location eindlocatie, int truckCapacity, int truckWorkingTime, int realTruckWorkingTime, int truckId) {
         this.truckCapacity = truckCapacity;
         this.truckWorkingTime = truckWorkingTime;
@@ -64,26 +54,11 @@ public class Truck {
         this.route = new LinkedList<>();
         this.REAL_TRUCK_WORKING_TIME = truck.REAL_TRUCK_WORKING_TIME;
 
-        Map<Request, Request> cloneMap = new HashMap<>();
         for(Request request: truck.route) {
             Request q = request.clone();
             route.add(q);
             routeSet.add(q);
-
-            //cloneMap.put(request, q);
         }
-
-        /*for(Request drop: cloneMap.keySet()){
-            if(drop.isDrop()) {
-                Request newDrop = cloneMap.get(drop);
-                Request pair = drop.getPair();
-                if(pair != null){
-                    Request newPair = cloneMap.get(pair);
-                    newPair.setPair(newDrop);
-                    newDrop.setPair(newPair);
-                }
-            }
-        }*/
 
         this.machineList = new ArrayList<>();
         for(Machine machine: truck.machineList)

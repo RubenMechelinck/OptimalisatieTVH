@@ -7,12 +7,15 @@ import utils.FileUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import static utils.Utils.stillRemainingTime;
+
 public class Main {
 
-    private static final String inputFilename = "tvh_problem_4.txt";
-    private static final String outputFilename = "tvh_problem_4_own_solution.txt";
-
-    //voorlopig opslaan als classe later mss niet nodig?
+    private static String inputFilename;// = "tvh_problem_8.txt";
+    private static String outputFilename;// = "tvh_problem_8_own_solution.txt";
+    public static long seed;
+    public static long time;
+    public static long startTimeMillis;
 
     //lijst van alle locaties (depot + klanten)
     public static List<Location> locationList = new ArrayList<>();
@@ -28,37 +31,58 @@ public class Main {
     public static int Tmax=4000;
 
     public static void main(String[] args) {
+        startTimeMillis = System.currentTimeMillis();
+
+        if(!parseArgs(args))
+            return;
 
         //input file inlezen
         FileUtils.readFromFile(inputFilename);
 
-        //object dat huidige en beste oplossing bijhoud
-        solution = new Solution();
+        boolean restart = true;
 
-        //constructive heuristiek uitvoeren
-        Heuristieken.constructieveHeuristiek();
-        solution.evaluate();
-/*
-        for(Truck t: trucksList)
-            t.setSize();
+        while(restart && stillRemainingTime()){
+            System.out.println("Restart contructive heuristiek.");
 
-        for(Truck truck: trucksList){
-            int count = 0;
-            for(Request request: truck.getRoute()){
-                if(request.getPair() == null){
-                    count++;
-                }
-            }
-            System.out.println(count);
+            //object dat huidige en beste oplossing bijhoud
+            solution = new Solution();
+
+            //constructive heuristiek uitvoeren
+            Heuristieken.constructieveHeuristiek();
+            solution.evaluate();
+
+            restart = Heuristieken.perturbatieveHeuristiek();
+
+            //nieuwe seed zodat niet weer in zelfde probleem komt
+            seed++;
         }
-*/
-        Heuristieken.perturbatieveHeuristiek();
 
         //schrijf output
         FileUtils.writeOutputFile(outputFilename, inputFilename, solution);
+        System.out.println("Program finished.");
 
+    }
 
+    private static boolean parseArgs(String[] args){
+        try {
+            String[] args0 = args[0].split("--problem=");
+            String[] args1 = args[1].split("--solution=");
+            String[] args2 = args[2].split("--seed=");
+            String[] args3 = args[3].split("--time=");
 
+            if (args0.length == 2 && args1.length == 2 && args2.length == 2 && args3.length == 2) {
+                inputFilename = args0[1];
+                outputFilename = args1[1];
+                seed = Long.parseLong(args2[1]);
+                time = Long.parseLong(args3[1]) * 1000;
+                return true;
+            }
+        }
+        catch (Exception ignored) {
+        }
+
+        System.out.println("Wrong amount of parameters or wrong syntax. Exiting program.");
+        return false;
     }
 
 }

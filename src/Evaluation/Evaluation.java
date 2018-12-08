@@ -14,7 +14,6 @@ import static main.Main.trucksList;
  */
 public class Evaluation {
     private int totalDistance = 0;
-    private int weight = 0;
     private int infeasableOverload = 0;
     private boolean isFeasable = true;
     private Map<Truck, Integer> distanceMapping = new HashMap<>();
@@ -25,17 +24,24 @@ public class Evaluation {
     private boolean revertFeasable = true;
 
 
-    private int COST_DRIVE_LIMIT = 10000;
-    private int COST_CAPACITY = 10000;
-    private int COST_NO_DROP_COLLECT_COUPLE = 10000;
-    private int COST_MULTIPLE_TRUCKS_PER_REQUEST = 10000;
-    private int COST_NO_DEPOT_ENDPOINT = 10000;
-    private int COST_ENDCAP_NOT_ZERO = 10000;
-
-
     public Evaluation() {
         completeEvaluation();
     }
+
+    public Evaluation(Evaluation evaluation){
+        totalDistance = evaluation.getTotalDistance();
+        infeasableOverload = evaluation.getInfeasableOverload();
+        isFeasable = evaluation.isFeasable();
+
+        distanceMapping = new HashMap<>();
+        for(Truck truck: evaluation.getDistanceMapping().keySet())
+            distanceMapping.put(truck, evaluation.getDistanceMapping().get(truck));
+
+        overloadTimeMapping = new HashMap<>();
+        for(Truck truck: evaluation.getOverloadTimeMapping().keySet())
+            overloadTimeMapping.put(truck, evaluation.getOverloadTimeMapping().get(truck));
+    }
+
 
     private void completeEvaluation(){
         overloadTimeMapping = new HashMap<>();
@@ -112,7 +118,6 @@ public class Evaluation {
             int overload = t.getTotaleTijdGereden() - t.getREAL_TRUCK_WORKING_TIME();
             infeasableOverload += overload;
             overloadTimeMapping.put(t, overload);
-            weight += COST_DRIVE_LIMIT;
         }
         else{
             overloadTimeMapping.put(t, 0);
@@ -128,7 +133,6 @@ public class Evaluation {
 
                 //Altijd kijken of de pickup hiervan ook aanwezig is!
                 if (noPickUp(t, r)) {
-                    weight += COST_NO_DROP_COLLECT_COUPLE;
                     //System.out.println("pickup niet aanwezig infeasible");
                     isFeasable = false;
                     break;
@@ -142,7 +146,6 @@ public class Evaluation {
 
                 //Altijd kijken of de drop van deze pickup ook aanwezig is!
                 if (noDrop(t, r)) {
-                    weight += COST_NO_DROP_COLLECT_COUPLE;
                     //System.out.println("drop niet aanwezig infeasible");
                     isFeasable = false;
                     break;
@@ -150,7 +153,6 @@ public class Evaluation {
             }
 
             if (tempCapacity > t.getTruckCapacity()) {
-                weight += COST_CAPACITY;
                 //System.out.println("capacity infeasible");
                 isFeasable = false;
                 break;
@@ -158,7 +160,6 @@ public class Evaluation {
 
             //Elke request wordt maar gedaan door 1 enkele truck, anders +10000
             if (doubleRequests(r, trucksList)) {
-                weight += COST_MULTIPLE_TRUCKS_PER_REQUEST;
                 //System.out.println("meerdere trucks aan zelfde request infeasible");
                 isFeasable = false;
                 break;
@@ -167,7 +168,6 @@ public class Evaluation {
 
         if (t.getRoute().size() > 0) {
             if (t.getRoute().get(t.getRoute().size() - 1).getLocation() != t.getEindlocatie()) {
-                weight += COST_NO_DEPOT_ENDPOINT;
                 //System.out.println("geen depot op einde infeasible");
                 isFeasable = false;
             }
@@ -175,7 +175,6 @@ public class Evaluation {
 
         //op einde is capaciteit ook weer 0
         if (tempCapacity != 0) {
-            weight += COST_ENDCAP_NOT_ZERO;
             //System.out.println("eindcapaciteit niet nul infeasible");
             isFeasable = false;
         }
@@ -243,10 +242,6 @@ public class Evaluation {
         return totalDistance;
     }
 
-    public int getWeight() {
-        return weight;
-    }
-
     public boolean isFeasable() {
         return isFeasable;
     }
@@ -263,4 +258,11 @@ public class Evaluation {
         return infeasableOverload <= 0;
     }
 
+    public Map<Truck, Integer> getDistanceMapping() {
+        return distanceMapping;
+    }
+
+    public Map<Truck, Integer> getOverloadTimeMapping() {
+        return overloadTimeMapping;
+    }
 }

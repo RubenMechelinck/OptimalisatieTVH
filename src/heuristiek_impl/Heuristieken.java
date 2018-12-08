@@ -9,6 +9,7 @@ import java.util.*;
 import static main.Main.*;
 import static utils.Utils.getDistance;
 import static utils.Utils.getTime;
+import static utils.Utils.stillRemainingTime;
 
 /**
  * Created by ruben on 9/11/18.
@@ -37,29 +38,50 @@ public class Heuristieken {
 
     }
 
-    public static void perturbatieveHeuristiek() {
-        //paar iteraties
-        int i=0;
-        while(!solution.getSwitchToFeasible()) {
-            System.out.println("itr " + i);
-            localSearch(null);
-            i++;
+
+    //retured true if tveel iteraties en nog altijd niet feasbale => herstart
+    public static boolean perturbatieveHeuristiek() {
+        //maak constructive feasable met local search
+        int itr = 0;
+        while(!solution.getLastEvaluation().isReallyFeasable() && stillRemainingTime()){
+            System.out.println("itr " + itr++);
+            localSearch(null, 0);
+
+            //als na 100 iteraties nog altijd niet feasbale => zal niet meer lukken => herstart
+            //100 moet lager als meerdere moves zijn
+            if(itr >= 100)
+                return true;
         }
-        //meta toepassen
-        simulatedAnnealing();
+
+        //paar iteraties (vervangen door simulated annealing)
+        AnnealingSolution annealingSolution = new AnnealingSolution();
+        while(stillRemainingTime()){
+            System.out.println("itr " + itr++);
+            simulatedAnnealing(annealingSolution);
+        }
+
+        //helemaal uitgevoerd => geen herstart
+        return false;
     }
 
     //////////////////////////////// Perturbative Heuristiek onderdelen ///////////////////////
 
     //local search in huidige ruimte
-    //kan request wisselen:
-    //  binnen truck
-    //  tussen trucks onderling
-    //  locatie van depot request wisselen
-    //  depot request zo dicht mogelijk bij elkaar zetten
-    private static void localSearch(AnnealingSolution annealingSolution){
-        moveRequestsBetweenTrucks(annealingSolution);
-        //move van Joran
+    // if par:interupt is true => vanaf oplossing feasable is returned true
+    private static void localSearch(AnnealingSolution annealingSolution, double T){
+
+        //wissel random tussen moves
+        double random = Math.random();
+        if(random < 0.6) {
+            for (int i = 0; i < 50 && stillRemainingTime(); i++)
+                moveRequestsBetweenTrucks(annealingSolution, T);
+        }
+        else if(random < 0.9) {
+            //move
+        }
+        else {
+            //move
+        }
     }
 
 
@@ -76,7 +98,7 @@ public class Heuristieken {
     // kan koppel in geen enkel truck plaatsen => pak volgend koppeltje uit truck1 en doe zelfde
     //vind nog altijd niets => pak andere truck1
     //als dan ook nog niet lukt => niets wordt gedaan
-    private static void moveRequestsBetweenTrucks(AnnealingSolution annealingSolution) {
+    private static void moveRequestsBetweenTrucks(AnnealingSolution annealingSolution, double T) {
         //drop en collect request met hun index in truck1 requestlijst zodat als
         //move niet lukt deze kan terug plaasten op de originele plek
         Request collect;
@@ -87,11 +109,9 @@ public class Heuristieken {
         Truck truck1;
         Truck truck2;
 
-
         int NUMBER_OF_TRUCKS_2 = 20;
         int NUMBER_OF_REQUESTS_TRY_FROM_TRUCK_1 = 30;
         int NUMBER_OF_BEST_BESTE_PLAATSEN_TRY = 10;
-
 
         //shuffle zodat bij elke local search andere volgorde van truck picking is
         Collections.shuffle(trucksList);
@@ -105,7 +125,7 @@ public class Heuristieken {
 
         int it = 0;
         //probeer 30 requests uit truck1 te verplaatsen
-        while(it < NUMBER_OF_REQUESTS_TRY_FROM_TRUCK_1 && it < truck1.getRoute().size()) {
+        while(it < NUMBER_OF_REQUESTS_TRY_FROM_TRUCK_1 && it < truck1.getRoute().size() && stillRemainingTime()) {
             placed = false;
             //System.out.println("\t\t" + it);
             //get random drop/collect en de bijhorende collect/drop
@@ -191,8 +211,8 @@ public class Heuristieken {
 
                     truck2.addRequestToRoute(collect, index, false);
 
-                    if(annealingSolution!=null){
-                        evaluation = annealingSolution.evaluate(truck1, truck1);
+                    if(annealingSolution != null){
+                        evaluation = annealingSolution.evaluate(T, truck1, truck2);
                     } else {
                         evaluation = solution.evaluate(truck1, truck2);
                     }
@@ -231,52 +251,6 @@ public class Heuristieken {
         }
     }
 
-    //zoek de request die bij par:bron past, return index in par:list
-    //par:isDrop zegt of bron een drop is
-    //if bron is drop => return collect ervoor van dat machine type
-    //if bron is collect => return drop erna van dat machine type
-    private static int vindKoppeltje(Request bron, List<Request> list, boolean isDrop, int index){
-        MachineType machineType = bron.getMachineType();
-        if(machineType == null)
-            machineType = bron.getMachine().getMachineType();
-
-        //if bron is drop => zoek collect voor de drop
-        //if bron is collect => zoek drop erna
-        if(isDrop){
-            for(int i = 0; i < index; i++){
-                Request t = list.get(i);
-                if(t.getMachine() == null && t.getMachineType() == null)
-                    continue;
-
-                if(!t.isDrop()  && (t.getMachineType() != null || t.getMachine().getMachineType() != null)){
-                    MachineType type = t.getMachineType();
-                    if(type == null)
-                        type = t.getMachine().getMachineType();
-                    if(machineType == type){
-                        return i;
-                    }
-                }
-            }
-        }
-        else{
-            for(int i = index+1; i < list.size(); i++){
-                Request t = list.get(i);
-                if(t.getMachine() == null && t.getMachineType() == null)
-                    continue;
-
-                if(t.isDrop() && (t.getMachineType() != null || t.getMachine().getMachineType() != null)){
-                    MachineType type = t.getMachineType();
-                    if(type == null)
-                        type = t.getMachine().getMachineType();
-                    if(machineType == type){
-                        return i;
-                    }
-                }
-            }
-        }
-        return -1;
-    }
-
     //return de request uit par:requests die het dichtst licht bij de par:request
     private static Request getDichtsteRequest(List<Request> requests, Request request){
         int bestDistance = Integer.MAX_VALUE;
@@ -295,40 +269,27 @@ public class Heuristieken {
 
     //////////////////////////////// meta-heuristiek ////////////////////////////////////////////
 
-    private static void simulatedAnnealing(){
-        AnnealingSolution bestSolution = new AnnealingSolution();
-        bestSolution.setEvaluation(solution.getLastEvaluation());
-        AnnealingSolution nextSolution;
+    private static void simulatedAnnealing(AnnealingSolution annealingSolution){
+
         double A = 0.5;
         double T = Tmax;
-        int deltaE;
-        System.out.println("start simulated");
-        while (T>10) {
-            System.out.println("starting T:"+T);
-            for(int i=0; i<100;i++) {
-                System.out.println("itr "+i+" bij T:"+T);
-                nextSolution = getLocalSearchSolution(bestSolution.getEvaluation());
-                deltaE = nextSolution.getEnergy() - bestSolution.getEnergy();
-                if (deltaE < 0) {
-                    bestSolution = nextSolution;
-                } else if(Math.exp(-deltaE/T)>Math.random()){
-                    bestSolution = nextSolution;
-                }
 
+        System.out.println("start annealing");
+        while (T > 10) {
+            System.out.println("starting T:" + T);
+            for(int i=0; i<10;i++) {
+                System.out.println("itr " + i + " bij T:" + T);
+                localSearch(annealingSolution, T);
             }
-            T=A*T;
+            T = A * T;
         }
-        if (bestSolution.getEnergy() < solution.getBestCost()) {
-            solution.setBestCost(bestSolution.getEnergy());
-            solution.setBestTrucksList(bestSolution.getTrucks());
-        }
-    }
 
-    private static AnnealingSolution getLocalSearchSolution(Evaluation evaluation) {
-        AnnealingSolution nextSolution = new AnnealingSolution();
-        nextSolution.setEvaluation(evaluation);
-        localSearch(nextSolution);
-        return nextSolution;
+        //na uitvoer annealing checken of beter is geworden, if so nieuwe oplossing zetten
+        if(annealingSolution.getBestEnergy() < solution.getBestCost()){
+            solution.setBestTrucksList(annealingSolution.getBestTrucksList());
+            solution.setBestCost(annealingSolution.getBestEnergy());
+            solution.setLastEvaluation(annealingSolution.getBestEvaluation());
+        }
     }
 
     //////////////////////////////// Constructieve Heuristiek onderdelen ///////////////////////
@@ -654,7 +615,6 @@ public class Heuristieken {
         //truck.setCurrentLocation(drop.getLocation());
         truck.addRequestToRoute(drop, true);
     }
-
 
     //toekennen collect aan truck
     private static void assignCollectToTruck(Truck truck, Request collect) {

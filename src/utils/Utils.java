@@ -2,8 +2,7 @@ package utils;
 
 import objects.Location;
 
-import static main.Main.distanceMatrix;
-import static main.Main.timeMatrix;
+import static main.Main.*;
 
 /**
  * Created by ruben on 9/11/18.
@@ -20,5 +19,10 @@ public class Utils {
     public static int getTime(Location a, Location b){
         //deze methode is de tweede meest complexe methode in deze software!
         return timeMatrix[a.getIndex()][b.getIndex()];
+    }
+
+    //returned true als nog tijd over is
+    public static boolean stillRemainingTime(){
+        return System.currentTimeMillis() - startTimeMillis < time;
     }
 }

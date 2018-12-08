@@ -17,7 +17,6 @@ public class Solution {
     private List<Truck> bestTrucksList;
     //if false => unfeasable word aanvaard als beter is, if true => enkel feasable oplossingen
     private boolean switchToFeasable = false;
-
     private Evaluation lastEvaluation;
 
     //altijd eerst een volledige evaluatie doen voordat delta doet!!!
@@ -25,14 +24,9 @@ public class Solution {
 
         if(trucks.length != 0){
             lastEvaluation.deltaEvaluate(trucks);
-            //lastEvaluation= new Evaluation();
         }
         else {
-            //Zo kan je dan aan de weight en de afstand
             lastEvaluation= new Evaluation();
-            //System.out.println("total distance: " + result.getTotalDistance());
-            //System.out.println("total weight: " + result.getWeight());
-            //System.out.println("feasable: " + result.isFeasable());
         }
 
         //if feasable en betere afstand => in best steken
@@ -66,6 +60,11 @@ public class Solution {
     public void setBestTrucksList(List<Truck> trucksList) {
         bestTrucksList = trucksList;
     }
+
+    public void setLastEvaluation(Evaluation lastEvaluation) {
+        this.lastEvaluation = lastEvaluation;
+    }
+
     public List<Truck> getBestTrucksList() {
         return bestTrucksList;
     }
@@ -74,10 +73,7 @@ public class Solution {
         return bestCost;
     }
 
-    public boolean getSwitchToFeasible(){
-        return switchToFeasable;
-    }
-
+    //opgelet, als annealing gebruikt kan deze lastEvaluation niet meer de beste evaluation zijn
     public Evaluation getLastEvaluation() {
         return lastEvaluation;
     }
