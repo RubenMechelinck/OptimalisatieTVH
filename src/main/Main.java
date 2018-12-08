@@ -9,8 +9,8 @@ import java.util.List;
 
 public class Main {
 
-    private static final String inputFilename = "tvh_problem_8.txt";
-    private static final String outputFilename = "tvh_problem_8_own_solution.txt";
+    private static final String inputFilename = "tvh_problem_4.txt";
+    private static final String outputFilename = "tvh_problem_4_own_solution.txt";
 
     //voorlopig opslaan als classe later mss niet nodig?
 
@@ -25,6 +25,7 @@ public class Main {
     public static int[][] timeMatrix = new int[0][0];
     public static int[][] distanceMatrix = new int[0][0];
     public static Solution solution;
+    public static int Tmax=4000;
 
     public static void main(String[] args) {
 
@@ -37,7 +38,7 @@ public class Main {
         //constructive heuristiek uitvoeren
         Heuristieken.constructieveHeuristiek();
         solution.evaluate();
-
+/*
         for(Truck t: trucksList)
             t.setSize();
 
@@ -50,7 +51,7 @@ public class Main {
             }
             System.out.println(count);
         }
-
+*/
         Heuristieken.perturbatieveHeuristiek();
 
         //schrijf output

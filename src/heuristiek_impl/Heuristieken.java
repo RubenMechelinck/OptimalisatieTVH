@@ -3,6 +3,7 @@ package heuristiek_impl;
 import Evaluation.Evaluation;
 import objects.*;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 import static main.Main.*;
@@ -29,20 +30,23 @@ public class Heuristieken {
         //initTruckToClosestDepots();
 
         //voeg requests toe aan dichtstbijzijnde depot
-        Map<Depot, Set<Request>> clustering = new HashMap<>();//clusterRequestsToClosestDepotsWithTrucks();
+        //Map<Depot, Set<Request>> clustering = new HashMap<>();//clusterRequestsToClosestDepotsWithTrucks();
 
         //wijs requests per depot toe aan trucks in dat depot
-        assignRequestsToTrucks(clustering);
+        assignRequestsToTrucks();
 
     }
 
     public static void perturbatieveHeuristiek() {
         //paar iteraties
-        for(int i = 0; i < 800; i++) {
+        int i=0;
+        while(!solution.getSwitchToFeasible()) {
             System.out.println("itr " + i);
-            localSearch();
+            localSearch(null);
+            i++;
         }
         //meta toepassen
+        simulatedAnnealing();
     }
 
     //////////////////////////////// Perturbative Heuristiek onderdelen ///////////////////////
@@ -53,8 +57,8 @@ public class Heuristieken {
     //  tussen trucks onderling
     //  locatie van depot request wisselen
     //  depot request zo dicht mogelijk bij elkaar zetten
-    private static void localSearch(){
-        moveRequestsBetweenTrucks();
+    private static void localSearch(AnnealingSolution annealingSolution){
+        moveRequestsBetweenTrucks(annealingSolution);
         //move van Joran
     }
 
@@ -72,7 +76,7 @@ public class Heuristieken {
     // kan koppel in geen enkel truck plaatsen => pak volgend koppeltje uit truck1 en doe zelfde
     //vind nog altijd niets => pak andere truck1
     //als dan ook nog niet lukt => niets wordt gedaan
-    private static void moveRequestsBetweenTrucks() {
+    private static void moveRequestsBetweenTrucks(AnnealingSolution annealingSolution) {
         //drop en collect request met hun index in truck1 requestlijst zodat als
         //move niet lukt deze kan terug plaasten op de originele plek
         Request collect;
@@ -83,9 +87,11 @@ public class Heuristieken {
         Truck truck1;
         Truck truck2;
 
+
         int NUMBER_OF_TRUCKS_2 = 20;
         int NUMBER_OF_REQUESTS_TRY_FROM_TRUCK_1 = 30;
         int NUMBER_OF_BEST_BESTE_PLAATSEN_TRY = 10;
+
 
         //shuffle zodat bij elke local search andere volgorde van truck picking is
         Collections.shuffle(trucksList);
@@ -185,7 +191,11 @@ public class Heuristieken {
 
                     truck2.addRequestToRoute(collect, index, false);
 
-                    evaluation = solution.evaluate(truck1, truck2);
+                    if(annealingSolution!=null){
+                        evaluation = annealingSolution.evaluate(truck1, truck1);
+                    } else {
+                        evaluation = solution.evaluate(truck1, truck2);
+                    }
 
                     if (evaluation != null) {
                         //if oplossing is beter => deze localsearch iteratie is klaar (hill climbing)
@@ -283,6 +293,43 @@ public class Heuristieken {
         return dichtst;
     }
 
+    //////////////////////////////// meta-heuristiek ////////////////////////////////////////////
+
+    private static void simulatedAnnealing(){
+        AnnealingSolution bestSolution = new AnnealingSolution();
+        bestSolution.setEvaluation(solution.getLastEvaluation());
+        AnnealingSolution nextSolution;
+        double A = 0.5;
+        double T = Tmax;
+        int deltaE;
+        System.out.println("start simulated");
+        while (T>10) {
+            System.out.println("starting T:"+T);
+            for(int i=0; i<100;i++) {
+                System.out.println("itr "+i+" bij T:"+T);
+                nextSolution = getLocalSearchSolution(bestSolution.getEvaluation());
+                deltaE = nextSolution.getEnergy() - bestSolution.getEnergy();
+                if (deltaE < 0) {
+                    bestSolution = nextSolution;
+                } else if(Math.exp(-deltaE/T)>Math.random()){
+                    bestSolution = nextSolution;
+                }
+
+            }
+            T=A*T;
+        }
+        if (bestSolution.getEnergy() < solution.getBestCost()) {
+            solution.setBestCost(bestSolution.getEnergy());
+            solution.setBestTrucksList(bestSolution.getTrucks());
+        }
+    }
+
+    private static AnnealingSolution getLocalSearchSolution(Evaluation evaluation) {
+        AnnealingSolution nextSolution = new AnnealingSolution();
+        nextSolution.setEvaluation(evaluation);
+        localSearch(nextSolution);
+        return nextSolution;
+    }
 
     //////////////////////////////// Constructieve Heuristiek onderdelen ///////////////////////
 
@@ -621,7 +668,7 @@ public class Heuristieken {
         truck.addRequestToRoute(collect, true);
     }
 
-    private static void assignRequestsToTrucks(Map<Depot, Set<Request>> clusters) {
+    private static void assignRequestsToTrucks() {
 
         Depot depot;
         Request request;

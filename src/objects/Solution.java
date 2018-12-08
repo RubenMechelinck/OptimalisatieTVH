@@ -59,11 +59,26 @@ public class Solution {
         }
     }
 
+    public void setBestCost(int bestCost) {
+        this.bestCost = bestCost;
+    }
+
+    public void setBestTrucksList(List<Truck> trucksList) {
+        bestTrucksList = trucksList;
+    }
     public List<Truck> getBestTrucksList() {
         return bestTrucksList;
     }
 
     public int getBestCost() {
         return bestCost;
+    }
+
+    public boolean getSwitchToFeasible(){
+        return switchToFeasable;
+    }
+
+    public Evaluation getLastEvaluation() {
+        return lastEvaluation;
     }
 }
