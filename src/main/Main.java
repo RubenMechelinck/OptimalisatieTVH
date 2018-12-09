@@ -30,7 +30,6 @@ public class Main {
     public static int[][] distanceMatrix = new int[0][0];
     public static Solution solution;
     public static Random random;
-    public static int Tmax = 400;
 
     public static void main(String[] args) {
         startTimeMillis = System.currentTimeMillis();
@@ -38,12 +37,21 @@ public class Main {
         if(!parseArgs(args))
             return;
 
-        //input file inlezen
-        FileUtils.readFromFile(inputFilename);
-
         boolean restart = true;
 
         while(restart && stillRemainingTime()){
+            locationList = new ArrayList<>();
+            depots = new ArrayList<>();
+            trucksList = new ArrayList<>();
+            machineTypeList = new ArrayList<>();
+            machineList = new ArrayList<>();
+            requestList = new ArrayList<>();
+            timeMatrix = new int[0][0];
+            distanceMatrix = new int[0][0];
+
+            //input file inlezen
+            FileUtils.readFromFile(inputFilename);
+
             System.out.println("Restart contructive heuristiek.");
 
             //object dat huidige en beste oplossing bijhoud

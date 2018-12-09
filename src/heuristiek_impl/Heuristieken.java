@@ -1,6 +1,7 @@
 package heuristiek_impl;
 
 import Evaluation.Evaluation;
+import main.Main;
 import objects.*;
 
 import java.lang.reflect.Array;
@@ -43,15 +44,27 @@ public class Heuristieken {
     public static boolean perturbatieveHeuristiek() {
         //maak constructive feasable met local search
         int itr = 0;
+        int uselessItrCount = 0;
+
+        int vorigeInfeasableOverload = solution.getLastEvaluation().getInfeasableOverload();
         while(!solution.getLastEvaluation().isReallyFeasable() && stillRemainingTime()){
             System.out.println("itr " + itr++);
-            localSearch(null, 0);
+            localSearch(null, 0, 0);
 
-            //als na 100 iteraties nog altijd niet feasbale => zal niet meer lukken => herstart
-            //100 moet lager als meerdere moves zijn
-            if(itr >= 100)
+            //als verbetering in 8 itr niet beter is dan 10 => herstart
+            if(solution.getLastEvaluation().getInfeasableOverload() <= vorigeInfeasableOverload + 10)
+                uselessItrCount++;
+            else{
+                uselessItrCount = 0;
+                vorigeInfeasableOverload = solution.getLastEvaluation().getInfeasableOverload();
+            }
+
+            //als na 25 iteraties nog altijd niet feasbale => zal niet meer lukken => herstart
+            //als na 8 itr niets veel verbeterd is => herstart
+            if(itr > 25 || uselessItrCount > 8)
                 return true;
         }
+
 
         //paar iteraties (vervangen door simulated annealing)
         AnnealingSolution annealingSolution = new AnnealingSolution();
@@ -59,37 +72,48 @@ public class Heuristieken {
         // => T rap doen dalen en kans dat slechte aanvaard niet te hoog
         // bij volgende annealing iteraties starten met hoge T (reheating) maar wel lager dan in vorige annealing (T/2)
         // als T onder grens van 10 komt => terug hogere waarden nemen (500)
-        double T = Tmax;
+        double T = 450;
+        int alfa = 30;
+        double A = 0.8;
+        int itrT = 10;
         while(stillRemainingTime()){
             System.out.println("itr " + itr++);
-            simulatedAnnealing(annealingSolution, T);
+            simulatedAnnealing(annealingSolution, T, A, alfa, itrT);
             T /= 2;
-            if(T < 10)
-                T = 500;
+            alfa *= 1.5;
+            A = 0.4;
+
+            if(T < 25) {
+                T = 300;
+                alfa = 30;
+            }
         }
 
         //helemaal uitgevoerd => geen herstart
         return false;
+
     }
 
     //////////////////////////////// Perturbative Heuristiek onderdelen ///////////////////////
 
     //local search in huidige ruimte
     // if par:interupt is true => vanaf oplossing feasable is returned true
-    private static void localSearch(AnnealingSolution annealingSolution, double T){
+    private static void localSearch(AnnealingSolution annealingSolution, double T, double alfa){
 
         //wissel random tussen moves
-        double random = Math.random();
-        if(random < 0.6) {
+        double random = Main.random.nextDouble();
+        if(random < 1) { //0.6
             for (int i = 0; i < 50 && stillRemainingTime(); i++)
-                moveRequestsBetweenTrucks(annealingSolution, T);
+                moveRequestsBetweenTrucks(annealingSolution, T, alfa);
         }
-        else if(random < 0.9) {
-            //move
+        /*else if(random < 0.9) {
+            for (int i = 0; i < 50 && stillRemainingTime(); i++)
+                moveRequestPairWithinTruck();
         }
         else {
-            //move
-        }
+            for (int i = 0; i < 10 && stillRemainingTime(); i++){}
+                moveDepotsOfRequests();
+        }*/
     }
 
 
@@ -106,7 +130,7 @@ public class Heuristieken {
     // kan koppel in geen enkel truck plaatsen => pak volgend koppeltje uit truck1 en doe zelfde
     //vind nog altijd niets => pak andere truck1
     //als dan ook nog niet lukt => niets wordt gedaan
-    private static void moveRequestsBetweenTrucks(AnnealingSolution annealingSolution, double T) {
+    private static void moveRequestsBetweenTrucks(AnnealingSolution annealingSolution, double T, double alfa) {
         //drop en collect request met hun index in truck1 requestlijst zodat als
         //move niet lukt deze kan terug plaasten op de originele plek
         Request collect;
@@ -122,7 +146,7 @@ public class Heuristieken {
         int NUMBER_OF_BEST_BESTE_PLAATSEN_TRY = 10;
 
         //shuffle zodat bij elke local search andere volgorde van truck picking is
-        Collections.shuffle(trucksList);
+        Collections.shuffle(trucksList, random);
         boolean placed = false; //is het koppeltje geplaatst
         int i = 0;
 
@@ -139,7 +163,10 @@ public class Heuristieken {
             //get random drop/collect en de bijhorende collect/drop
             // + verwijder uit truck1 lijst!
             //-1 want laatste mag niet pakken!!
-            int q = (int) (Math.random() * truck1.getRoute().size()-1);
+            if(truck1.getRoute().size() <= 1)
+                return;
+
+            int q = random.nextInt(truck1.getRoute().size()-1);
             Request tmp = truck1.removeRequest(q, false);
             it++;
             //if speciale request om leeg naar depot te rijden => zet terug in list
@@ -220,7 +247,7 @@ public class Heuristieken {
                     truck2.addRequestToRoute(collect, index, false);
 
                     if(annealingSolution != null){
-                        evaluation = annealingSolution.evaluate(T, truck1, truck2);
+                        evaluation = annealingSolution.evaluate(T, alfa, truck1, truck2);
                     } else {
                         evaluation = solution.evaluate(truck1, truck2);
                     }
@@ -275,18 +302,278 @@ public class Heuristieken {
         return dichtst;
     }
 
+    //Move de depots waar de machines moeten worden afgeleverd/opgehaald worden
+    //Verander depot naar dichtste depot tov het pair-request horende bij het depot-request
+    //Als dichtste al het huidige is --> Neem 2de dichtste
+    //Doe eerst 1 depot-wijziging, dan 2, dan 3,... (welk depot eerst gewijzigd word en welk tweede enz. gebeurt RANDOM)
+    //Als de depotwijzigingen niets uithaalden -> Zet de originele depots terug
+    //Stop met depots wijzigen vanaf er een verbetering is (eerste verbetering)
+    private static void moveDepotsOfRequests(){
+        //System.out.println("Trying to move the depots of the requests.");
+
+        boolean moved=false;
+        Truck t;
+        Request pair;
+        Evaluation evaluation;
+        int index;
+
+        //To myself: neem op voorhand een kopie van de lijst zodat je da kan bewerken zonder permanente schade toe te brengen
+        //To myself again: nah sla enkel de trucks/depots op die je wijzigt, anders te veel bijhouden eh pipo -> Ga voor depot-history (credits to Kazan)
+        //List<Truck> trucks =cloneList(trucksList);
+
+
+        for(int i=0;i<trucksList.size() && !moved;i++){
+
+
+            //System.out.println("############### TRUCK "+i+" ###############");
+            HashMap<Integer,Location> depotHistory=new HashMap<>();
+            depotHistory.clear();
+
+            t=trucksList.get(i);
+            //System.out.println("\nOriginal truckdistance: "+t.getTotaleAfstandTruck());
+
+            List<Request> depotList = t.getDepotRequestList();
+
+            for(int j=0;j<depotList.size() && !moved;j++){
+
+                index=t.findIndexOfRequest(depotList.get(j));
+
+                if(index<0){
+                    //System.out.println("Depotrequest niet gevonden in de hoop");
+                }
+
+                //Save de originele depot in de history-list
+                depotHistory.put(index,depotList.get(j).getLocation());
+
+
+                pair = depotList.get(j).getPair();
+
+
+                trucksList.get(i).addRequestToRoute(depotList.get(j),index,false);
+                trucksList.get(i).removeRequest(index+1,false);
+
+                //trucksList.get(i).updateLocationOfRequest(index,depotList.get(j).getLocation());
+
+                depotList.get(j).changeDepot(pair);
+
+                //System.out.println("Updating the location");
+
+                trucksList.get(i).getRoute().set(index,depotList.get(j));
+
+
+                //Evaluatie
+                evaluation = solution.evaluate(trucksList.get(i));
+                if (evaluation != null) {
+                    if(evaluation.isReallyFeasable())
+                        System.out.println(evaluation.getTotalDistance());
+                    else
+                        System.out.println("unfeasable overload " + evaluation.getInfeasableOverload());
+
+                    moved = true;
+                    break;
+                }
+                else{
+                    //System.out.println("Niet beter");
+
+
+                }
+
+            }
+            if(!moved) {
+                for (Map.Entry<Integer, Location> entry : depotHistory.entrySet()) {
+                    //System.out.println("Original depot: "+entry.getValue());
+                    //System.out.println("New depot: "+trucksList.get(i).getRoute().get(entry.getKey()).getLocation());
+                    //System.out.println("//////////RECOVERING THE VALUES//////////////");
+                    //trucksList.get(i).updateLocationOfRequest(entry.getKey(),entry.getValue());
+
+
+                    trucksList.get(i).getRoute().get(entry.getKey()).setLocation(entry.getValue());
+
+                    trucksList.get(i).addRequestToRoute(trucksList.get(i).getRoute().get(entry.getKey()), entry.getKey(), false);
+                    trucksList.get(i).removeRequest(entry.getKey() + 1, false);
+                }
+            }
+            else{
+                break;
+            }
+
+            //System.out.println("After truckdistance: "+t.getTotaleAfstandTruck());
+        }
+        //System.out.println("Geen verbetering gevonden via change depots");
+    }
+
+    //Verzet een collect-drop pair: collect en drop request worden op random plaatsen in de route gezet,
+    // met collect altijd voor drop komend.
+    private static void moveRequestPairWithinTruck() {
+
+        boolean moved = false;
+        Truck t;
+        Request r1;
+        Request r2;
+        int i1, i2, p1, p2;
+        Evaluation evaluation;
+
+        //Hou indexen en requests bij die gewijzigd zijn en zet ze terug als het niet goed is -> Beter dan nen hele fucking lijst van trucks clonen eh
+        //List<Truck> trucks =cloneList(trucksList);
+
+        for (int i = 0; i < trucksList.size() && !moved; i++) {
+            r1 = null;
+            r2 = null;
+            i1 = 0;
+            i2 = p1 = p2 = 0;
+
+            t = trucksList.get(i);
+
+            int minRequestRequired = 6;
+            if (t.getRoute().get(0).getPair() != null) {
+                minRequestRequired++;
+            }
+            if (t.getRoute().get(t.getRoute().size() - 1).getPair() != null) {
+                minRequestRequired++;
+            }
+
+            //Geen zin om om te wisselen als er maar 1 (collect & drop paar) in zit
+            if (t.getRoute().size() >= minRequestRequired) {
+
+
+                i1 = random.nextInt(t.getRoute().size() - 2) + 1; //Zorgt ervoor dat het eerste request en het laatste request niet gekozen kunnnen worden om te switchen
+                r1 = t.getRoute().get(i1);
+
+                while (r1.getPair() == null) {
+                    i1 = random.nextInt(t.getRoute().size() - 2) + 1; //Zorgt ervoor dat het eerste request en het laatste request niet gekozen kunnnen worden om te switchen
+                    r1 = t.getRoute().get(i1);
+                }
+
+
+                r2 = r1.getPair();
+                i2 = t.findIndexOfRequest(r2);
+                if (i2 == -1)
+                    //System.out.println("Niet gevonden voor request " + r2);
+
+
+                /*System.out.println("switch "+ r1+ " en "+ r2);
+                System.out.println("---------------------BEFORE---------------------");
+                for(Request r: t.getRoute()){
+                    System.out.println(r);
+                }*/
+
+                //Genereer 2 random plaatsen waar de drop & collect gaan voor gezet worden
+                p1 = random.nextInt(t.getRoute().size() - 2) + 1;
+                p2 = random.nextInt(t.getRoute().size() - 2) + 1;
+                while (p1 == p2) {
+                    p2 = random.nextInt(t.getRoute().size() - 2) + 1;
+                }
+
+                if (r1.isDrop()) {
+
+                    t.removeRequest(i1, false);
+                    t.removeRequest(i2, false);
+
+                    if (p1 < p2) {
+                        //Pick up eerst zetten in de lijst
+                        t.addRequestToRoute(r2, p1, false);
+                        t.addRequestToRoute(r1, p2, false);
+                    } else {
+                        //Pick up eerst zetten in de lijst
+                        t.addRequestToRoute(r2, p2, false);
+                        t.addRequestToRoute(r1, p1, false);
+                    }
+                } else {
+                    t.removeRequest(i2, false);
+                    t.removeRequest(i1, false);
+
+
+                    if (p1 < p2) {
+                        //Pick up eerst zetten in de lijst
+                        t.addRequestToRoute(r1, p1, false);
+                        t.addRequestToRoute(r2, p2, false);
+
+                    } else {
+                        //Pick up eerst zetten in de lijst
+                        t.addRequestToRoute(r1, p2, false);
+                        t.addRequestToRoute(r2, p1, false);
+
+                    }
+                }
+
+                /*System.out.println("switch "+ r1+ " en "+ r2);
+                System.out.println("------------------------------AFTER-----------------------");
+                for(Request r: t.getRoute()){
+                    System.out.println(r);
+                }*/
+
+                //Evaluatie
+                evaluation = solution.evaluate(trucksList.get(i));
+                if (evaluation != null) {
+                    //System.out.println("VERBETERING");
+                    if (evaluation.isReallyFeasable())
+                        System.out.println(evaluation.getTotalDistance());
+                    else
+                        System.out.println("unfeasable overload " + evaluation.getInfeasableOverload());
+
+                    moved = true;
+                } else {
+                    //System.out.println("Geen verbetering door deze switch");
+                    //System.out.println("Indexen: "+i1+ ","+i11+","+i2+","+i22+ " en de requestlist is size: "+t.getRoute().size());
+                    if (r1.isDrop()) {
+
+
+                        if (p1 < p2) {
+                            //Pick up eerst zetten in de lijst
+                            t.removeRequest(p2, false);
+                            t.removeRequest(p1, false);
+
+                            t.addRequestToRoute(r2, i2, false);
+                            t.addRequestToRoute(r1, i1, false);
+
+
+                        } else {
+                            //Pick up eerst zetten in de lijst
+
+                            t.removeRequest(p1, false);
+                            t.removeRequest(p2, false);
+
+                            t.addRequestToRoute(r2, i2, false);
+                            t.addRequestToRoute(r1, i1, false);
+                        }
+                    } else {
+
+
+                        if (p1 < p2) {
+                            //Pick up eerst zetten in de lijst
+                            t.removeRequest(p2, false);
+                            t.removeRequest(p1, false);
+
+
+                            t.addRequestToRoute(r1, i1, false);
+                            t.addRequestToRoute(r2, i2, false);
+
+                        } else {
+                            //Pick up eerst zetten in de lijst
+                            t.removeRequest(p1, false);
+                            t.removeRequest(p2, false);
+
+                            t.addRequestToRoute(r1, i1, false);
+                            t.addRequestToRoute(r2, i2, false);
+
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
     //////////////////////////////// meta-heuristiek ////////////////////////////////////////////
 
-    private static void simulatedAnnealing(AnnealingSolution annealingSolution, double T){
-
-        double A = 0.18;
+    private static void simulatedAnnealing(AnnealingSolution annealingSolution, double T, double A, int alfa, int itr){
 
         System.out.println("start annealing");
-        while (T > 10 && stillRemainingTime()) {
-            System.out.println("starting T:" + T);
-            for(int i = 0; i<10 && stillRemainingTime(); i++) {
-                System.out.println("itr " + i + " bij T:" + T);
-                localSearch(annealingSolution, T);
+        while (T > 5 && stillRemainingTime()) {
+            System.out.println("starting T: " + T);
+            for(int i = 0; i<itr && stillRemainingTime(); i++) {
+                System.out.println("itr " + i + " bij T: " + T);
+                localSearch(annealingSolution, T, alfa);
             }
             T = A * T;
         }

@@ -388,58 +388,6 @@ public class Truck {
         System.out.println("start: " + startlocatie + " eind: " + eindlocatie);
     }
 
-    /*public int totaleAfstand() {
-        int distance = 0;
-        Request previousReq = null;
-        for (Request req : route) {
-            //System.out.println("distance: " + distance);
-
-            if (previousReq != null) {
-                //System.out.println("berekende afstand: " + getDistance(req.getLocation(), previousReq.getLocation()));
-                distance += getDistance(req.getLocation(), previousReq.getLocation());
-            }
-            previousReq = req;
-
-        }
-        totaleAfstandTruck = distance;
-        return distance;
-    }
-
-    public int totaleTijd() {
-        //System.out.println("truck: "+truckId);
-        int tijd = 0;
-        Request previousReq = null;
-        for (Request req : route) {
-            //System.out.println("tijd: " + tijd);
-            if (req.getMachine() != null) {
-                //System.out.println("service tijd: " + req.getMachine().getMachineType().getServiceTime());
-                tijd += req.getMachine().getMachineType().getServiceTime();
-            }
-            if (previousReq != null) {
-                //System.out.println("berekende tijd: " + getTime(req.getLocation(), previousReq.getLocation()));
-
-                tijd += getTime(req.getLocation(), previousReq.getLocation());
-            }
-            previousReq = req;
-
-        }
-        totaleTijdGereden = tijd;
-        return tijd;
-    }*/
-
-
-    public boolean possibleRoute() {
-        for (Request req : route) {
-            totaleTijdGereden += getTime(currentLocation, req.getLocation());
-            totaleAfstandTruck += getDistance(currentLocation, req.getLocation());
-            if (req.isDrop()) {
-                if (!machineList.contains(req.getMachine())) {
-                    return false;
-                }
-            }
-        }
-        return false;
-    }
 
     public void addToTruckWorkingTime(int timeToAdd) {
         truckWorkingTime += timeToAdd;
@@ -449,7 +397,36 @@ public class Truck {
         return REAL_TRUCK_WORKING_TIME;
     }
 
-    public void setREAL_TRUCK_WORKING_TIME(int REAL_TRUCK_WORKING_TIME) {
-        this.REAL_TRUCK_WORKING_TIME = REAL_TRUCK_WORKING_TIME;
+    public List<Request> getDepotRequestList() {
+        List<Request> depotRequestList = new ArrayList<Request>();
+        for (int i = 1; i < route.size() - 1; i++) { //Negeer eerste en laatste request -> Mag niet veranderen, is start en eindlocatie
+            //System.out.println(route.get(i).getLocation().getName()+" is de locatie van dit request ");
+
+            if (route.get(i).isDepot()) {
+                depotRequestList.add(route.get(i));
+            }
+        }
+        Collections.shuffle(depotRequestList);
+        return depotRequestList;
+    }
+
+    public int findIndexOfRequest(Request r11) {
+        //System.out.println("\nLooking for request: "+r11 +" en "+r11.getPair());
+        for (int i = 0; i < route.size(); i++) {
+            //System.out.println("Comparing it with: "+route.get(i) + " en "+route.get(i).getPair());
+            //System.out.println(route.get(i).getMachine()+ " is request");
+            if (route.get(i).getMachine() != null) {
+            /*if(r11==route.get(i)){
+                return i;
+            }*/
+                if (route.get(i).getMachine().getMachineId() == r11.getMachine().getMachineId() && route.get(i).getLocation() == r11.getLocation()) {
+                /*System.out.println("Dit werkt dan wel misschien? Gevonden request: "+route.get(i));
+                System.out.println(route.size());
+                System.out.println(i);*/
+                    return i;
+                }
+            }
+        }
+        return -1;
     }
 }

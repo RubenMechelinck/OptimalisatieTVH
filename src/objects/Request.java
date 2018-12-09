@@ -1,5 +1,10 @@
 package objects;
 
+import java.util.List;
+
+import static main.Main.depots;
+import static utils.Utils.getDistance;
+
 public class Request {
 
     private Location location;
@@ -119,4 +124,23 @@ public class Request {
 
         return request;
     }
+
+    public void changeDepot(Request pair) {
+        Location forbiddenLoc = this.getLocation();
+        List<Depot> depotList = depots;
+        int minDistance=10000000;
+
+        for(Depot d:depotList){
+            //System.out.println("Test voor "+ d.getLocation()+ " en "+forbiddenLoc);
+            if(d.getLocation()!=forbiddenLoc){
+                if(getDistance(d.getLocation(),pair.getLocation())<minDistance){
+                    minDistance= getDistance(d.getLocation(),pair.getLocation());
+                    this.setLocation(d.getLocation());
+                }
+            }
+        }
+
+
+    }
 }
+
