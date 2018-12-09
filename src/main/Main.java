@@ -6,6 +6,7 @@ import utils.FileUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static utils.Utils.stillRemainingTime;
 
@@ -28,7 +29,8 @@ public class Main {
     public static int[][] timeMatrix = new int[0][0];
     public static int[][] distanceMatrix = new int[0][0];
     public static Solution solution;
-    public static int Tmax = 3000;
+    public static Random random;
+    public static int Tmax = 400;
 
     public static void main(String[] args) {
         startTimeMillis = System.currentTimeMillis();
@@ -75,6 +77,7 @@ public class Main {
                 outputFilename = args1[1];
                 seed = Long.parseLong(args2[1]);
                 time = Long.parseLong(args3[1]) * 1000;
+                random = new Random(seed);
                 return true;
             }
         }
