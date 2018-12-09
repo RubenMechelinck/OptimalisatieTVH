@@ -9,9 +9,6 @@ import static main.Main.solution;
 import static main.Main.trucksList;
 
 public class AnnealingSolution {
-    private int bestEnergy = Integer.MAX_VALUE;
-    private List<Truck> bestTrucksList;
-    private Evaluation bestEvaluation;
 
     private int lastEnergy = Integer.MAX_VALUE;
     private Evaluation lastEvaluation = new Evaluation(solution.getLastEvaluation());
@@ -21,16 +18,17 @@ public class AnnealingSolution {
         lastEvaluation.deltaEvaluate(trucks);
 
         int deltaE = lastEvaluation.getTotalDistance() - lastEnergy;
-        if (lastEvaluation.isFeasable() && (deltaE < 0 || Math.exp(-deltaE/T) > Math.random())) {
+        if (lastEvaluation.isFeasable() && (deltaE < 0 || Math.exp(-20*deltaE/T) > Math.random())) {
             lastEnergy = lastEvaluation.getTotalDistance();
 
-            if(lastEnergy < bestEnergy) {
-                bestEnergy = lastEnergy;
-                bestEvaluation = new Evaluation(lastEvaluation);
-                bestTrucksList = new ArrayList<>();
+            if(lastEnergy < solution.getBestCost()) {
+                solution.setBestCost(lastEnergy);
+                solution.setLastEvaluation(new Evaluation(lastEvaluation));
+                List<Truck> tmp = new ArrayList<>();
                 for (Truck truck : trucksList) {
-                    bestTrucksList.add(new Truck(truck));
+                    tmp.add(new Truck(truck));
                 }
+                solution.setBestTrucksList(tmp);
             }
 
             return lastEvaluation;
@@ -40,17 +38,4 @@ public class AnnealingSolution {
             return null;
         }
     }
-
-    public int getBestEnergy() {
-        return bestEnergy;
-    }
-
-    public List<Truck> getBestTrucksList() {
-        return bestTrucksList;
-    }
-
-    public Evaluation getBestEvaluation() {
-        return bestEvaluation;
-    }
-
 }

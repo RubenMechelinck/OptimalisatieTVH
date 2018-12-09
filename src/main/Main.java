@@ -28,7 +28,7 @@ public class Main {
     public static int[][] timeMatrix = new int[0][0];
     public static int[][] distanceMatrix = new int[0][0];
     public static Solution solution;
-    public static int Tmax=4000;
+    public static int Tmax = 3000;
 
     public static void main(String[] args) {
         startTimeMillis = System.currentTimeMillis();

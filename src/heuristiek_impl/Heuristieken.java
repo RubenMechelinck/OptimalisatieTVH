@@ -55,9 +55,17 @@ public class Heuristieken {
 
         //paar iteraties (vervangen door simulated annealing)
         AnnealingSolution annealingSolution = new AnnealingSolution();
+        //start annealing met Tmax, in iteraties van annealing best redelijk stijl gaan (dicht bij localsearch)
+        // => T rap doen dalen en kans dat slechte aanvaard niet te hoog
+        // bij volgende annealing iteraties starten met hoge T (reheating) maar wel lager dan in vorige annealing (T/2)
+        // als T onder grens van 10 komt => terug hogere waarden nemen (500)
+        double T = Tmax;
         while(stillRemainingTime()){
             System.out.println("itr " + itr++);
-            simulatedAnnealing(annealingSolution);
+            simulatedAnnealing(annealingSolution, T);
+            T /= 2;
+            if(T < 10)
+                T = 500;
         }
 
         //helemaal uitgevoerd => geen herstart
@@ -269,26 +277,18 @@ public class Heuristieken {
 
     //////////////////////////////// meta-heuristiek ////////////////////////////////////////////
 
-    private static void simulatedAnnealing(AnnealingSolution annealingSolution){
+    private static void simulatedAnnealing(AnnealingSolution annealingSolution, double T){
 
-        double A = 0.5;
-        double T = Tmax;
+        double A = 0.18;
 
         System.out.println("start annealing");
-        while (T > 10) {
+        while (T > 10 && stillRemainingTime()) {
             System.out.println("starting T:" + T);
-            for(int i=0; i<10;i++) {
+            for(int i = 0; i<10 && stillRemainingTime(); i++) {
                 System.out.println("itr " + i + " bij T:" + T);
                 localSearch(annealingSolution, T);
             }
             T = A * T;
-        }
-
-        //na uitvoer annealing checken of beter is geworden, if so nieuwe oplossing zetten
-        if(annealingSolution.getBestEnergy() < solution.getBestCost()){
-            solution.setBestTrucksList(annealingSolution.getBestTrucksList());
-            solution.setBestCost(annealingSolution.getBestEnergy());
-            solution.setLastEvaluation(annealingSolution.getBestEvaluation());
         }
     }
 
