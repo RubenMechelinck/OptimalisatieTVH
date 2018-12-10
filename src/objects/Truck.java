@@ -397,18 +397,7 @@ public class Truck {
         return REAL_TRUCK_WORKING_TIME;
     }
 
-    public List<Request> getDepotRequestList() {
-        List<Request> depotRequestList = new ArrayList<Request>();
-        for (int i = 1; i < route.size() - 1; i++) { //Negeer eerste en laatste request -> Mag niet veranderen, is start en eindlocatie
-            //System.out.println(route.get(i).getLocation().getName()+" is de locatie van dit request ");
 
-            if (route.get(i).isDepot()) {
-                depotRequestList.add(route.get(i));
-            }
-        }
-        Collections.shuffle(depotRequestList);
-        return depotRequestList;
-    }
 
     public int findIndexOfRequest(Request r11) {
         //System.out.println("\nLooking for request: "+r11 +" en "+r11.getPair());
@@ -429,4 +418,33 @@ public class Truck {
         }
         return -1;
     }
+
+    public List<Request> getDepotRequestList() {
+        List<Request> depotRequestList = new ArrayList<Request>();
+        for (int i = 1; i < route.size() - 1; i++) { //Negeer eerste en laatste request -> Mag niet veranderen, is start en eindlocatie
+            //System.out.println(route.get(i).getLocation().getName()+" is de locatie van dit request ");
+
+            if (route.get(i).isDepot() && route.get(i)!=route.get(0)) {
+                depotRequestList.add(route.get(i));
+            }
+        }
+        Collections.shuffle(depotRequestList);
+
+
+        return depotRequestList;
+    }
+
+    public void printDepots(){
+        System.out.println("Depotlijst van truck "+this.getTruckId());
+        for (int i = 0; i < route.size(); i++) {
+
+            if(route.get(i).isDepot()){
+                System.out.print(i+ " is depot");
+                System.out.println(i+ ". "+route.get(i).getLocation().getName());
+            }
+            else{System.out.print(i+ " is geen depot");System.out.println(i+ ". "+route.get(i).getLocation().getName());}
+        }
+        System.out.println();
+    }
+
 }
