@@ -423,7 +423,7 @@ public class Heuristieken {
         //Hou indexen en requests bij die gewijzigd zijn en zet ze terug als het niet goed is -> Beter dan nen hele fucking lijst van trucks clonen eh
         //List<Truck> trucks =cloneList(trucksList);
 
-        for (int i = 0; i < trucksList.size() && !moved; i++) {
+        for (int i = 0; i < trucksList.size() && !moved && stillRemainingTime(); i++) {
             r1 = null;
             r2 = null;
             i1 = 0;
@@ -562,13 +562,7 @@ public class Heuristieken {
                         }
                     }
                 }
-
             }
-
-            if(b!=t.getRoute().get(0) || e!=t.getRoute().get(t.getRoute().size()-1)){
-                System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");
-            }
-
         }
     }
 
