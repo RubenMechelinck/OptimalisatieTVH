@@ -108,7 +108,7 @@ public class Heuristieken {
         }
         else if(random < 1) {
             for (int i = 0; i < 50 && stillRemainingTime(); i++)
-                moveRequestPairWithinTruck();
+                moveRequestPairWithinTruck(annealingSolution, T, alfa);
         }
         /*else {
             for (int i = 0; i < 10 && stillRemainingTime(); i++){}
@@ -408,7 +408,7 @@ public class Heuristieken {
 
     //Verzet een collect-drop pair: collect en drop request worden op random plaatsen in de route gezet,
     // met collect altijd voor drop komend.
-    private static void moveRequestPairWithinTruck() {
+    private static void moveRequestPairWithinTruck(AnnealingSolution annealingSolution, double T, double alfa) {
 
         boolean moved = false;
         Truck t;
@@ -507,12 +507,19 @@ public class Heuristieken {
                 }
 
                 //Evaluatie
-                evaluation = solution.evaluate(trucksList.get(i));
+
+                if(annealingSolution != null){
+                    evaluation = annealingSolution.evaluate(T, alfa, trucksList.get(i));
+                } else {
+                    evaluation = solution.evaluate(trucksList.get(i));
+                }
+
+
                 if (evaluation != null) {
                     //System.out.println("VERBETERING");
-                    if (evaluation.isReallyFeasable())
+                    if (evaluation.isReallyFeasable()) {
                         System.out.println("moveRequestPairWithinTruck: " + evaluation.getTotalDistance());
-                    else
+                    } else
                         System.out.println("moveRequestPairWithinTruck: infeasable overload " + evaluation.getInfeasableOverload());
 
                     moved = true;
