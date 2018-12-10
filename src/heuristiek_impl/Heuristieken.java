@@ -434,7 +434,7 @@ public class Heuristieken {
             b=t.getRoute().get(0);
             e=t.getRoute().get(t.getRoute().size()-1);
 
-            int minRequestRequired = 6;
+            int minRequestRequired = 8;
             if (t.getRoute().get(0).getPair() != null) {
                 minRequestRequired++;
             }
