@@ -47,19 +47,12 @@ public class Heuristieken {
         int uselessItrCount = 0;
 
         int vorigeInfeasableOverload = solution.getLastEvaluation().getInfeasableOverload();
-
-
-        for(int i=0;i<1000;i++){
-            moveRequestPairWithinTruck();
-        }
-
-
         while(!solution.getLastEvaluation().isReallyFeasable() && stillRemainingTime()){
             System.out.println("itr " + itr++);
             localSearch(null, 0, 0);
 
             //als verbetering in 8 itr niet beter is dan 10 => herstart
-            if(solution.getLastEvaluation().getInfeasableOverload() <= vorigeInfeasableOverload + 10)
+            if(solution.getLastEvaluation().getInfeasableOverload() >= vorigeInfeasableOverload - 10)
                 uselessItrCount++;
             else{
                 uselessItrCount = 0;
@@ -68,10 +61,9 @@ public class Heuristieken {
 
             //als na 25 iteraties nog altijd niet feasbale => zal niet meer lukken => herstart
             //als na 8 itr niets veel verbeterd is => herstart
-            if(itr > 25 || uselessItrCount > 8)
+            if(itr > 50) //25 || uselessItrCount > 8)
                 return true;
         }
-
 
         //paar iteraties (vervangen door simulated annealing)
         AnnealingSolution annealingSolution = new AnnealingSolution();
@@ -97,9 +89,7 @@ public class Heuristieken {
         }
 
         //helemaal uitgevoerd => geen herstart
-
         return false;
-
 
     }
 
@@ -111,18 +101,18 @@ public class Heuristieken {
 
         //wissel random tussen moves
         double random = Main.random.nextDouble();
-        if(random < 0.6) { //0.6
+        if(random < 0.62) {
             for (int i = 0; i < 50 && stillRemainingTime(); i++)
                 moveRequestsBetweenTrucks(annealingSolution, T, alfa);
         }
-        else if(random < 0.9) {
+        else if(random < 1) {
             for (int i = 0; i < 50 && stillRemainingTime(); i++)
                 moveRequestPairWithinTruck();
         }
-        else {
+        /*else {
             for (int i = 0; i < 10 && stillRemainingTime(); i++){}
                 moveDepotsOfRequests();
-        }
+        }*/
     }
 
 
@@ -264,10 +254,10 @@ public class Heuristieken {
                     if (evaluation != null) {
                         //if oplossing is beter => deze localsearch iteratie is klaar (hill climbing)
                         if(evaluation.isReallyFeasable())
-                            System.out.println(evaluation.getTotalDistance());
+                            System.out.println("moveRequestsBetweenTrucks: " + evaluation.getTotalDistance());
                         //if not feasable maar wel minder overload => goeie stap => verder doen in volgende itr
                         else
-                            System.out.println("infeasable overload " + evaluation.getInfeasableOverload());
+                            System.out.println("moveRequestsBetweenTrucks: infeasable overload " + evaluation.getInfeasableOverload());
 
                         placed = true;
                         break;
@@ -342,7 +332,7 @@ public class Heuristieken {
 
             for(int j=0;j<depotList.size() && !moved;j++){
 
-                index=t.findIndexOfRequest(depotList.get(j));
+                index=t.getRoute().indexOf(depotList.get(j));
 
                 if(index<0){
                     //System.out.println("Depotrequest niet gevonden in de hoop");
@@ -372,9 +362,9 @@ public class Heuristieken {
                 evaluation = solution.evaluate(trucksList.get(i));
                 if (evaluation != null) {
                     if(evaluation.isReallyFeasable())
-                        System.out.println(evaluation.getTotalDistance());
+                        System.out.println("moveDepotsOfRequests: " + evaluation.getTotalDistance());
                     else
-                        System.out.println("unfeasable overload " + evaluation.getInfeasableOverload());
+                        System.out.println("moveDepotsOfRequests: infeasable overload " + evaluation.getInfeasableOverload());
 
                     moved = true;
                     break;
@@ -454,95 +444,77 @@ public class Heuristieken {
                 i1 = random.nextInt(t.getRoute().size() - 2) + 1; //Zorgt ervoor dat het eerste request en het laatste request niet gekozen kunnnen worden om te switchen
                 r1 = t.getRoute().get(i1);
 
-                while (r1.getPair() == null || t.findIndexOfRequest(r1.getPair())==0 || t.findIndexOfRequest(r1.getPair())==(t.getRoute().size()-1)) {
+                while (r1.getPair() == null || t.getRoute().indexOf(r1.getPair())==0 || t.getRoute().indexOf(r1.getPair())==(t.getRoute().size()-1)) {
                     i1 = random.nextInt(t.getRoute().size() - 2) + 1; //Zorgt ervoor dat het eerste request en het laatste request niet gekozen kunnnen worden om te switchen
                     r1 = t.getRoute().get(i1);
                 }
 
                 r2 = r1.getPair();
-                i2 = t.findIndexOfRequest(r2);
+                i2 = t.getRoute().indexOf(r2);
 
-
-                /*System.out.println("switch "+ r1+ " en "+ r2);
-                System.out.println("---------------------BEFORE---------------------");
-                for(Request r: t.getRoute()){
-                    System.out.println(r);
-                }*/
-
-                //Genereer 2 random plaatsen waar de drop & collect gaan voor gezet worden
-                p1 = random.nextInt(t.getRoute().size() - 3) + 1;
-                p2 = random.nextInt(t.getRoute().size() - 3) + 1;
-                while (p1 == p2 ) {
-                    p2 = random.nextInt(t.getRoute().size() - 3) + 1;
-                }
-                if(p1 ==0 || p2==0 || i1==0 || i2==0) {
-                    System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBb");
-                    System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBb");
-                    System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBb");
-                    System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBb");
-                    System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBb");
-                    System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBb");
-                    System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBb");
-                    System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBb");
-                    System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBb");
-                    System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBb");
-                    System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBb");
-
-
-                }
                 if (r1.isDrop()) {
 
                     t.removeRequest(i1, false);
                     t.removeRequest(i2, false);
 
+                    //Genereer 2 random plaatsen waar de drop & collect gaan voor gezet worden
+                    p1 = random.nextInt(t.getRoute().size() - 3) + 1;
+                    p2 = random.nextInt(t.getRoute().size() - 3) + 1;
+                    while (p1 == p2 ) {
+                        p2 = random.nextInt(t.getRoute().size() - 3) + 1;
+                    }
+
                     if (p1 < p2) {
                         //Pick up eerst zetten in de lijst
                         t.addRequestToRoute(r2, p1, false);
                         t.addRequestToRoute(r1, p2, false);
+
                     } else {
                         //Pick up eerst zetten in de lijst
                         t.addRequestToRoute(r2, p2, false);
                         t.addRequestToRoute(r1, p1, false);
+
                     }
                 } else {
                     t.removeRequest(i2, false);
                     t.removeRequest(i1, false);
 
+                    //Genereer 2 random plaatsen waar de drop & collect gaan voor gezet worden
+                    p1 = random.nextInt(t.getRoute().size() - 3) + 1;
+                    p2 = random.nextInt(t.getRoute().size() - 3) + 1;
+                    while (p1 == p2 ) {
+                        p2 = random.nextInt(t.getRoute().size() - 3) + 1;
+                    }
 
                     if (p1 < p2) {
                         //Pick up eerst zetten in de lijst
+
                         t.addRequestToRoute(r1, p1, false);
                         t.addRequestToRoute(r2, p2, false);
 
                     } else {
                         //Pick up eerst zetten in de lijst
+
                         t.addRequestToRoute(r1, p2, false);
                         t.addRequestToRoute(r2, p1, false);
 
                     }
                 }
-
-                /*System.out.println("switch "+ r1+ " en "+ r2);
-                System.out.println("------------------------------AFTER-----------------------");
-                for(Request r: t.getRoute()){
-                    System.out.println(r);
-                }*/
 
                 //Evaluatie
                 evaluation = solution.evaluate(trucksList.get(i));
                 if (evaluation != null) {
                     //System.out.println("VERBETERING");
                     if (evaluation.isReallyFeasable())
-                        System.out.println(evaluation.getTotalDistance());
+                        System.out.println("moveRequestPairWithinTruck: " + evaluation.getTotalDistance());
                     else
-                        System.out.println("unfeasable overload " + evaluation.getInfeasableOverload());
+                        System.out.println("moveRequestPairWithinTruck: infeasable overload " + evaluation.getInfeasableOverload());
 
                     moved = true;
                 } else {
                     //System.out.println("Geen verbetering door deze switch");
                     //System.out.println("Indexen: "+i1+ ","+i11+","+i2+","+i22+ " en de requestlist is size: "+t.getRoute().size());
                     if (r1.isDrop()) {
-
 
                         if (p1 < p2) {
                             //Pick up eerst zetten in de lijst
@@ -564,12 +536,10 @@ public class Heuristieken {
                         }
                     } else {
 
-
                         if (p1 < p2) {
                             //Pick up eerst zetten in de lijst
                             t.removeRequest(p2, false);
                             t.removeRequest(p1, false);
-
 
                             t.addRequestToRoute(r1, i1, false);
                             t.addRequestToRoute(r2, i2, false);
@@ -587,8 +557,7 @@ public class Heuristieken {
                 }
 
             }
-            b=t.getRoute().get(0);
-            e=t.getRoute().get(t.getRoute().size()-1);
+
             if(b!=t.getRoute().get(0) || e!=t.getRoute().get(t.getRoute().size()-1)){
                 System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");System.out.println("AAAAAAAAAAAAAAAAAA");
             }

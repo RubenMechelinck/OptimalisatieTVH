@@ -398,27 +398,6 @@ public class Truck {
     }
 
 
-
-    public int findIndexOfRequest(Request r11) {
-        //System.out.println("\nLooking for request: "+r11 +" en "+r11.getPair());
-        for (int i = 0; i < route.size(); i++) {
-            //System.out.println("Comparing it with: "+route.get(i) + " en "+route.get(i).getPair());
-            //System.out.println(route.get(i).getMachine()+ " is request");
-            if (route.get(i).getMachine() != null) {
-            /*if(r11==route.get(i)){
-                return i;
-            }*/
-                if (route.get(i).getMachine().getMachineId() == r11.getMachine().getMachineId() && route.get(i).getLocation() == r11.getLocation()) {
-                /*System.out.println("Dit werkt dan wel misschien? Gevonden request: "+route.get(i));
-                System.out.println(route.size());
-                System.out.println(i);*/
-                    return i;
-                }
-            }
-        }
-        return -1;
-    }
-
     public List<Request> getDepotRequestList() {
         List<Request> depotRequestList = new ArrayList<Request>();
         for (int i = 1; i < route.size() - 1; i++) { //Negeer eerste en laatste request -> Mag niet veranderen, is start en eindlocatie
