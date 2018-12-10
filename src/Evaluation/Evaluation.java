@@ -33,6 +33,7 @@ public class Evaluation {
         infeasableOverload = evaluation.getInfeasableOverload();
         isFeasable = evaluation.isFeasable();
 
+
         distanceMapping = new HashMap<>();
         for(Truck truck: evaluation.getDistanceMapping().keySet())
             distanceMapping.put(truck, evaluation.getDistanceMapping().get(truck));
@@ -265,4 +266,5 @@ public class Evaluation {
     public Map<Truck, Integer> getOverloadTimeMapping() {
         return overloadTimeMapping;
     }
+
 }

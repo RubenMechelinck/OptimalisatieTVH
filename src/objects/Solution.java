@@ -32,11 +32,16 @@ public class Solution {
         //if feasable en betere afstand => in best steken
         if (lastEvaluation.isReallyFeasable() && lastEvaluation.isFeasable() && lastEvaluation.getTotalDistance() < bestCost) {
             //eenmaal een feasable oplossing gevonden => altijd verder zoeken op feasable pad
-            switchToFeasable = true;
+
+
             bestCost = lastEvaluation.getTotalDistance();
             bestTrucksList = new ArrayList<>();
-            for (Truck truck : trucksList)
+            for (Truck truck : trucksList) {
                 bestTrucksList.add(new Truck(truck));
+            }
+
+            switchToFeasable = true;
+
             return lastEvaluation;
         }
         //if niet feasable maar wel minder infeasable afstand => ook aanvaarden maar niet als best

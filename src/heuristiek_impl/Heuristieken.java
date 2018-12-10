@@ -52,7 +52,7 @@ public class Heuristieken {
             localSearch(null, 0, 0);
 
             //als verbetering in 8 itr niet beter is dan 10 => herstart
-            if(solution.getLastEvaluation().getInfeasableOverload() >= vorigeInfeasableOverload - 10)
+            if(solution.getLastEvaluation().getInfeasableOverload() >= vorigeInfeasableOverload)
                 uselessItrCount++;
             else{
                 uselessItrCount = 0;
@@ -61,9 +61,10 @@ public class Heuristieken {
 
             //als na 25 iteraties nog altijd niet feasbale => zal niet meer lukken => herstart
             //als na 8 itr niets veel verbeterd is => herstart
-            if(itr > 50) //25 || uselessItrCount > 8)
+            if(itr > 25 || uselessItrCount > 5)
                 return true;
         }
+
 
         //paar iteraties (vervangen door simulated annealing)
         AnnealingSolution annealingSolution = new AnnealingSolution();
@@ -318,9 +319,13 @@ public class Heuristieken {
 
         //To myself: neem op voorhand een kopie van de lijst zodat je da kan bewerken zonder permanente schade toe te brengen
         //To myself again: nah sla enkel de trucks/depots op die je wijzigt, anders te veel bijhouden eh pipo -> Ga voor depot-history (credits to Kazan)
+        //List<Truck> trucks =cloneList(trucksList);
+
 
         for(int i=0;i<trucksList.size() && !moved;i++){
 
+
+            //System.out.println("############### TRUCK "+i+" ###############");
             HashMap<Integer,Location> depotHistory=new HashMap<>();
             depotHistory.clear();
 
@@ -536,10 +541,12 @@ public class Heuristieken {
                         }
                     } else {
 
+
                         if (p1 < p2) {
                             //Pick up eerst zetten in de lijst
                             t.removeRequest(p2, false);
                             t.removeRequest(p1, false);
+
 
                             t.addRequestToRoute(r1, i1, false);
                             t.addRequestToRoute(r2, i2, false);

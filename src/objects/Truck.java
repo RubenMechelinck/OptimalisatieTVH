@@ -308,6 +308,10 @@ public class Truck {
         return truckCapacity;
     }
 
+    public void setTruckWorkingTime(int time) {
+        truckWorkingTime = time;
+    }
+
     public int getTruckWorkingTime() {
         return truckWorkingTime;
     }
