@@ -366,10 +366,10 @@ public class Heuristieken {
                 //Evaluatie
                 evaluation = solution.evaluate(trucksList.get(i));
                 if (evaluation != null) {
-                    if(evaluation.isReallyFeasable())
+                   /* if(evaluation.isReallyFeasable())
                         System.out.println("moveDepotsOfRequests: " + evaluation.getTotalDistance());
                     else
-                        System.out.println("moveDepotsOfRequests: infeasable overload " + evaluation.getInfeasableOverload());
+                        System.out.println("moveDepotsOfRequests: infeasable overload " + evaluation.getInfeasableOverload());*/
 
                     moved = true;
                     break;
